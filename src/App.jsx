@@ -417,11 +417,11 @@ function App() {
         </section>
 
         <section className="panel notice-panel">
-          <p>
-            {scheduleDataset.isDemo
+            <p>
+              {scheduleDataset.isDemo
               ? 'MVP-notitie: deze versie gebruikt een handmatige dataset. Rechten en tijden kunnen wijzigen.'
-              : 'Dataset wordt periodiek bijgewerkt.'}
-          </p>
+              : 'Dataset wordt automatisch bijgewerkt (ongeveer elke 3 uur).'}
+            </p>
           <p>Laatst bijgewerkt: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</p>
         </section>
 

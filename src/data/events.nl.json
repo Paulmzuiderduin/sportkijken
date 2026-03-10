@@ -1,58 +1,48 @@
 {
-  "generatedAt": "2026-03-10T17:26:46.689Z",
+  "generatedAt": "2026-03-10T18:19:29.128Z",
   "region": "NL",
-  "isDemo": true,
+  "isDemo": false,
   "sources": [
-    "Handmatig samengestelde MVP-dataset",
-    "Publieke uitzendschema's (controle nodig op wedstrijddag)"
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/ned.1/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/ned.cup/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.worldq.uefa/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/racing/f1/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/tennis/atp/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/tennis/wta/scoreboard?dates=20260310-20260524"
   ],
   "events": [
     {
-      "id": "voetbal-eredivisie-topwedstrijd-2026-03-14",
+      "id": "voetbal-uefa.champions-401862667",
       "sport": "voetbal",
-      "title": "Eredivisie topwedstrijd",
-      "competition": "Eredivisie",
-      "start": "2026-03-14T19:00:00Z",
-      "durationMinutes": 120,
-      "location": "Nederland",
+      "title": "Galatasaray - Liverpool",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-10T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "RAMS Park, Istanbul, Türkiye",
       "channels": [
         {
-          "name": "ESPN 1",
+          "name": "Ziggo Sport",
           "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
           "access": "paid"
         }
       ],
-      "notes": "Controleer exacte aftrap en kanaal op wedstrijddag."
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
     },
     {
-      "id": "tennis-indian-wells-finale-2026-03-15",
-      "sport": "tennis",
-      "title": "Indian Wells enkelspel finale",
-      "competition": "ATP/WTA 1000",
-      "start": "2026-03-15T20:00:00Z",
-      "durationMinutes": 170,
-      "location": "Indian Wells",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ]
-    },
-    {
-      "id": "voetbal-europa-league-2026-03-19",
+      "id": "voetbal-uefa.champions-401862641",
       "sport": "voetbal",
-      "title": "UEFA Europa League avondwedstrijd",
-      "competition": "UEFA Europa League",
-      "start": "2026-03-19T20:00:00Z",
-      "durationMinutes": 130,
-      "location": "Europa",
+      "title": "Atalanta - Bayern Munich",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-10T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "New Balance Arena, Bergamo, Italy",
       "channels": [
         {
           "name": "Ziggo Sport",
@@ -64,144 +54,347 @@
           "platform": "stream",
           "access": "paid"
         }
-      ]
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
     },
     {
-      "id": "f1-australie-race-2026-03-22",
-      "sport": "formule-1",
-      "title": "Grand Prix van Australië - Race",
-      "competition": "FIA Formula 1 World Championship",
-      "start": "2026-03-22T04:00:00Z",
-      "durationMinutes": 150,
-      "location": "Melbourne",
+      "id": "voetbal-uefa.champions-401862579",
+      "sport": "voetbal",
+      "title": "Atlético Madrid - Tottenham Hotspur",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-10T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Riyadh Air Metropolitano, Madrid, Spain",
       "channels": [
         {
-          "name": "Viaplay",
-          "platform": "stream",
+          "name": "Ziggo Sport",
+          "platform": "tv",
           "access": "paid"
         },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862577",
+      "sport": "voetbal",
+      "title": "Newcastle United - Barcelona",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-10T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "St. James' Park, Newcastle-upon-Tyne, England",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862578",
+      "sport": "voetbal",
+      "title": "Bayer Leverkusen - Arsenal",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-11T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "BayArena, Leverkusen, Germany",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862583",
+      "sport": "voetbal",
+      "title": "Bodo/Glimt - Sporting CP",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-11T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Aspmyra Stadion, Bodø/Glimt, Norway",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862646",
+      "sport": "voetbal",
+      "title": "Paris Saint-Germain - Chelsea",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-11T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Parc des Princes, Paris, France",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862645",
+      "sport": "voetbal",
+      "title": "Real Madrid - Manchester City",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-11T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Santiago Bernabéu, Madrid, Spain",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862871",
+      "sport": "voetbal",
+      "title": "Bologna - AS Roma",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-12T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Renato Dall'Ara, Bologna, Italy",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862754",
+      "sport": "voetbal",
+      "title": "Lille - Aston Villa",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-12T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Decathlon Arena - Stade Pierre-Mauroy, Lille, France",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862753",
+      "sport": "voetbal",
+      "title": "Panathinaikos - Real Betis",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-12T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Athens Olympic Stadium, Athens, Greece",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862752",
+      "sport": "voetbal",
+      "title": "VfB Stuttgart - FC Porto",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-12T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "MHPArena, Stuttgart, Germany",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862872",
+      "sport": "voetbal",
+      "title": "Celta Vigo - Lyon",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-12T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Balaidos, Vigo, Spain",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862755",
+      "sport": "voetbal",
+      "title": "Ferencvaros - Braga",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-12T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Groupama Arena, Budapest, Hungary",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862770",
+      "sport": "voetbal",
+      "title": "Nottingham Forest - FC Midtjylland",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-12T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "The City Ground, Nottingham, England",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862769",
+      "sport": "voetbal",
+      "title": "Racing Genk - SC Freiburg",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-12T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Cegeka Arena, Genk, Belgium",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "formule-1-600057428",
+      "sport": "formule-1",
+      "title": "Heineken Chinese GP",
+      "competition": "FIA Formula 1 World Championship",
+      "start": "2026-03-13T03:30:00.000Z",
+      "durationMinutes": 3090,
+      "location": "Shanghai International Circuit, Shanghai, China",
+      "channels": [
         {
           "name": "Viaplay TV",
           "platform": "tv",
           "access": "paid"
-        }
-      ]
-    },
-    {
-      "id": "voetbal-interland-nederland-2026-03-24",
-      "sport": "voetbal",
-      "title": "Interland Nederland (voorbeeld)",
-      "competition": "Nationaal team",
-      "start": "2026-03-24T19:45:00Z",
-      "durationMinutes": 120,
-      "location": "Nederland",
-      "channels": [
-        {
-          "name": "NPO 1",
-          "platform": "tv",
-          "access": "free"
         },
-        {
-          "name": "NPO Start",
-          "platform": "stream",
-          "access": "free"
-        }
-      ]
-    },
-    {
-      "id": "tennis-miami-open-finale-2026-03-29",
-      "sport": "tennis",
-      "title": "Miami Open finale (voorbeeld)",
-      "competition": "ATP/WTA 1000",
-      "start": "2026-03-29T18:30:00Z",
-      "durationMinutes": 170,
-      "location": "Miami",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid"
-        }
-      ]
-    },
-    {
-      "id": "f1-japan-race-2026-04-05",
-      "sport": "formule-1",
-      "title": "Grand Prix van Japan - Race",
-      "competition": "FIA Formula 1 World Championship",
-      "start": "2026-04-05T05:00:00Z",
-      "durationMinutes": 150,
-      "location": "Suzuka",
-      "channels": [
         {
           "name": "Viaplay",
           "platform": "stream",
           "access": "paid"
-        }
-      ]
-    },
-    {
-      "id": "tennis-davis-cup-kwalificatie-2026-04-10",
-      "sport": "tennis",
-      "title": "Davis Cup kwalificatie (Nederland)",
-      "competition": "Davis Cup",
-      "start": "2026-04-10T12:00:00Z",
-      "durationMinutes": 240,
-      "location": "Nederland",
-      "channels": [
-        {
-          "name": "NPO 3",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO Start",
-          "platform": "stream",
-          "access": "free"
         }
       ],
-      "notes": "In MVP als voorbeeld opgenomen; check de definitieve rechten."
+      "notes": "Automatisch opgehaald. Controleer de uitzending voor race/kwalificatie/sprint."
     },
     {
-      "id": "f1-bahrain-race-2026-04-12",
-      "sport": "formule-1",
-      "title": "Grand Prix van Bahrein - Race",
-      "competition": "FIA Formula 1 World Championship",
-      "start": "2026-04-12T15:00:00Z",
-      "durationMinutes": 150,
-      "location": "Sakhir",
-      "channels": [
-        {
-          "name": "Viaplay",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ]
-    },
-    {
-      "id": "voetbal-eredivisie-zondagavond-2026-04-12",
+      "id": "voetbal-ned.1-741217",
       "sport": "voetbal",
-      "title": "Eredivisie zondagavondwedstrijd",
+      "title": "PEC Zwolle - FC Groningen",
       "competition": "Eredivisie",
-      "start": "2026-04-12T18:00:00Z",
-      "durationMinutes": 120,
-      "location": "Nederland",
-      "channels": [
-        {
-          "name": "ESPN",
-          "platform": "tv",
-          "access": "paid"
-        }
-      ]
-    },
-    {
-      "id": "voetbal-bekerfinale-2026-04-19",
-      "sport": "voetbal",
-      "title": "Nationale bekerfinale (voorbeeld)",
-      "competition": "Bekertoernooi",
-      "start": "2026-04-19T17:00:00Z",
-      "durationMinutes": 140,
-      "location": "Nederland",
+      "start": "2026-03-13T19:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "MAC³PARK Stadion, Zwolle, Netherlands",
       "channels": [
         {
           "name": "ESPN",
@@ -209,20 +402,197 @@
           "access": "paid"
         },
         {
-          "name": "NPO Start",
+          "name": "ESPN Watch",
           "platform": "stream",
-          "access": "free"
+          "access": "paid"
         }
-      ]
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
     },
     {
-      "id": "tennis-roland-garros-start-2026-05-24",
+      "id": "voetbal-ned.1-741210",
+      "sport": "voetbal",
+      "title": "FC Volendam - Fortuna Sittard",
+      "competition": "Eredivisie",
+      "start": "2026-03-14T15:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Kras Stadion, Volendam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741216",
+      "sport": "voetbal",
+      "title": "PSV Eindhoven - NEC Nijmegen",
+      "competition": "Eredivisie",
+      "start": "2026-03-14T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Philips Stadion, Eindhoven, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741215",
+      "sport": "voetbal",
+      "title": "Heerenveen - Telstar",
+      "competition": "Eredivisie",
+      "start": "2026-03-14T19:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Abe Lenstra Stadion, Heerenveen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741212",
+      "sport": "voetbal",
+      "title": "Ajax Amsterdam - Sparta Rotterdam",
+      "competition": "Eredivisie",
+      "start": "2026-03-14T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Johan Cruijff Arena, Amsterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741211",
+      "sport": "voetbal",
+      "title": "FC Twente - FC Utrecht",
+      "competition": "Eredivisie",
+      "start": "2026-03-15T11:15:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Grolsch Veste, Enschede, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741213",
+      "sport": "voetbal",
+      "title": "AZ Alkmaar - Heracles Almelo",
+      "competition": "Eredivisie",
+      "start": "2026-03-15T13:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "AFAS Stadion, Alkmaar, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741214",
+      "sport": "voetbal",
+      "title": "Feyenoord Rotterdam - Excelsior",
+      "competition": "Eredivisie",
+      "start": "2026-03-15T13:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Kuip, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741218",
+      "sport": "voetbal",
+      "title": "Go Ahead Eagles - NAC Breda",
+      "competition": "Eredivisie",
+      "start": "2026-03-15T15:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Adelaarshorst, Deventer, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "tennis-atp-713-2026",
       "sport": "tennis",
-      "title": "Roland Garros - openingsdag",
-      "competition": "Grand Slam",
-      "start": "2026-05-24T09:00:00Z",
-      "durationMinutes": 480,
-      "location": "Parijs",
+      "title": "Miami Open presented by Itau",
+      "competition": "ATP",
+      "start": "2026-03-17T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Miami, USA",
       "channels": [
         {
           "name": "Eurosport",
@@ -234,7 +604,3456 @@
           "platform": "stream",
           "access": "paid"
         }
-      ]
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-713-2026",
+      "sport": "tennis",
+      "title": "Miami Open presented by Itau",
+      "competition": "WTA",
+      "start": "2026-03-17T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Miami, USA",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862584",
+      "sport": "voetbal",
+      "title": "Sporting CP - Bodo/Glimt",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-17T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Estádio José Alvalade, Lisbon, Portugal",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862581",
+      "sport": "voetbal",
+      "title": "Arsenal - Bayer Leverkusen",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-17T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Emirates Stadium, London, England",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862648",
+      "sport": "voetbal",
+      "title": "Chelsea - Paris Saint-Germain",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-17T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Stamford Bridge, London, England",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862647",
+      "sport": "voetbal",
+      "title": "Manchester City - Real Madrid",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-17T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Etihad Stadium, Manchester, England",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862758",
+      "sport": "voetbal",
+      "title": "Braga - Ferencvaros",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-18T15:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Estádio Municipal de Braga, Braga, Portugal",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862582",
+      "sport": "voetbal",
+      "title": "Barcelona - Newcastle United",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-18T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Spotify Camp Nou, Barcelona, Spain",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862642",
+      "sport": "voetbal",
+      "title": "Bayern Munich - Atalanta",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-18T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Allianz Arena, München, Germany",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862668",
+      "sport": "voetbal",
+      "title": "Liverpool - Galatasaray",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-18T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Anfield, Liverpool, England",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862580",
+      "sport": "voetbal",
+      "title": "Tottenham Hotspur - Atlético Madrid",
+      "competition": "UEFA Champions League",
+      "start": "2026-03-18T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Tottenham Hotspur Stadium, London, England",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862875",
+      "sport": "voetbal",
+      "title": "FC Midtjylland - Nottingham Forest",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-19T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "MCH Arena, Herning, Denmark",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862876",
+      "sport": "voetbal",
+      "title": "Lyon - Celta Vigo",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-19T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Groupama Stadium, Lyon, France",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862873",
+      "sport": "voetbal",
+      "title": "SC Freiburg - Racing Genk",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-19T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Europa-Park Stadion, Freiburg im Breisgau, Germany",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862874",
+      "sport": "voetbal",
+      "title": "AS Roma - Bologna",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-19T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Olimpico, Roma, Italy",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862759",
+      "sport": "voetbal",
+      "title": "Aston Villa - Lille",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-19T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Villa Park, Birmingham, England",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862756",
+      "sport": "voetbal",
+      "title": "FC Porto - VfB Stuttgart",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-19T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Estádio do Dragão, Porto, Portugal",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862757",
+      "sport": "voetbal",
+      "title": "Real Betis - Panathinaikos",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-19T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Estadio La Cartuja, Sevilla, Spain",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-ned.1-741226",
+      "sport": "voetbal",
+      "title": "Heracles Almelo - Excelsior",
+      "competition": "Eredivisie",
+      "start": "2026-03-20T19:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Erve Asito, Almelo, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "tennis-wta-977-2026",
+      "sport": "tennis",
+      "title": "Puerto Vallarta Open",
+      "competition": "WTA",
+      "start": "2026-03-21T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-ned.1-741222",
+      "sport": "voetbal",
+      "title": "Fortuna Sittard - FC Twente",
+      "competition": "Eredivisie",
+      "start": "2026-03-21T15:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Fortuna Sittard Stadion, Sittard, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741227",
+      "sport": "voetbal",
+      "title": "Sparta Rotterdam - FC Volendam",
+      "competition": "Eredivisie",
+      "start": "2026-03-21T17:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Sparta-Stadion Het Kasteel, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741224",
+      "sport": "voetbal",
+      "title": "PEC Zwolle - NAC Breda",
+      "competition": "Eredivisie",
+      "start": "2026-03-21T20:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "MAC³PARK Stadion, Zwolle, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741225",
+      "sport": "voetbal",
+      "title": "NEC Nijmegen - Heerenveen",
+      "competition": "Eredivisie",
+      "start": "2026-03-22T11:15:00.000Z",
+      "durationMinutes": 125,
+      "location": "Goffertstadion, Nijmegen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741220",
+      "sport": "voetbal",
+      "title": "FC Utrecht - Go Ahead Eagles",
+      "competition": "Eredivisie",
+      "start": "2026-03-22T13:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Stadion Galgenwaard, Utrecht, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741221",
+      "sport": "voetbal",
+      "title": "Feyenoord Rotterdam - Ajax Amsterdam",
+      "competition": "Eredivisie",
+      "start": "2026-03-22T13:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Kuip, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741219",
+      "sport": "voetbal",
+      "title": "FC Groningen - AZ Alkmaar",
+      "competition": "Eredivisie",
+      "start": "2026-03-22T15:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Euroborg, Groningen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741223",
+      "sport": "voetbal",
+      "title": "Telstar - PSV Eindhoven",
+      "competition": "Eredivisie",
+      "start": "2026-03-22T15:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "711 Stadion, Velsen-Zuid, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "tennis-wta-1058-2026",
+      "sport": "tennis",
+      "title": "Dubrovnik Open",
+      "competition": "WTA",
+      "start": "2026-03-23T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Dubrovnik, Croatia",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761383",
+      "sport": "voetbal",
+      "title": "Türkiye - Romania",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-26T17:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Vodafone Park, Istanbul, Türkiye",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761378",
+      "sport": "voetbal",
+      "title": "Czechia - Republic of Ireland",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-26T19:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Fortuna Arena, Prague, Czechia",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761379",
+      "sport": "voetbal",
+      "title": "Denmark - North Macedonia",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-26T19:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Parken Stadium, Copenhagen, Denmark",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761380",
+      "sport": "voetbal",
+      "title": "Italy - Northern Ireland",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-26T19:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "New Balance Arena, Bergamo, Italy",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761385",
+      "sport": "voetbal",
+      "title": "Poland - Albania",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-26T19:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "PGE Narodowy, Warsaw, Poland",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761382",
+      "sport": "voetbal",
+      "title": "Slovakia - Kosovo",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-26T19:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Národny Futbalovy Stadión, Bratislava, Slovakia",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761384",
+      "sport": "voetbal",
+      "title": "Ukraine - Sweden",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-26T19:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Estadi Ciutat de València, Manises, Spain",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761381",
+      "sport": "voetbal",
+      "title": "Wales - Bosnia and Herzegovina",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-26T19:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Cardiff City Stadium, Cardiff, Wales",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "formule-1-600057429",
+      "sport": "formule-1",
+      "title": "Aramco Japanese GP",
+      "competition": "FIA Formula 1 World Championship",
+      "start": "2026-03-27T02:30:00.000Z",
+      "durationMinutes": 3030,
+      "location": "Suzuka International Racing Course, Suzuka, Japan",
+      "channels": [
+        {
+          "name": "Viaplay TV",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Viaplay",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer de uitzending voor race/kwalificatie/sprint."
+    },
+    {
+      "id": "tennis-atp-28-2026",
+      "sport": "tennis",
+      "title": "Grand Prix Hassan II",
+      "competition": "ATP",
+      "start": "2026-03-30T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Marrakech, Morocco",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-atp-145-2026",
+      "sport": "tennis",
+      "title": "Fayez Sarofim & Co. U.S. Men's Clay Court Championship",
+      "competition": "ATP",
+      "start": "2026-03-30T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Houston, USA",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-atp-974-2026",
+      "sport": "tennis",
+      "title": "Tiriac Open presented by UniCredit Bank",
+      "competition": "ATP",
+      "start": "2026-03-30T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Bucharest, Romania",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-228-2026",
+      "sport": "tennis",
+      "title": "Credit One Charleston Open",
+      "competition": "WTA",
+      "start": "2026-03-30T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Charleston, USA",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-524-2026",
+      "sport": "tennis",
+      "title": "Copa Colsanitas Colsubsidio",
+      "competition": "WTA",
+      "start": "2026-03-30T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Bogotá, Colombia",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761952",
+      "sport": "voetbal",
+      "title": "Path A Finalist 2 - Path A Finalist 1",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-31T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761954",
+      "sport": "voetbal",
+      "title": "Path B Finalist 1 - Path B Finalist 2",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-31T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761953",
+      "sport": "voetbal",
+      "title": "Path C Finalist 2 - Path C Finalist 1",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-31T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-fifa.worldq.uefa-761955",
+      "sport": "voetbal",
+      "title": "Path D Finalist 2 - Path D Finalist 1",
+      "competition": "WK kwalificatie UEFA",
+      "start": "2026-03-31T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land."
+    },
+    {
+      "id": "voetbal-ned.1-741234",
+      "sport": "voetbal",
+      "title": "PSV Eindhoven - FC Utrecht",
+      "competition": "Eredivisie",
+      "start": "2026-04-04T14:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Philips Stadion, Eindhoven, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741231",
+      "sport": "voetbal",
+      "title": "AZ Alkmaar - Fortuna Sittard",
+      "competition": "Eredivisie",
+      "start": "2026-04-04T16:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "AFAS Stadion, Alkmaar, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741235",
+      "sport": "voetbal",
+      "title": "Telstar - FC Groningen",
+      "competition": "Eredivisie",
+      "start": "2026-04-04T16:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "711 Stadion, Velsen-Zuid, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741230",
+      "sport": "voetbal",
+      "title": "Ajax Amsterdam - FC Twente",
+      "competition": "Eredivisie",
+      "start": "2026-04-04T19:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Johan Cruijff Arena, Amsterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741229",
+      "sport": "voetbal",
+      "title": "Excelsior - NEC Nijmegen",
+      "competition": "Eredivisie",
+      "start": "2026-04-04T19:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Stadion Woudestein, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "tennis-atp-42-2026",
+      "sport": "tennis",
+      "title": "Rolex Monte-Carlo Masters",
+      "competition": "ATP",
+      "start": "2026-04-05T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Monte-Carlo, Monaco",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-ned.1-741236",
+      "sport": "voetbal",
+      "title": "Go Ahead Eagles - PEC Zwolle",
+      "competition": "Eredivisie",
+      "start": "2026-04-05T10:15:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Adelaarshorst, Deventer, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741228",
+      "sport": "voetbal",
+      "title": "FC Volendam - Feyenoord Rotterdam",
+      "competition": "Eredivisie",
+      "start": "2026-04-05T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Kras Stadion, Volendam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741232",
+      "sport": "voetbal",
+      "title": "Heerenveen - Heracles Almelo",
+      "competition": "Eredivisie",
+      "start": "2026-04-05T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Abe Lenstra Stadion, Heerenveen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741233",
+      "sport": "voetbal",
+      "title": "NAC Breda - Sparta Rotterdam",
+      "competition": "Eredivisie",
+      "start": "2026-04-05T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Rat Verlegh Stadion, Breda, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "tennis-wta-199-2026",
+      "sport": "tennis",
+      "title": "Upper Austria Ladies Linz",
+      "competition": "WTA",
+      "start": "2026-04-06T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Linz, Austria",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-1064-2026",
+      "sport": "tennis",
+      "title": "Grand Prix Open Villa de Madrid by Silverway",
+      "competition": "WTA",
+      "start": "2026-04-06T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Madrid, Spain",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862885",
+      "sport": "voetbal",
+      "title": "Round of 16 1 Winner - Round of 16 2 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-04-07T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862886",
+      "sport": "voetbal",
+      "title": "Round of 16 3 Winner - Round of 16 4 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-04-07T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862887",
+      "sport": "voetbal",
+      "title": "Round of 16 5 Winner - Round of 16 6 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-04-07T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862888",
+      "sport": "voetbal",
+      "title": "Round of 16 7 Winner - Round of 16 8 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-04-07T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862899",
+      "sport": "voetbal",
+      "title": "Round of 16 1 Winner - Round of 16 2 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-04-09T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862900",
+      "sport": "voetbal",
+      "title": "Round of 16 3 Winner - Round of 16 4 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-04-09T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862901",
+      "sport": "voetbal",
+      "title": "Round of 16 5 Winner - Round of 16 6 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-04-09T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862902",
+      "sport": "voetbal",
+      "title": "Round of 16 7 Winner - Round of 16 8 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-04-09T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "formule-1-600057430",
+      "sport": "formule-1",
+      "title": "Gulf Air Bahrain GP",
+      "competition": "FIA Formula 1 World Championship",
+      "start": "2026-04-10T11:30:00.000Z",
+      "durationMinutes": 3090,
+      "location": "Bahrain International Circuit, Sakhir, Bahrain",
+      "channels": [
+        {
+          "name": "Viaplay TV",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Viaplay",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer de uitzending voor race/kwalificatie/sprint."
+    },
+    {
+      "id": "voetbal-ned.1-741238",
+      "sport": "voetbal",
+      "title": "FC Twente - FC Volendam",
+      "competition": "Eredivisie",
+      "start": "2026-04-10T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Grolsch Veste, Enschede, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741237",
+      "sport": "voetbal",
+      "title": "FC Utrecht - Telstar",
+      "competition": "Eredivisie",
+      "start": "2026-04-11T14:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Stadion Galgenwaard, Utrecht, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741242",
+      "sport": "voetbal",
+      "title": "Sparta Rotterdam - PSV Eindhoven",
+      "competition": "Eredivisie",
+      "start": "2026-04-11T16:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Sparta-Stadion Het Kasteel, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741239",
+      "sport": "voetbal",
+      "title": "FC Groningen - Go Ahead Eagles",
+      "competition": "Eredivisie",
+      "start": "2026-04-11T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Euroborg, Groningen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741245",
+      "sport": "voetbal",
+      "title": "Heracles Almelo - Ajax Amsterdam",
+      "competition": "Eredivisie",
+      "start": "2026-04-11T19:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Erve Asito, Almelo, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741241",
+      "sport": "voetbal",
+      "title": "Fortuna Sittard - NAC Breda",
+      "competition": "Eredivisie",
+      "start": "2026-04-12T10:15:00.000Z",
+      "durationMinutes": 125,
+      "location": "Fortuna Sittard Stadion, Sittard, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741244",
+      "sport": "voetbal",
+      "title": "NEC Nijmegen - Feyenoord Rotterdam",
+      "competition": "Eredivisie",
+      "start": "2026-04-12T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Goffertstadion, Nijmegen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741243",
+      "sport": "voetbal",
+      "title": "PEC Zwolle - Excelsior",
+      "competition": "Eredivisie",
+      "start": "2026-04-12T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "MAC³PARK Stadion, Zwolle, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741240",
+      "sport": "voetbal",
+      "title": "AZ Alkmaar - Heerenveen",
+      "competition": "Eredivisie",
+      "start": "2026-04-12T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "AFAS Stadion, Alkmaar, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "tennis-atp-12-2026",
+      "sport": "tennis",
+      "title": "BMW Open by Bitpanda",
+      "competition": "ATP",
+      "start": "2026-04-13T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Munich, Germany",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-atp-338-2026",
+      "sport": "tennis",
+      "title": "Barcelona Open Banc Sabadell",
+      "competition": "ATP",
+      "start": "2026-04-13T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Barcelona, Spain",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-254-2026",
+      "sport": "tennis",
+      "title": "Porsche Tennis Grand Prix",
+      "competition": "WTA",
+      "start": "2026-04-13T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Stuttgart, Germany",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-900-2026",
+      "sport": "tennis",
+      "title": "Open Capfinances Rouen Métropole",
+      "competition": "WTA",
+      "start": "2026-04-13T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Rouen, France",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-995-2026",
+      "sport": "tennis",
+      "title": "Oeiras Jamor Ladies Open",
+      "competition": "WTA",
+      "start": "2026-04-13T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Oeiras, Portugal",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862889",
+      "sport": "voetbal",
+      "title": "Round of 16 2 Winner - Round of 16 1 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-04-14T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862891",
+      "sport": "voetbal",
+      "title": "Round of 16 4 Winner - Round of 16 3 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-04-14T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862892",
+      "sport": "voetbal",
+      "title": "Round of 16 6 Winner - Round of 16 5 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-04-14T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862890",
+      "sport": "voetbal",
+      "title": "Round of 16 8 Winner - Round of 16 7 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-04-14T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862903",
+      "sport": "voetbal",
+      "title": "Round of 16 2 Winner - Round of 16 1 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-04-16T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862904",
+      "sport": "voetbal",
+      "title": "Round of 16 4 Winner - Round of 16 3 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-04-16T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862905",
+      "sport": "voetbal",
+      "title": "Round of 16 6 Winner - Round of 16 5 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-04-16T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862906",
+      "sport": "voetbal",
+      "title": "Round of 16 8 Winner - Round of 16 7 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-04-16T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "formule-1-600057431",
+      "sport": "formule-1",
+      "title": "STC Saudi Arabian GP",
+      "competition": "FIA Formula 1 World Championship",
+      "start": "2026-04-17T13:30:00.000Z",
+      "durationMinutes": 3090,
+      "location": "Jeddah Street Circuit, Jeddah, Saudi Arabia",
+      "channels": [
+        {
+          "name": "Viaplay TV",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Viaplay",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer de uitzending voor race/kwalificatie/sprint."
+    },
+    {
+      "id": "voetbal-ned.cup-401859865",
+      "sport": "voetbal",
+      "title": "AZ Alkmaar - NEC Nijmegen",
+      "competition": "KNVB Beker",
+      "start": "2026-04-19T16:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Kuip, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Bekerrechten kunnen per ronde verschillen."
+    },
+    {
+      "id": "tennis-wta-1061-2026",
+      "sport": "tennis",
+      "title": "Oeiras Open CETO",
+      "competition": "WTA",
+      "start": "2026-04-20T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Oeiras, Portugal",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-atp-413-2026",
+      "sport": "tennis",
+      "title": "Mutua Madrid Open",
+      "competition": "ATP",
+      "start": "2026-04-21T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Madrid, Spain",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-413-2026",
+      "sport": "tennis",
+      "title": "Mutua Madrid Open",
+      "competition": "WTA",
+      "start": "2026-04-21T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Madrid, Spain",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-ned.1-741254",
+      "sport": "voetbal",
+      "title": "Telstar - Sparta Rotterdam",
+      "competition": "Eredivisie",
+      "start": "2026-04-22T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "711 Stadion, Velsen-Zuid, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741249",
+      "sport": "voetbal",
+      "title": "Go Ahead Eagles - AZ Alkmaar",
+      "competition": "Eredivisie",
+      "start": "2026-04-23T16:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Adelaarshorst, Deventer, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741251",
+      "sport": "voetbal",
+      "title": "PSV Eindhoven - PEC Zwolle",
+      "competition": "Eredivisie",
+      "start": "2026-04-23T19:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Philips Stadion, Eindhoven, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741248",
+      "sport": "voetbal",
+      "title": "Feyenoord Rotterdam - FC Groningen",
+      "competition": "Eredivisie",
+      "start": "2026-04-25T14:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Kuip, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741250",
+      "sport": "voetbal",
+      "title": "Heerenveen - Fortuna Sittard",
+      "competition": "Eredivisie",
+      "start": "2026-04-25T16:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Abe Lenstra Stadion, Heerenveen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741252",
+      "sport": "voetbal",
+      "title": "NAC Breda - Ajax Amsterdam",
+      "competition": "Eredivisie",
+      "start": "2026-04-25T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Rat Verlegh Stadion, Breda, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741247",
+      "sport": "voetbal",
+      "title": "FC Twente - NEC Nijmegen",
+      "competition": "Eredivisie",
+      "start": "2026-04-25T19:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Grolsch Veste, Enschede, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741246",
+      "sport": "voetbal",
+      "title": "Excelsior - FC Utrecht",
+      "competition": "Eredivisie",
+      "start": "2026-04-26T10:15:00.000Z",
+      "durationMinutes": 125,
+      "location": "Stadion Woudestein, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741253",
+      "sport": "voetbal",
+      "title": "Heracles Almelo - FC Volendam",
+      "competition": "Eredivisie",
+      "start": "2026-04-26T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Erve Asito, Almelo, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "tennis-wta-770-2026",
+      "sport": "tennis",
+      "title": "L'Open 35 de Saint Malo",
+      "competition": "WTA",
+      "start": "2026-04-27T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Saint Malo, France",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-947-2026",
+      "sport": "tennis",
+      "title": "Catalonia Open Solgironès",
+      "competition": "WTA",
+      "start": "2026-04-27T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "La Bisbal d'Empordà, Spain",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862893",
+      "sport": "voetbal",
+      "title": "Quarterfinal 1 Winner - Quarterfinal 2 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-04-28T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862894",
+      "sport": "voetbal",
+      "title": "Quarterfinal 3 Winner - Quarterfinal 4 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-04-28T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862907",
+      "sport": "voetbal",
+      "title": "Quarterfinal 1 Winner - Quarterfinal 2 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-04-30T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862908",
+      "sport": "voetbal",
+      "title": "Quarterfinal 3 Winner - Quarterfinal 4 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-04-30T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "formule-1-600057432",
+      "sport": "formule-1",
+      "title": "Crypto.com Miami GP",
+      "competition": "FIA Formula 1 World Championship",
+      "start": "2026-05-01T16:30:00.000Z",
+      "durationMinutes": 3090,
+      "location": "Miami International Autodrome, Florida, USA",
+      "channels": [
+        {
+          "name": "Viaplay TV",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Viaplay",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer de uitzending voor race/kwalificatie/sprint."
+    },
+    {
+      "id": "tennis-wta-1062-2026",
+      "sport": "tennis",
+      "title": "Istanbul Open",
+      "competition": "WTA",
+      "start": "2026-05-02T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-ned.1-741259",
+      "sport": "voetbal",
+      "title": "FC Utrecht - NAC Breda",
+      "competition": "Eredivisie",
+      "start": "2026-05-02T14:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Stadion Galgenwaard, Utrecht, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741257",
+      "sport": "voetbal",
+      "title": "FC Groningen - Excelsior",
+      "competition": "Eredivisie",
+      "start": "2026-05-02T16:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Euroborg, Groningen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741256",
+      "sport": "voetbal",
+      "title": "Ajax Amsterdam - PSV Eindhoven",
+      "competition": "Eredivisie",
+      "start": "2026-05-02T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Johan Cruijff Arena, Amsterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741260",
+      "sport": "voetbal",
+      "title": "NEC Nijmegen - Telstar",
+      "competition": "Eredivisie",
+      "start": "2026-05-02T19:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Goffertstadion, Nijmegen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741262",
+      "sport": "voetbal",
+      "title": "FC Volendam - Heerenveen",
+      "competition": "Eredivisie",
+      "start": "2026-05-03T10:15:00.000Z",
+      "durationMinutes": 125,
+      "location": "Kras Stadion, Volendam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741261",
+      "sport": "voetbal",
+      "title": "Fortuna Sittard - Feyenoord Rotterdam",
+      "competition": "Eredivisie",
+      "start": "2026-05-03T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Fortuna Sittard Stadion, Sittard, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741263",
+      "sport": "voetbal",
+      "title": "PEC Zwolle - Heracles Almelo",
+      "competition": "Eredivisie",
+      "start": "2026-05-03T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "MAC³PARK Stadion, Zwolle, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741255",
+      "sport": "voetbal",
+      "title": "AZ Alkmaar - FC Twente",
+      "competition": "Eredivisie",
+      "start": "2026-05-03T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "AFAS Stadion, Alkmaar, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741258",
+      "sport": "voetbal",
+      "title": "Sparta Rotterdam - Go Ahead Eagles",
+      "competition": "Eredivisie",
+      "start": "2026-05-03T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Sparta-Stadion Het Kasteel, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "tennis-atp-414-2026",
+      "sport": "tennis",
+      "title": "Internazionali BNL d'Italia",
+      "competition": "ATP",
+      "start": "2026-05-04T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-414-2026",
+      "sport": "tennis",
+      "title": "Internazionali BNL d'Italia",
+      "competition": "WTA",
+      "start": "2026-05-04T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862895",
+      "sport": "voetbal",
+      "title": "Quarterfinal 2 Winner - Quarterfinal 1 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-05-05T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.champions-401862896",
+      "sport": "voetbal",
+      "title": "Quarterfinal 4 Winner - Quarterfinal 3 Winner",
+      "competition": "UEFA Champions League",
+      "start": "2026-05-05T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862909",
+      "sport": "voetbal",
+      "title": "Quarterfinal 2 Winner - Quarterfinal 1 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-05-07T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862910",
+      "sport": "voetbal",
+      "title": "Quarterfinal 4 Winner - Quarterfinal 3 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-05-07T18:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "TBC",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "tennis-wta-870-2026",
+      "sport": "tennis",
+      "title": "Trophée Clarins",
+      "competition": "WTA",
+      "start": "2026-05-09T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-896-2026",
+      "sport": "tennis",
+      "title": "Parma Ladies Open presented by Iren",
+      "competition": "WTA",
+      "start": "2026-05-09T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-ned.1-741272",
+      "sport": "voetbal",
+      "title": "Ajax Amsterdam - FC Utrecht",
+      "competition": "Eredivisie",
+      "start": "2026-05-10T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Johan Cruijff Arena, Amsterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741271",
+      "sport": "voetbal",
+      "title": "Excelsior - FC Volendam",
+      "competition": "Eredivisie",
+      "start": "2026-05-10T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Stadion Woudestein, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741270",
+      "sport": "voetbal",
+      "title": "FC Groningen - NEC Nijmegen",
+      "competition": "Eredivisie",
+      "start": "2026-05-10T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Euroborg, Groningen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741269",
+      "sport": "voetbal",
+      "title": "FC Twente - Sparta Rotterdam",
+      "competition": "Eredivisie",
+      "start": "2026-05-10T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Grolsch Veste, Enschede, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741268",
+      "sport": "voetbal",
+      "title": "Feyenoord Rotterdam - AZ Alkmaar",
+      "competition": "Eredivisie",
+      "start": "2026-05-10T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Stadion Feijenoord, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741265",
+      "sport": "voetbal",
+      "title": "Fortuna Sittard - PEC Zwolle",
+      "competition": "Eredivisie",
+      "start": "2026-05-10T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Fortuna Sittard Stadion, Sittard, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741266",
+      "sport": "voetbal",
+      "title": "Go Ahead Eagles - PSV Eindhoven",
+      "competition": "Eredivisie",
+      "start": "2026-05-10T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "De Adelaarshorst, Deventer, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741267",
+      "sport": "voetbal",
+      "title": "NAC Breda - Heerenveen",
+      "competition": "Eredivisie",
+      "start": "2026-05-10T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "Rat Verlegh Stadion, Breda, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741264",
+      "sport": "voetbal",
+      "title": "Telstar - Heracles Almelo",
+      "competition": "Eredivisie",
+      "start": "2026-05-10T14:45:00.000Z",
+      "durationMinutes": 125,
+      "location": "BUKO Stadion, Velsen-Zuid, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "tennis-atp-396-2026",
+      "sport": "tennis",
+      "title": "Gonet Geneva Open",
+      "competition": "ATP",
+      "start": "2026-05-15T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-atp-942-2026",
+      "sport": "tennis",
+      "title": "Bitpanda Hamburg Open",
+      "competition": "ATP",
+      "start": "2026-05-15T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-237-2026",
+      "sport": "tennis",
+      "title": "Internationaux de Strasbourg",
+      "competition": "WTA",
+      "start": "2026-05-15T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-231-2026",
+      "sport": "tennis",
+      "title": "Grand Prix Son Altesse Royale  La Princesse Lalla Meryem",
+      "competition": "WTA",
+      "start": "2026-05-16T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-atp-172-2026",
+      "sport": "tennis",
+      "title": "Roland Garros",
+      "competition": "ATP",
+      "start": "2026-05-17T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "tennis-wta-172-2026",
+      "sport": "tennis",
+      "title": "Roland Garros",
+      "competition": "WTA",
+      "start": "2026-05-17T04:00:00.000Z",
+      "durationMinutes": 180,
+      "location": "Onbekend",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
+    },
+    {
+      "id": "voetbal-ned.1-741275",
+      "sport": "voetbal",
+      "title": "AZ Alkmaar - NAC Breda",
+      "competition": "Eredivisie",
+      "start": "2026-05-17T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "AFAS Stadion, Alkmaar, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741274",
+      "sport": "voetbal",
+      "title": "FC Utrecht - Fortuna Sittard",
+      "competition": "Eredivisie",
+      "start": "2026-05-17T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Stadion Galgenwaard, Utrecht, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741273",
+      "sport": "voetbal",
+      "title": "FC Volendam - Telstar",
+      "competition": "Eredivisie",
+      "start": "2026-05-17T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Kras Stadion, Volendam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741277",
+      "sport": "voetbal",
+      "title": "Heerenveen - Ajax Amsterdam",
+      "competition": "Eredivisie",
+      "start": "2026-05-17T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Abe Lenstra Stadion, Heerenveen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741276",
+      "sport": "voetbal",
+      "title": "Heracles Almelo - FC Groningen",
+      "competition": "Eredivisie",
+      "start": "2026-05-17T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Asito Stadion, Almelo, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741281",
+      "sport": "voetbal",
+      "title": "NEC Nijmegen - Go Ahead Eagles",
+      "competition": "Eredivisie",
+      "start": "2026-05-17T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Goffertstadion, Nijmegen, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741278",
+      "sport": "voetbal",
+      "title": "PEC Zwolle - Feyenoord Rotterdam",
+      "competition": "Eredivisie",
+      "start": "2026-05-17T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "MAC³PARK Stadion, Zwolle, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741279",
+      "sport": "voetbal",
+      "title": "PSV Eindhoven - FC Twente",
+      "competition": "Eredivisie",
+      "start": "2026-05-17T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Philips Stadion, Eindhoven, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-ned.1-741280",
+      "sport": "voetbal",
+      "title": "Sparta Rotterdam - Excelsior",
+      "competition": "Eredivisie",
+      "start": "2026-05-17T12:30:00.000Z",
+      "durationMinutes": 125,
+      "location": "Sparta-Stadion Het Kasteel, Rotterdam, Netherlands",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "ESPN Watch",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
+    },
+    {
+      "id": "voetbal-uefa.europa-401862911",
+      "sport": "voetbal",
+      "title": "Semifinal 1 Winner - Semifinal 2 Winner",
+      "competition": "UEFA Europa League",
+      "start": "2026-05-20T19:00:00.000Z",
+      "durationMinutes": 125,
+      "location": "Vodafone Park, Istanbul, Türkiye",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "formule-1-600057433",
+      "sport": "formule-1",
+      "title": "Lenovo Canadian GP",
+      "competition": "FIA Formula 1 World Championship",
+      "start": "2026-05-22T16:30:00.000Z",
+      "durationMinutes": 3090,
+      "location": "Circuit Gilles-Villeneuve, Montreal, Canada",
+      "channels": [
+        {
+          "name": "Viaplay TV",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Viaplay",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Controleer de uitzending voor race/kwalificatie/sprint."
     }
   ]
 }

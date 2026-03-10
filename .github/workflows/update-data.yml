@@ -1,0 +1,41 @@
+name: Refresh Sports Data
+
+on:
+  schedule:
+    - cron: '17 */3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sports-data-refresh
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Refresh events dataset
+        run: node scripts/update-events.mjs
+
+      - name: Commit and push when changed
+        run: |
+          if git diff --quiet -- src/data/events.nl.json; then
+            echo "No dataset changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/events.nl.json
+          git commit -m "chore(data): refresh sports schedule"
+          git push

@@ -28,10 +28,19 @@ npm run dev
 Dataset staat in `src/data/events.nl.json`.
 
 ```bash
+npm run data:update
 npm run data:normalize
 ```
 
-Dit script valideert verplichte velden, sorteert events op datum en schrijft de dataset terug.
+- `data:update` haalt automatisch events op uit ESPN scoreboards (voetbal, formule 1, tennis),
+  past NL-kijkkanaalregels toe en schrijft alleen weg als eventdata echt veranderd is.
+- `data:normalize` valideert verplichte velden, sorteert events op datum en schrijft de dataset terug.
+
+## Automatische updates
+
+- Workflow: `.github/workflows/update-data.yml`
+- Frequentie: elke 3 uur (`cron: 17 */3 * * *`, UTC)
+- Bij gewijzigde data commit + push naar `main`, waarna de Pages deploy-workflow automatisch draait.
 
 ## Deploy-doel
 
@@ -49,4 +58,5 @@ Dit script valideert verplichte velden, sorteert events op datum en schrijft de 
 
 ## Opmerking
 
-Deze MVP gebruikt nu handmatig samengestelde data. Uitzendrechten en tijden kunnen wijzigen; controleer altijd op de wedstrijddag.
+Tijden worden automatisch ververst, maar uitzendrechten in Nederland kunnen per wedstrijd wijzigen.
+Controleer bij twijfel altijd de zender op wedstrijddag.

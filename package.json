@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "data:update": "node scripts/update-events.mjs",
     "data:normalize": "node scripts/normalize-events.mjs"
   },
   "dependencies": {
