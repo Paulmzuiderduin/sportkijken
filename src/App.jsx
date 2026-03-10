@@ -226,6 +226,47 @@ function confidenceMeta(event) {
   return { label: 'Onbevestigd', className: 'unverified' };
 }
 
+const MAJOR_GROUP_ORDER = [
+  'Paralympische Spelen',
+  'Olympische Spelen',
+  'Wereldbekers en WK',
+  'Nationale Kampioenschappen'
+];
+
+function majorGroupForEvent(event) {
+  const haystack = `${event.title || ''} ${event.competition || ''} ${event.notes || ''}`.toLowerCase();
+
+  if (haystack.includes('paralymp')) {
+    return 'Paralympische Spelen';
+  }
+
+  if (haystack.includes('olymp')) {
+    return 'Olympische Spelen';
+  }
+
+  if (
+    haystack.includes('world cup')
+    || haystack.includes('wereldbeker')
+    || haystack.includes('wereldkampioenschap')
+    || haystack.includes(' wk')
+    || haystack.startsWith('wk ')
+  ) {
+    return 'Wereldbekers en WK';
+  }
+
+  if (
+    haystack.includes('nationaal kampioenschap')
+    || haystack.includes('national championship')
+    || haystack.includes('nederlands kampioenschap')
+    || haystack.includes(' nk')
+    || haystack.startsWith('nk ')
+  ) {
+    return 'Nationale Kampioenschappen';
+  }
+
+  return null;
+}
+
 function App() {
   const [preferences, setPreferences] = useState(loadPreferences);
 
@@ -317,7 +358,35 @@ function App() {
       }
     });
 
-    return [...map.values()];
+    return [...map.values()].map((dayGroup) => {
+      const majorMap = new Map();
+      const regularEvents = [];
+
+      dayGroup.events.forEach((event) => {
+        const major = majorGroupForEvent(event);
+        if (!major) {
+          regularEvents.push(event);
+          return;
+        }
+
+        const bucket = majorMap.get(major);
+        if (bucket) {
+          bucket.events.push(event);
+        } else {
+          majorMap.set(major, { label: major, events: [event] });
+        }
+      });
+
+      const majorGroups = MAJOR_GROUP_ORDER
+        .filter((label) => majorMap.has(label))
+        .map((label) => majorMap.get(label));
+
+      return {
+        ...dayGroup,
+        majorGroups,
+        regularEvents
+      };
+    });
   }, [filteredEvents]);
 
   const counters = useMemo(() => {
@@ -439,6 +508,83 @@ function App() {
     link.download = 'sportkijken-selectie.ics';
     link.click();
     window.URL.revokeObjectURL(url);
+  };
+
+  const renderEventCard = (event) => {
+    const sportMeta = sportMetaFor(event.sport);
+    const confidence = confidenceMeta(event);
+    const sourceRef = (event.sourceRefs || []).find((ref) => ref.url?.startsWith('http')) || event.sourceRefs?.[0];
+
+    return (
+      <div key={event.id} className="event-card">
+        <div className="event-meta">
+          <span
+            className="sport-dot"
+            style={{ background: sportMeta.accent }}
+            aria-hidden="true"
+          />
+          <p>{sportMeta.label}</p>
+          <span className="divider">•</span>
+          <p>{event.competition}</p>
+        </div>
+
+        <h3>{event.title}</h3>
+
+        <p className="event-time">
+          {TIME_FORMATTER.format(event.startDate)} - {TIME_FORMATTER.format(event.endDate)} uur (NL)
+        </p>
+
+        <p className={`verification-badge ${confidence.className}`}>
+          {confidence.label}
+        </p>
+
+        <ul className="channel-list">
+          {event.channels.map((channel) => (
+            <li key={`${event.id}-${channel.name}-${channel.platform}`}>
+              <div className="channel-main">
+                {channel.url ? (
+                  <a className="channel-link" href={channel.url} target="_blank" rel="noreferrer">
+                    {channel.name} ({channel.platform})
+                  </a>
+                ) : (
+                  <span>{channel.name} ({channel.platform})</span>
+                )}
+                {channel.conditions ? <small className="channel-condition">{channel.conditions}</small> : null}
+              </div>
+              <span className={`access ${channel.access}`}>{channel.access === 'free' ? 'Gratis' : 'Betaald'}</span>
+            </li>
+          ))}
+        </ul>
+
+        <footer>
+          <span className={`event-access ${getEventAccessLabel(event) === 'Gratis' ? 'free' : 'paid'}`}>
+            {getEventAccessLabel(event)}
+          </span>
+          <span>{event.location || 'Nederland'}</span>
+        </footer>
+
+        {event.verification ? (
+          <p className="event-source">
+            Laatst geverifieerd: {new Date(event.verification.lastVerified).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
+            {' '}• {event.verification.reason}
+            {sourceRef ? (
+              <>
+                {' '}• Bron:{' '}
+                {sourceRef.url.startsWith('http') ? (
+                  <a className="source-link" href={sourceRef.url} target="_blank" rel="noreferrer">
+                    {sourceRef.label || sourceRef.type || 'bron'}
+                  </a>
+                ) : (
+                  <span>{sourceRef.label || sourceRef.url}</span>
+                )}
+              </>
+            ) : null}
+          </p>
+        ) : null}
+
+        {event.notes ? <p className="event-note">{event.notes}</p> : null}
+      </div>
+    );
   };
 
   return (
@@ -607,83 +753,23 @@ function App() {
                   <h2>{group.label}</h2>
                 </header>
 
-                <div className="cards">
-                  {group.events.map((event) => {
-                    const sportMeta = sportMetaFor(event.sport);
-                    const confidence = confidenceMeta(event);
-                    const sourceRef = (event.sourceRefs || []).find((ref) => ref.url?.startsWith('http')) || event.sourceRefs?.[0];
-                    return (
-                      <div key={event.id} className="event-card">
-                        <div className="event-meta">
-                          <span
-                            className="sport-dot"
-                            style={{ background: sportMeta.accent }}
-                            aria-hidden="true"
-                          />
-                          <p>{sportMeta.label}</p>
-                          <span className="divider">•</span>
-                          <p>{event.competition}</p>
-                        </div>
+                {group.majorGroups.map((majorGroup) => (
+                  <section key={`${group.key}-${majorGroup.label}`} className="major-group">
+                    <h3 className="major-group-title">{majorGroup.label}</h3>
+                    <div className="cards">
+                      {majorGroup.events.map(renderEventCard)}
+                    </div>
+                  </section>
+                ))}
 
-                        <h3>{event.title}</h3>
-
-                        <p className="event-time">
-                          {TIME_FORMATTER.format(event.startDate)} - {TIME_FORMATTER.format(event.endDate)} uur (NL)
-                        </p>
-
-                        <p className={`verification-badge ${confidence.className}`}>
-                          {confidence.label}
-                        </p>
-
-                        <ul className="channel-list">
-                          {event.channels.map((channel) => (
-                            <li key={`${event.id}-${channel.name}-${channel.platform}`}>
-                              <div className="channel-main">
-                                {channel.url ? (
-                                  <a className="channel-link" href={channel.url} target="_blank" rel="noreferrer">
-                                    {channel.name} ({channel.platform})
-                                  </a>
-                                ) : (
-                                  <span>{channel.name} ({channel.platform})</span>
-                                )}
-                                {channel.conditions ? <small className="channel-condition">{channel.conditions}</small> : null}
-                              </div>
-                              <span className={`access ${channel.access}`}>{channel.access === 'free' ? 'Gratis' : 'Betaald'}</span>
-                            </li>
-                          ))}
-                        </ul>
-
-                        <footer>
-                          <span className={`event-access ${getEventAccessLabel(event) === 'Gratis' ? 'free' : 'paid'}`}>
-                            {getEventAccessLabel(event)}
-                          </span>
-                          <span>{event.location || 'Nederland'}</span>
-                        </footer>
-
-                        {event.verification ? (
-                          <p className="event-source">
-                            Laatst geverifieerd: {new Date(event.verification.lastVerified).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
-                            {' '}• {event.verification.reason}
-                            {sourceRef ? (
-                              <>
-                                {' '}• Bron:{' '}
-                                {sourceRef.url.startsWith('http') ? (
-                                  <a className="source-link" href={sourceRef.url} target="_blank" rel="noreferrer">
-                                    {sourceRef.label || sourceRef.type || 'bron'}
-                                  </a>
-                                ) : (
-                                  <span>{sourceRef.label || sourceRef.url}</span>
-                                )}
-                              </>
-                            ) : null}
-                          </p>
-                        ) : null}
-
-                        {event.notes ? <p className="event-note">{event.notes}</p> : null}
-                      </div>
-                    );
-                  })}
-                </div>
+                {group.regularEvents.length ? (
+                  <section className="major-group">
+                    {group.majorGroups.length ? <h3 className="major-group-title secondary">Overige events</h3> : null}
+                    <div className="cards">
+                      {group.regularEvents.map(renderEventCard)}
+                    </div>
+                  </section>
+                ) : null}
               </article>
             ))
           )}
