@@ -297,6 +297,13 @@ h3,
   background: white;
 }
 
+.contact-cta {
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
 .ghost.compact {
   padding: 0.5rem 0.74rem;
   font-size: 0.82rem;

@@ -726,6 +726,9 @@ function App() {
               <button type="button" className="primary" onClick={exportVisibleEventsAsIcs}>
                 Exporteer selectie als .ics
               </button>
+              <a className="ghost contact-cta" href="mailto:info@paulzuiderduin.com">
+                Contact: info@paulzuiderduin.com
+              </a>
               <p className="beta-note">Met live-updates per uur en aanbiederfilters, inclusief NOS-livestreams.</p>
             </div>
           </div>
