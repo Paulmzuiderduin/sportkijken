@@ -8,6 +8,7 @@ const KNOWN_SPORT_META = {
   'formule-1': { label: 'Formule 1', accent: '#c7351b' },
   tennis: { label: 'Tennis', accent: '#2f67cf' },
   basketbal: { label: 'Basketbal', accent: '#7e3af2' },
+  'american-football': { label: 'American Football', accent: '#7c3f00' },
   honkbal: { label: 'Honkbal', accent: '#c7791f' },
   ijshockey: { label: 'IJshockey', accent: '#0f6a8f' },
   golf: { label: 'Golf', accent: '#2a8c44' },
@@ -68,7 +69,7 @@ function colorForSport(id) {
   return FALLBACK_ACCENTS[hash % FALLBACK_ACCENTS.length];
 }
 
-const SPORT_OPTIONS = [...new Set(SOURCE_EVENTS.map((event) => event.sport))]
+const SPORT_OPTIONS = [...new Set([...Object.keys(KNOWN_SPORT_META), ...SOURCE_EVENTS.map((event) => event.sport)])]
   .sort((a, b) => {
     const aLabel = KNOWN_SPORT_META[a]?.label || formatSportLabel(a);
     const bLabel = KNOWN_SPORT_META[b]?.label || formatSportLabel(b);
@@ -82,9 +83,35 @@ const SPORT_OPTIONS = [...new Set(SOURCE_EVENTS.map((event) => event.sport))]
 
 const sportLookup = Object.fromEntries(SPORT_OPTIONS.map((sport) => [sport.id, sport]));
 
-const PROVIDER_OPTIONS = [...new Set(
-  SOURCE_EVENTS.flatMap((event) => (Array.isArray(event.channels) ? event.channels.map((channel) => channel.name) : []))
-)]
+const PREFERRED_PROVIDERS = [
+  'NOS.nl Live',
+  'NPO 1',
+  'NPO 2',
+  'NPO 3',
+  'NPO Start',
+  'Ziggo Sport',
+  'Ziggo GO',
+  'Viaplay',
+  'Viaplay TV',
+  'ESPN',
+  'ESPN Watch',
+  'Discovery+',
+  'HBO Max',
+  'DAZN',
+  'Prime Video',
+  'Apple TV+',
+  'CANAL+',
+  'NFL Game Pass',
+  'NBA League Pass',
+  'MLB.TV',
+  'NHL.TV',
+  'UFC Fight Pass'
+];
+
+const PROVIDER_OPTIONS = [...new Set([
+  ...PREFERRED_PROVIDERS,
+  ...SOURCE_EVENTS.flatMap((event) => (Array.isArray(event.channels) ? event.channels.map((channel) => channel.name) : []))
+])]
   .filter(Boolean)
   .sort((a, b) => a.localeCompare(b, 'nl-NL'));
 

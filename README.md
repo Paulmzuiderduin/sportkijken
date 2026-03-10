@@ -4,8 +4,8 @@ Nederlandstalige sportkijkgids voor `sportkijken.paulzuiderduin.com`.
 
 ## MVP
 
-- Selecteer sport(en): voetbal, formule 1, tennis, basketbal, honkbal, ijshockey, golf, vechtsport
-- Filter op aanbieders (bijvoorbeeld NOS/NPO, Ziggo, ESPN, Viaplay)
+- Selecteer sport(en): voetbal, formule 1, tennis, basketbal, american football, honkbal, ijshockey, golf, vechtsport
+- Filter op aanbieders (bijvoorbeeld NOS.nl, NPO 1/2/3, NPO Start, Ziggo Sport, Viaplay, ESPN)
 - Bekijk per event: starttijd (NL), kanaal/stream en gratis of betaald
 - Filter op periode en toegangstype
 - Lokale voorkeuren opslaan in browser (`localStorage`)

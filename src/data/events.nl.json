@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-10T18:38:16.561Z",
+  "generatedAt": "2026-03-10T18:48:24.216Z",
   "region": "NL",
   "isDemo": false,
   "sources": [
@@ -7,11 +7,15 @@
     "https://site.api.espn.com/apis/site/v2/sports/soccer/ned.cup/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.nations/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.worldq.uefa/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/racing/f1/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/tennis/atp/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/tennis/wta/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260310-20260524",
+    "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?dates=20260310-20260524",
@@ -433,6 +437,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -609,6 +618,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -631,6 +645,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -651,6 +670,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -697,6 +721,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -719,6 +748,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -739,6 +773,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -829,6 +868,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -851,6 +895,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -871,6 +920,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -937,6 +991,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -1313,6 +1372,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1379,6 +1443,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1399,6 +1468,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -1423,6 +1497,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1445,6 +1524,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1465,6 +1549,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -1491,12 +1580,27 @@
           "access": "paid"
         },
         {
-          "name": "NOS.nl Live",
-          "platform": "stream",
+          "name": "NPO 1",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO 2",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO 3",
+          "platform": "tv",
           "access": "free"
         },
         {
           "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "NOS.nl Live",
           "platform": "stream",
           "access": "free"
         }
@@ -1680,6 +1784,94 @@
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
     },
     {
+      "id": "voetbal-uefa.europa.conf-401862855",
+      "sport": "voetbal",
+      "title": "AZ Alkmaar - Sparta Prague",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-12T17:45:00.000Z",
+      "durationMinutes": 130,
+      "location": "AFAS Stadion, Alkmaar, Netherlands",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862853",
+      "sport": "voetbal",
+      "title": "Lech Poznan - Shakhtar Donetsk",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-12T17:45:00.000Z",
+      "durationMinutes": 130,
+      "location": "Municipal Stadium-Poznan, Poznan, Poland",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862848",
+      "sport": "voetbal",
+      "title": "Rijeka - Strasbourg",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-12T17:45:00.000Z",
+      "durationMinutes": 130,
+      "location": "Stadion HNK Rijeka, Rijeka, Croatia",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862847",
+      "sport": "voetbal",
+      "title": "Samsunspor - Rayo Vallecano",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-12T17:45:00.000Z",
+      "durationMinutes": 130,
+      "location": "Samsun 19 Mayis Stadium, Samsun, Türkiye",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
       "id": "voetbal-uefa.europa-401862872",
       "sport": "voetbal",
       "title": "Celta Vigo - Lyon",
@@ -1753,6 +1945,94 @@
       "start": "2026-03-12T20:00:00.000Z",
       "durationMinutes": 130,
       "location": "Cegeka Arena, Genk, Belgium",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862854",
+      "sport": "voetbal",
+      "title": "Crystal Palace - AEK Larnaca",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-12T20:00:00.000Z",
+      "durationMinutes": 130,
+      "location": "Selhurst Park, London, England",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862846",
+      "sport": "voetbal",
+      "title": "Fiorentina - Raków Czestochowa",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-12T20:00:00.000Z",
+      "durationMinutes": 130,
+      "location": "Stadio Artemio Franchi, Firenze, Italy",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862845",
+      "sport": "voetbal",
+      "title": "NK Celje - AEK Athens",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-12T20:00:00.000Z",
+      "durationMinutes": 130,
+      "location": "Stadion Z'dezele, Celje, Slovenia",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862856",
+      "sport": "voetbal",
+      "title": "Sigma Olomouc - Mainz",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-12T20:00:00.000Z",
+      "durationMinutes": 130,
+      "location": "Andruv Stadion, Olomouc, Czechia",
       "channels": [
         {
           "name": "Ziggo Sport",
@@ -1895,6 +2175,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1917,6 +2202,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1937,6 +2227,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -2115,6 +2410,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2137,6 +2437,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2157,6 +2462,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -2245,6 +2555,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -2379,6 +2694,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2465,6 +2785,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -2863,6 +3188,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2883,6 +3213,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -2907,6 +3242,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2929,6 +3269,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2949,6 +3294,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -3061,6 +3411,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3083,6 +3438,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3103,6 +3463,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -3169,6 +3534,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -3369,6 +3739,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3411,6 +3786,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -3699,6 +4079,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3919,6 +4304,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3961,6 +4351,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -4049,6 +4444,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -4159,6 +4559,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -4359,6 +4764,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4381,6 +4791,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4401,6 +4816,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -4623,6 +5043,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4711,6 +5136,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4775,6 +5205,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -5019,6 +5454,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5039,6 +5479,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -5129,6 +5574,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5149,6 +5599,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -5173,6 +5628,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5193,6 +5653,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -5261,6 +5726,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5305,6 +5775,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5329,12 +5804,27 @@
           "access": "paid"
         },
         {
-          "name": "NOS.nl Live",
-          "platform": "stream",
+          "name": "NPO 1",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO 2",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO 3",
+          "platform": "tv",
           "access": "free"
         },
         {
           "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "NOS.nl Live",
           "platform": "stream",
           "access": "free"
         }
@@ -5447,6 +5937,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5469,6 +5964,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5489,6 +5989,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -5579,6 +6084,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5623,6 +6133,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5643,6 +6158,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -5711,6 +6231,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5731,6 +6256,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -5931,6 +6461,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5997,6 +6532,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6017,6 +6557,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -6063,6 +6608,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6083,6 +6633,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -6107,6 +6662,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6127,6 +6687,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -6151,6 +6716,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6171,6 +6741,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -6263,12 +6838,27 @@
           "access": "paid"
         },
         {
-          "name": "NOS.nl Live",
-          "platform": "stream",
+          "name": "NPO 1",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO 2",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO 3",
+          "platform": "tv",
           "access": "free"
         },
         {
           "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "NOS.nl Live",
           "platform": "stream",
           "access": "free"
         }
@@ -6295,12 +6885,27 @@
           "access": "paid"
         },
         {
-          "name": "NOS.nl Live",
-          "platform": "stream",
+          "name": "NPO 1",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO 2",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO 3",
+          "platform": "tv",
           "access": "free"
         },
         {
           "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "NOS.nl Live",
           "platform": "stream",
           "access": "free"
         }
@@ -6359,6 +6964,94 @@
       "start": "2026-03-19T17:45:00.000Z",
       "durationMinutes": 130,
       "location": "Europa-Park Stadion, Freiburg im Breisgau, Germany",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862851",
+      "sport": "voetbal",
+      "title": "AEK Athens - NK Celje",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-19T17:45:00.000Z",
+      "durationMinutes": 130,
+      "location": "OPAP Arena, Athens, Greece",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862858",
+      "sport": "voetbal",
+      "title": "AEK Larnaca - Crystal Palace",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-19T17:45:00.000Z",
+      "durationMinutes": 130,
+      "location": "AEK Arena, Larnaca, Cyprus",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862859",
+      "sport": "voetbal",
+      "title": "Mainz - Sigma Olomouc",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-19T17:45:00.000Z",
+      "durationMinutes": 130,
+      "location": "MEWA ARENA, Mainz, Germany",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862849",
+      "sport": "voetbal",
+      "title": "Raków Czestochowa - Fiorentina",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-19T17:45:00.000Z",
+      "durationMinutes": 130,
+      "location": "ArcelorMittal Park, Sosnowiec, Poland",
       "channels": [
         {
           "name": "Ziggo Sport",
@@ -6462,6 +7155,94 @@
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
     },
     {
+      "id": "voetbal-uefa.europa.conf-401862852",
+      "sport": "voetbal",
+      "title": "Rayo Vallecano - Samsunspor",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-19T20:00:00.000Z",
+      "durationMinutes": 130,
+      "location": "Estadio de Vallecas, Madrid, Spain",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862860",
+      "sport": "voetbal",
+      "title": "Shakhtar Donetsk - Lech Poznan",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-19T20:00:00.000Z",
+      "durationMinutes": 130,
+      "location": "Stadion Miejski im. Henryka Reymana, Krakow, Poland",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862857",
+      "sport": "voetbal",
+      "title": "Sparta Prague - AZ Alkmaar",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-19T20:00:00.000Z",
+      "durationMinutes": 130,
+      "location": "Generali Arena, Prague, Czechia",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
+      "id": "voetbal-uefa.europa.conf-401862850",
+      "sport": "voetbal",
+      "title": "Strasbourg - Rijeka",
+      "competition": "UEFA Conference League",
+      "start": "2026-03-19T20:00:00.000Z",
+      "durationMinutes": 130,
+      "location": "Stade de la Meinau, Strasbourg, France",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ],
+      "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
+    },
+    {
       "id": "teamsport-nba-401810863",
       "sport": "basketbal",
       "title": "Charlotte Hornets - Orlando Magic",
@@ -6477,6 +7258,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -6499,6 +7285,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -6633,6 +7424,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6653,6 +7449,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -6677,6 +7478,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6697,6 +7503,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -6743,6 +7554,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6785,6 +7601,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -6963,6 +7784,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6983,6 +7809,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -7007,6 +7838,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7029,6 +7865,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7049,6 +7890,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -7093,6 +7939,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -7163,12 +8014,27 @@
           "access": "paid"
         },
         {
-          "name": "NOS.nl Live",
-          "platform": "stream",
+          "name": "NPO 1",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO 2",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO 3",
+          "platform": "tv",
           "access": "free"
         },
         {
           "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        },
+        {
+          "name": "NOS.nl Live",
           "platform": "stream",
           "access": "free"
         }
@@ -7391,6 +8257,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7435,6 +8306,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7457,6 +8333,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7477,6 +8358,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -7567,6 +8453,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7587,6 +8478,11 @@
         },
         {
           "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
           "platform": "stream",
           "access": "paid"
         }
@@ -7611,6 +8507,11 @@
           "name": "Ziggo GO",
           "platform": "stream",
           "access": "paid"
+        },
+        {
+          "name": "NBA League Pass",
+          "platform": "stream",
+          "access": "paid"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7623,358 +8524,6 @@
       "start": "2026-03-22T00:00:00.000Z",
       "durationMinutes": 130,
       "location": "Little Caesars Arena, Detroit, USA",
-      "channels": [
-        {
-          "name": "Viaplay TV",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "NHL.TV",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810884",
-      "sport": "basketbal",
-      "title": "Dallas Mavericks - LA Clippers",
-      "competition": "NBA",
-      "start": "2026-03-22T00:30:00.000Z",
-      "durationMinutes": 130,
-      "location": "American Airlines Center, Dallas",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810885",
-      "sport": "basketbal",
-      "title": "Utah Jazz - Philadelphia 76ers",
-      "competition": "NBA",
-      "start": "2026-03-22T01:30:00.000Z",
-      "durationMinutes": 130,
-      "location": "Delta Center, Salt Lake City",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810886",
-      "sport": "basketbal",
-      "title": "Phoenix Suns - Milwaukee Bucks",
-      "competition": "NBA",
-      "start": "2026-03-22T02:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Mortgage Matchup Center, Phoenix",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nhl-401803460",
-      "sport": "ijshockey",
-      "title": "Edmonton Oilers - Tampa Bay Lightning",
-      "competition": "NHL",
-      "start": "2026-03-22T02:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Rogers Place, Edmonton, Canada",
-      "channels": [
-        {
-          "name": "Viaplay TV",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "NHL.TV",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "voetbal-ned.1-741225",
-      "sport": "voetbal",
-      "title": "NEC Nijmegen - Heerenveen",
-      "competition": "Eredivisie",
-      "start": "2026-03-22T11:15:00.000Z",
-      "durationMinutes": 130,
-      "location": "Goffertstadion, Nijmegen, Netherlands",
-      "channels": [
-        {
-          "name": "ESPN",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "ESPN Watch",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
-    },
-    {
-      "id": "voetbal-ned.1-741220",
-      "sport": "voetbal",
-      "title": "FC Utrecht - Go Ahead Eagles",
-      "competition": "Eredivisie",
-      "start": "2026-03-22T13:30:00.000Z",
-      "durationMinutes": 130,
-      "location": "Stadion Galgenwaard, Utrecht, Netherlands",
-      "channels": [
-        {
-          "name": "ESPN",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "ESPN Watch",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
-    },
-    {
-      "id": "voetbal-ned.1-741221",
-      "sport": "voetbal",
-      "title": "Feyenoord Rotterdam - Ajax Amsterdam",
-      "competition": "Eredivisie",
-      "start": "2026-03-22T13:30:00.000Z",
-      "durationMinutes": 130,
-      "location": "De Kuip, Rotterdam, Netherlands",
-      "channels": [
-        {
-          "name": "ESPN",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "ESPN Watch",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
-    },
-    {
-      "id": "voetbal-ned.1-741219",
-      "sport": "voetbal",
-      "title": "FC Groningen - AZ Alkmaar",
-      "competition": "Eredivisie",
-      "start": "2026-03-22T15:45:00.000Z",
-      "durationMinutes": 130,
-      "location": "Euroborg, Groningen, Netherlands",
-      "channels": [
-        {
-          "name": "ESPN",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "ESPN Watch",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
-    },
-    {
-      "id": "voetbal-ned.1-741223",
-      "sport": "voetbal",
-      "title": "Telstar - PSV Eindhoven",
-      "competition": "Eredivisie",
-      "start": "2026-03-22T15:45:00.000Z",
-      "durationMinutes": 130,
-      "location": "711 Stadion, Velsen-Zuid, Netherlands",
-      "channels": [
-        {
-          "name": "ESPN",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "ESPN Watch",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
-    },
-    {
-      "id": "teamsport-nhl-401803461",
-      "sport": "ijshockey",
-      "title": "New York Rangers - Winnipeg Jets",
-      "competition": "NHL",
-      "start": "2026-03-22T16:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Madison Square Garden, New York, USA",
-      "channels": [
-        {
-          "name": "Viaplay TV",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "NHL.TV",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nhl-401803462",
-      "sport": "ijshockey",
-      "title": "Washington Capitals - Colorado Avalanche",
-      "competition": "NHL",
-      "start": "2026-03-22T16:30:00.000Z",
-      "durationMinutes": 130,
-      "location": "Capital One Arena, Washington, USA",
-      "channels": [
-        {
-          "name": "Viaplay TV",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "NHL.TV",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nhl-401803463",
-      "sport": "ijshockey",
-      "title": "Pittsburgh Penguins - Carolina Hurricanes",
-      "competition": "NHL",
-      "start": "2026-03-22T19:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "PPG Paints Arena, Pittsburgh, USA",
-      "channels": [
-        {
-          "name": "Viaplay TV",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "NHL.TV",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nhl-401803464",
-      "sport": "ijshockey",
-      "title": "Chicago Blackhawks - Nashville Predators",
-      "competition": "NHL",
-      "start": "2026-03-22T19:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "United Center, Chicago, USA",
-      "channels": [
-        {
-          "name": "Viaplay TV",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "NHL.TV",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810887",
-      "sport": "basketbal",
-      "title": "Denver Nuggets - Portland Trail Blazers",
-      "competition": "NBA",
-      "start": "2026-03-22T21:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Ball Arena, Denver",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810888",
-      "sport": "basketbal",
-      "title": "Sacramento Kings - Brooklyn Nets",
-      "competition": "NBA",
-      "start": "2026-03-22T22:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Golden 1 Center, Sacramento",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nhl-401803465",
-      "sport": "ijshockey",
-      "title": "New York Islanders - Columbus Blue Jackets",
-      "competition": "NHL",
-      "start": "2026-03-22T23:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "UBS Arena, Elmont, USA",
       "channels": [
         {
           "name": "Viaplay TV",

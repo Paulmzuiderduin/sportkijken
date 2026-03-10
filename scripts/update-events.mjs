@@ -38,12 +38,30 @@ const CHANNEL_PRESETS = {
   ],
   npoTv: [
     { name: 'NPO 1', platform: 'tv', access: 'free' },
+    { name: 'NPO 2', platform: 'tv', access: 'free' },
     { name: 'NPO 3', platform: 'tv', access: 'free' },
     { name: 'NPO Start', platform: 'stream', access: 'free' }
+  ],
+  npoNosFull: [
+    { name: 'NPO 1', platform: 'tv', access: 'free' },
+    { name: 'NPO 2', platform: 'tv', access: 'free' },
+    { name: 'NPO 3', platform: 'tv', access: 'free' },
+    { name: 'NPO Start', platform: 'stream', access: 'free' },
+    { name: 'NOS.nl Live', platform: 'stream', access: 'free' }
   ],
   mlb: [
     { name: 'ESPN 4', platform: 'tv', access: 'paid' },
     { name: 'MLB.TV', platform: 'stream', access: 'paid' }
+  ],
+  nfl: [
+    { name: 'NFL Game Pass', platform: 'stream', access: 'paid' },
+    { name: 'ESPN 4', platform: 'tv', access: 'paid' },
+    { name: 'DAZN', platform: 'stream', access: 'paid' }
+  ],
+  wnba: [
+    { name: 'Ziggo Sport', platform: 'tv', access: 'paid' },
+    { name: 'WNBA League Pass', platform: 'stream', access: 'paid' },
+    { name: 'ESPN Watch', platform: 'stream', access: 'paid' }
   ],
   nhl: [
     { name: 'Viaplay TV', platform: 'tv', access: 'paid' },
@@ -101,10 +119,25 @@ const soccerFeeds = [
     note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen.'
   },
   {
+    slug: 'uefa.europa.conf',
+    sport: 'voetbal',
+    competition: 'UEFA Conference League',
+    channels: CHANNEL_PRESETS.ziggo,
+    note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen.'
+  },
+  {
+    slug: 'uefa.nations',
+    sport: 'voetbal',
+    competition: 'UEFA Nations League',
+    channels: mergeChannels(CHANNEL_PRESETS.ziggo, CHANNEL_PRESETS.npoTv),
+    note: 'Automatisch opgehaald. Uitzendrechten kunnen per wedstrijd verschillen.',
+    addNosForMajors: true
+  },
+  {
     slug: 'fifa.worldq.uefa',
     sport: 'voetbal',
     competition: 'WK kwalificatie UEFA',
-    channels: mergeChannels(CHANNEL_PRESETS.npoTv, CHANNEL_PRESETS.ziggo),
+    channels: mergeChannels(CHANNEL_PRESETS.npoNosFull, CHANNEL_PRESETS.ziggo),
     note: 'Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land.',
     forceNos: true
   }
@@ -145,7 +178,23 @@ const teamSportFeeds = [
     path: 'basketball/nba',
     feedSlug: 'nba',
     competition: 'NBA',
-    channels: CHANNEL_PRESETS.ziggo,
+    channels: mergeChannels(CHANNEL_PRESETS.ziggo, [{ name: 'NBA League Pass', platform: 'stream', access: 'paid' }]),
+    note: 'Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen.'
+  },
+  {
+    sport: 'basketbal',
+    path: 'basketball/wnba',
+    feedSlug: 'wnba',
+    competition: 'WNBA',
+    channels: CHANNEL_PRESETS.wnba,
+    note: 'Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen.'
+  },
+  {
+    sport: 'american-football',
+    path: 'football/nfl',
+    feedSlug: 'nfl',
+    competition: 'NFL',
+    channels: CHANNEL_PRESETS.nfl,
     note: 'Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen.'
   },
   {
@@ -260,7 +309,7 @@ function shouldAddNosChannels(feed, title, competition) {
 
 function channelsForEvent(feed, title, competition) {
   if (shouldAddNosChannels(feed, title, competition)) {
-    return mergeChannels(feed.channels, CHANNEL_PRESETS.nos);
+    return mergeChannels(feed.channels, CHANNEL_PRESETS.npoNosFull);
   }
   return feed.channels;
 }
