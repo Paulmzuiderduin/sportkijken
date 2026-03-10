@@ -211,6 +211,23 @@ h3,
   gap: 0.42rem;
 }
 
+.provider-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.provider-tools input {
+  width: 100%;
+  padding: 0.48rem 0.58rem;
+  border: 1px solid rgba(15, 28, 42, 0.2);
+  border-radius: 0.56rem;
+  background: #fff;
+  color: inherit;
+  font-size: 0.85rem;
+}
+
 .chip {
   border-color: #99aabd;
   background: #f7f9fc;
@@ -255,6 +272,29 @@ h3,
 .ghost {
   border-color: rgba(15, 28, 42, 0.2);
   background: #fff;
+}
+
+.ghost.compact {
+  padding: 0.42rem 0.62rem;
+  font-size: 0.79rem;
+}
+
+.ghost.is-active {
+  border-color: #0f365d;
+  color: #0f365d;
+  background: #edf4fb;
+}
+
+.provider-hint {
+  margin: 0 0 0.42rem;
+  color: #5a6a7f;
+  font-size: 0.77rem;
+}
+
+.provider-empty {
+  margin: 0;
+  color: #5a6a7f;
+  font-size: 0.8rem;
 }
 
 .filter-row {
@@ -532,6 +572,10 @@ h3,
   }
 
   .provider-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .provider-tools {
     grid-template-columns: 1fr;
   }
 

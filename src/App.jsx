@@ -115,6 +115,8 @@ const PROVIDER_OPTIONS = [...new Set([
   .filter(Boolean)
   .sort((a, b) => a.localeCompare(b, 'nl-NL'));
 
+const PROVIDER_VISIBLE_LIMIT = 24;
+
 function sportMetaFor(id) {
   return sportLookup[id] || {
     id,
@@ -129,7 +131,9 @@ function defaultPreferences() {
     selectedProviders: PROVIDER_OPTIONS,
     accessFilter: 'all',
     rangeFilter: '30d',
-    searchText: ''
+    searchText: '',
+    providerSearchText: '',
+    providerSelectedOnly: false
   };
 }
 
@@ -169,7 +173,11 @@ function loadPreferences() {
       rangeFilter: RANGE_OPTIONS.some((option) => option.id === parsed.rangeFilter)
         ? parsed.rangeFilter
         : defaults.rangeFilter,
-      searchText: typeof parsed.searchText === 'string' ? parsed.searchText : defaults.searchText
+      searchText: typeof parsed.searchText === 'string' ? parsed.searchText : defaults.searchText,
+      providerSearchText:
+        typeof parsed.providerSearchText === 'string' ? parsed.providerSearchText : defaults.providerSearchText,
+      providerSelectedOnly:
+        typeof parsed.providerSelectedOnly === 'boolean' ? parsed.providerSelectedOnly : defaults.providerSelectedOnly
     };
   } catch (error) {
     return defaults;
@@ -269,6 +277,7 @@ function majorGroupForEvent(event) {
 
 function App() {
   const [preferences, setPreferences] = useState(loadPreferences);
+  const [providersExpanded, setProvidersExpanded] = useState(false);
 
   const events = useMemo(() => {
     return [...SOURCE_EVENTS]
@@ -400,6 +409,30 @@ function App() {
       nextEvent: filteredEvents[0] || null
     };
   }, [filteredEvents]);
+
+  const providerOptionsForView = useMemo(() => {
+    const query = preferences.providerSearchText.trim().toLowerCase();
+    const selectedSet = new Set(preferences.selectedProviders);
+    const filtered = PROVIDER_OPTIONS.filter((provider) => !query || provider.toLowerCase().includes(query));
+    const visible = preferences.providerSelectedOnly
+      ? filtered.filter((provider) => selectedSet.has(provider))
+      : filtered;
+
+    return visible.sort((a, b) => {
+      const aSelected = selectedSet.has(a);
+      const bSelected = selectedSet.has(b);
+      if (aSelected !== bSelected) {
+        return aSelected ? -1 : 1;
+      }
+      return a.localeCompare(b, 'nl-NL');
+    });
+  }, [preferences.providerSearchText, preferences.providerSelectedOnly, preferences.selectedProviders]);
+
+  const providerListIsConstrained = preferences.providerSearchText.trim() !== '' || preferences.providerSelectedOnly;
+  const visibleProviders = !providerListIsConstrained && !providersExpanded
+    ? providerOptionsForView.slice(0, PROVIDER_VISIBLE_LIMIT)
+    : providerOptionsForView;
+  const hiddenProviderCount = providerOptionsForView.length - visibleProviders.length;
 
   const toggleSport = (sportId) => {
     setPreferences((current) => {
@@ -639,8 +672,36 @@ function App() {
 
           <div className="filter-group">
             <p className="filter-title">Aanbieders</p>
+            <div className="provider-tools">
+              <input
+                type="search"
+                value={preferences.providerSearchText}
+                onChange={(event) => {
+                  setProvidersExpanded(false);
+                  setPreferences((current) => ({ ...current, providerSearchText: event.target.value }));
+                }}
+                placeholder="Zoek aanbieder"
+                aria-label="Zoek aanbieder"
+              />
+              <button
+                type="button"
+                className={`ghost compact ${preferences.providerSelectedOnly ? 'is-active' : ''}`}
+                onClick={() => {
+                  setProvidersExpanded(false);
+                  setPreferences((current) => ({
+                    ...current,
+                    providerSelectedOnly: !current.providerSelectedOnly
+                  }));
+                }}
+              >
+                {preferences.providerSelectedOnly ? 'Toon alles' : 'Alleen geselecteerd'}
+              </button>
+            </div>
+            <p className="provider-hint">
+              {visibleProviders.length} van {providerOptionsForView.length} zichtbaar • {preferences.selectedProviders.length} geselecteerd
+            </p>
             <div className="provider-grid">
-              {PROVIDER_OPTIONS.map((provider) => {
+              {visibleProviders.map((provider) => {
                 const selected = preferences.selectedProviders.includes(provider);
                 return (
                   <button
@@ -654,6 +715,21 @@ function App() {
                 );
               })}
             </div>
+            {!visibleProviders.length ? <p className="provider-empty">Geen aanbieders gevonden.</p> : null}
+            {hiddenProviderCount > 0 ? (
+              <div className="chip-actions">
+                <button type="button" className="ghost compact" onClick={() => setProvidersExpanded(true)}>
+                  Toon nog {hiddenProviderCount}
+                </button>
+              </div>
+            ) : null}
+            {!providerListIsConstrained && providersExpanded && providerOptionsForView.length > PROVIDER_VISIBLE_LIMIT ? (
+              <div className="chip-actions">
+                <button type="button" className="ghost compact" onClick={() => setProvidersExpanded(false)}>
+                  Minder tonen
+                </button>
+              </div>
+            ) : null}
             <div className="chip-actions">
               <button type="button" className="ghost" onClick={selectAllProviders}>Alles</button>
               <button type="button" className="ghost" onClick={clearProviders}>Geen</button>
