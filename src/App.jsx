@@ -950,6 +950,29 @@ function App() {
           <p>Laatst geverifieerd (algemeen): {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</p>
         </section>
 
+        <section className="panel seo-landing" aria-label="SEO landingsinformatie">
+          <h2>Waar kan ik sport kijken in Nederland?</h2>
+          <p>
+            Zoek je op “waar kan ik voetbal kijken”, “waar kan ik Formule 1 kijken” of “waar kan ik tennis kijken”?
+            Sportkijken geeft per event een praktisch overzicht met Nederlandse starttijd, aanbieder en of kijken gratis of betaald is.
+          </p>
+          <p>
+            Je kunt snel filteren op sporten zoals voetbal, Formule 1, tennis, golf, basketbal, honkbal en ijshockey.
+            Daarnaast zie je grote events zoals Olympische Spelen, Paralympics, wereldbekers en nationale kampioenschappen gegroepeerd.
+          </p>
+          <p>
+            Ook voor vragen als “welke zender zendt vanavond voetbal uit?”, “waar kan ik Champions League kijken?” en
+            “welke livestream is gratis in Nederland?” is dit overzicht gemaakt. We combineren data uit meerdere bronnen,
+            waaronder NOS, Ziggo Sport, ESPN en Viaplay.
+          </p>
+          <div className="seo-links">
+            <a href="/?q=waar%20kan%20ik%20voetbal%20kijken">Waar kan ik voetbal kijken?</a>
+            <a href="/?q=waar%20kan%20ik%20formule%201%20kijken">Waar kan ik Formule 1 kijken?</a>
+            <a href="/?q=waar%20kan%20ik%20tennis%20kijken">Waar kan ik tennis kijken?</a>
+            <a href="/?q=champions%20league%20kijken">Waar kan ik Champions League kijken?</a>
+          </div>
+        </section>
+
         <section className="agenda">
           {groupedEvents.length === 0 ? (
             <article className="panel empty-state">

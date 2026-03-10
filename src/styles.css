@@ -360,6 +360,41 @@ h3,
   font-size: 0.92rem;
 }
 
+.seo-landing {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.seo-landing h2 {
+  margin: 0;
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+}
+
+.seo-landing p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.seo-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.8rem;
+  margin-top: 0.2rem;
+}
+
+.seo-links a {
+  color: #134c8b;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.seo-links a:hover {
+  text-decoration: underline;
+}
+
 .agenda {
   display: grid;
   gap: 1rem;
