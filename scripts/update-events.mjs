@@ -15,6 +15,7 @@ const RANGE_END = formatDateForApi(windowEnd);
 const DATE_RANGE = `${RANGE_START}-${RANGE_END}`;
 const REQUEST_TIMEOUT_MS = 15000;
 const MAX_EVENTS = 360;
+const NOS_SPORT_URL = 'https://nos.nl/sport';
 
 const CHANNEL_PRESETS = {
   espn: [
@@ -364,6 +365,29 @@ function channelsForEvent(feed, title, competition) {
   return channels;
 }
 
+async function fetchText(url) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'sportkijken-data-updater',
+        Accept: 'text/html,application/xhtml+xml'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    return await response.text();
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function fetchJson(url) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -393,6 +417,130 @@ function dedupeEvents(events) {
     byId.set(event.id, event);
   });
   return [...byId.values()].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+}
+
+function slugify(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/&/g, ' en ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function mapNosSport(item) {
+  const categories = Array.isArray(item.categories) ? item.categories : [];
+  const categoryLabels = categories
+    .map((category) => category?.label || category?.name)
+    .filter(Boolean);
+
+  const haystack = `${item.title || ''} ${categoryLabels.join(' ')}`.toLowerCase();
+
+  if (haystack.includes('formule 1') || haystack.includes('f1')) return 'formule-1';
+  if (haystack.includes('voetbal')) return 'voetbal';
+  if (haystack.includes('tennis')) return 'tennis';
+  if (haystack.includes('basketbal')) return 'basketbal';
+  if (haystack.includes('american football') || haystack.includes('nfl')) return 'american-football';
+  if (haystack.includes('honkbal') || haystack.includes('baseball')) return 'honkbal';
+  if (haystack.includes('ijshockey') || haystack.includes('ice hockey')) return 'ijshockey';
+  if (haystack.includes('golf')) return 'golf';
+  if (haystack.includes('ufc') || haystack.includes('mma') || haystack.includes('boksen')) return 'vechtsport';
+
+  const fallback = categoryLabels[0] || item.title || 'sport';
+  return slugify(fallback) || 'sport';
+}
+
+function parseNosNextData(rawHtml) {
+  const match = rawHtml.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/);
+  if (!match) {
+    return null;
+  }
+  return safeParseJson(match[1]);
+}
+
+function parseNosLivestreamEvent(item, fallbackUrl) {
+  if (!item || item.type !== 'livestream') {
+    return null;
+  }
+
+  const isSportOwner = item.owner === 'sport';
+  const hasSportCategory = Array.isArray(item.categories)
+    && item.categories.some((category) => category?.mainCategory === 'sport');
+  if (!isSportOwner && !hasSportCategory) {
+    return null;
+  }
+
+  const start = tryIso(item.livestream?.startAt || item.publishedAt);
+  if (!start || !isWithinWindow(start)) {
+    return null;
+  }
+
+  const end = tryIso(item.livestream?.endAt);
+  let durationMinutes = 150;
+  if (end) {
+    const diffMinutes = Math.round((new Date(end).getTime() - new Date(start).getTime()) / 60000);
+    if (diffMinutes > 10) {
+      durationMinutes = diffMinutes;
+    }
+  }
+
+  const title = item.title || 'NOS Sport livestream';
+  const competition = title.includes(':') ? title.split(':')[0].trim() : 'NOS Sport';
+  const url = item.url || fallbackUrl;
+
+  return {
+    id: `nos-livestream-${item.id}`,
+    sport: mapNosSport(item),
+    title,
+    competition,
+    start,
+    durationMinutes,
+    location: 'Online (NOS)',
+    channels: [
+      { name: 'NOS.nl Live', platform: 'stream', access: 'free', url },
+      { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/live' }
+    ],
+    notes: 'Automatisch opgehaald van NOS sport-livestreams.'
+  };
+}
+
+async function fetchNosSportLivestreams() {
+  const sources = [NOS_SPORT_URL];
+  const errors = [];
+  const events = [];
+
+  let sportHtml = null;
+  try {
+    sportHtml = await fetchText(NOS_SPORT_URL);
+  } catch (error) {
+    return {
+      events,
+      sources,
+      errors: [`NOS sport: ${error.message}`]
+    };
+  }
+
+  const livestreamPaths = [...new Set(sportHtml.match(/\/livestream\/[0-9][^"' <]*/g) || [])].slice(0, 24);
+
+  for (const path of livestreamPaths) {
+    const url = path.startsWith('http') ? path : `https://nos.nl${path}`;
+    sources.push(url);
+
+    try {
+      const html = await fetchText(url);
+      const nextData = parseNosNextData(html);
+      const item = nextData?.props?.pageProps?.data;
+      const parsed = parseNosLivestreamEvent(item, url);
+      if (parsed) {
+        events.push(parsed);
+      }
+    } catch (error) {
+      errors.push(`NOS livestream ${path}: ${error.message}`);
+    }
+  }
+
+  return { events, sources, errors };
 }
 
 function parseTeamEvent(event, feed, idPrefix) {
@@ -590,12 +738,15 @@ const namedSports = await fetchByFeeds(
   'event'
 );
 
+const nosSportLivestreams = await fetchNosSportLivestreams();
+
 const fetchErrors = [
   ...football.errors,
   ...f1.errors,
   ...tennis.errors,
   ...teamSports.errors,
-  ...namedSports.errors
+  ...namedSports.errors,
+  ...nosSportLivestreams.errors
 ];
 
 if (fetchErrors.length) {
@@ -608,6 +759,7 @@ const mergedEvents = dedupeEvents([
   ...tennis.events,
   ...teamSports.events,
   ...namedSports.events,
+  ...nosSportLivestreams.events,
   ...manualEvents
 ]).slice(0, MAX_EVENTS);
 
@@ -625,6 +777,7 @@ const nextDataset = normalizeDataset({
     ...tennis.sources,
     ...teamSports.sources,
     ...namedSports.sources,
+    ...nosSportLivestreams.sources,
     'manual:src/data/major-events.nl.json'
   ],
   events: mergedEvents

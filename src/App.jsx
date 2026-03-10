@@ -443,7 +443,7 @@ function App() {
               <button type="button" className="primary" onClick={exportVisibleEventsAsIcs}>
                 Exporteer selectie als .ics
               </button>
-              <p className="beta-note">Met live-updates per uur en aanbiederfilters inclusief NOS/NPO.</p>
+              <p className="beta-note">Met live-updates per uur en aanbiederfilters, inclusief NOS-livestreams.</p>
             </div>
           </div>
           <aside className="summary-card">
@@ -573,7 +573,7 @@ function App() {
           <p>
             {scheduleDataset.isDemo
               ? 'MVP-notitie: deze versie gebruikt een handmatige dataset. Rechten en tijden kunnen wijzigen.'
-              : 'Dataset wordt automatisch bijgewerkt (ongeveer elk uur), inclusief aanbieders zoals NOS/NPO, Ziggo, ESPN en Viaplay.'}
+              : 'Dataset wordt automatisch bijgewerkt (ongeveer elk uur) vanuit meerdere bronnen, inclusief NOS, Ziggo, ESPN en Viaplay.'}
           </p>
           <p>Laatst bijgewerkt: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</p>
         </section>

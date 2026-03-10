@@ -34,7 +34,8 @@ npm run data:update
 npm run data:normalize
 ```
 
-- `data:update` haalt automatisch events op uit ESPN scoreboards (voetbal, formule 1, tennis),
+- `data:update` haalt automatisch events op uit meerdere bronnen:
+  ESPN-scoreboards (o.a. voetbal, formule 1, tennis) + NOS sport-livestreams (`nos.nl/sport`),
   past NL-kijkkanaalregels toe (inclusief NOS/NPO gratis streams bij relevante events)
   en markeert bij UEFA-voetbal geselecteerde Ziggo Sport-wedstrijden als gratis (heuristiek voor NL-clubs/finalerondes),
   en schrijft alleen weg als eventdata echt veranderd is.
@@ -65,5 +66,5 @@ npm run data:normalize
 Tijden worden automatisch ververst, maar uitzendrechten in Nederland kunnen per wedstrijd wijzigen.
 Controleer bij twijfel altijd de zender op wedstrijddag.
 
-Olympische eventdata komt niet betrouwbaar uit de huidige ESPN-feeds. Gebruik
+Olympische eventdata komt niet altijd betrouwbaar uit de huidige externe feeds. Gebruik
 `src/data/major-events.nl.json` voor handmatige toevoegingen van grote events wanneer nodig.

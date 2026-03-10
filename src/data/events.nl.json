@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-10T19:10:31.805Z",
+  "generatedAt": "2026-03-10T19:15:54.322Z",
   "region": "NL",
   "isDemo": false,
   "sources": [
@@ -21,6 +21,17 @@
     "https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/golf/lpga/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260310-20260524",
+    "https://nos.nl/sport",
+    "https://nos.nl/livestream/2604069-paralympische-spelen-langlaufen-10-km-interval",
+    "https://nos.nl/livestream/2604068-paralympische-spelen-curling-finales-gemengd-dubbel",
+    "https://nos.nl/livestream/2591815-basketbal-ek-kwalificatie-nederland-estland-v",
+    "https://nos.nl/livestream/2604193-paralympische-spelen-alpineskien-reuzenslalom-eerste-run-v",
+    "https://nos.nl/livestream/2604192-paralympische-spelen-alpineskien-reuzenslalom-tweede-run-v",
+    "https://nos.nl/livestream/2604196-paralympische-spelen-alpineskien-reuzenslalom-eerste-run-m",
+    "https://nos.nl/livestream/2604198-paralympische-spelen-biatlon-sprint-achtervolging",
+    "https://nos.nl/livestream/2604197-paralympische-spelen-alpineskien-reuzenslalom-tweede-run-m",
+    "https://nos.nl/livestream/2604201-paralympische-spelen-ijshockey-halve-finale",
+    "https://nos.nl/livestream/2604199-paralympische-spelen-curling-troostfinale-gemengde-teams",
     "manual:src/data/major-events.nl.json"
   ],
   "events": [
@@ -1088,6 +1099,54 @@
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
     },
     {
+      "id": "nos-livestream-2604069",
+      "sport": "biatlon",
+      "title": "Paralympische Spelen: langlaufen 10 km interval",
+      "competition": "Paralympische Spelen",
+      "start": "2026-03-11T08:45:00.000Z",
+      "durationMinutes": 345,
+      "location": "Online (NOS)",
+      "channels": [
+        {
+          "name": "NOS.nl Live",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://nos.nl/collectie/14017/livestream/2604069-paralympische-spelen-langlaufen-10-km-interval"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://www.npostart.nl/live"
+        }
+      ],
+      "notes": "Automatisch opgehaald van NOS sport-livestreams."
+    },
+    {
+      "id": "nos-livestream-2604068",
+      "sport": "curling",
+      "title": "Paralympische Spelen: curling finales gemengd dubbel",
+      "competition": "Paralympische Spelen",
+      "start": "2026-03-11T13:35:00.000Z",
+      "durationMinutes": 195,
+      "location": "Online (NOS)",
+      "channels": [
+        {
+          "name": "NOS.nl Live",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://nos.nl/collectie/14017/livestream/2604068-paralympische-spelen-curling-finales-gemengd-dubbel"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://www.npostart.nl/live"
+        }
+      ],
+      "notes": "Automatisch opgehaald van NOS sport-livestreams."
+    },
+    {
       "id": "teamsport-mlb-401833148",
       "sport": "honkbal",
       "title": "Atlanta Braves - Tampa Bay Rays",
@@ -1230,6 +1289,30 @@
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen; deel van de wedstrijden kan gratis op Ziggo Sport zijn."
+    },
+    {
+      "id": "nos-livestream-2591815",
+      "sport": "basketbal",
+      "title": "Basketbal: EK-kwalificatie Nederland - Estland (v)",
+      "competition": "Basketbal",
+      "start": "2026-03-11T18:30:00.000Z",
+      "durationMinutes": 210,
+      "location": "Online (NOS)",
+      "channels": [
+        {
+          "name": "NOS.nl Live",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://nos.nl/livestream/2591815-basketbal-ek-kwalificatie-nederland-estland-v"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://www.npostart.nl/live"
+        }
+      ],
+      "notes": "Automatisch opgehaald van NOS sport-livestreams."
     },
     {
       "id": "voetbal-uefa.champions-401862583",
@@ -1716,6 +1799,54 @@
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
+    },
+    {
+      "id": "nos-livestream-2604193",
+      "sport": "alpineskien",
+      "title": "Paralympische Spelen: alpineskiën reuzenslalom eerste run (v)",
+      "competition": "Paralympische Spelen",
+      "start": "2026-03-12T08:00:00.000Z",
+      "durationMinutes": 150,
+      "location": "Online (NOS)",
+      "channels": [
+        {
+          "name": "NOS.nl Live",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://nos.nl/collectie/14017/livestream/2604193-paralympische-spelen-alpineskien-reuzenslalom-eerste-run-v"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://www.npostart.nl/live"
+        }
+      ],
+      "notes": "Automatisch opgehaald van NOS sport-livestreams."
+    },
+    {
+      "id": "nos-livestream-2604192",
+      "sport": "alpineskien",
+      "title": "Paralympische Spelen: alpineskiën reuzenslalom tweede run (v)",
+      "competition": "Paralympische Spelen",
+      "start": "2026-03-12T11:30:00.000Z",
+      "durationMinutes": 150,
+      "location": "Online (NOS)",
+      "channels": [
+        {
+          "name": "NOS.nl Live",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://nos.nl/collectie/14017/livestream/2604192-paralympische-spelen-alpineskien-reuzenslalom-tweede-run-v"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://www.npostart.nl/live"
+        }
+      ],
+      "notes": "Automatisch opgehaald van NOS sport-livestreams."
     },
     {
       "id": "teamsport-mlb-401833162",
@@ -3035,6 +3166,102 @@
       "notes": "Automatisch opgehaald. Controleer de uitzending voor race/kwalificatie/sprint."
     },
     {
+      "id": "nos-livestream-2604196",
+      "sport": "alpineskien",
+      "title": "Paralympische Spelen: alpineskiën reuzenslalom eerste run (m)",
+      "competition": "Paralympische Spelen",
+      "start": "2026-03-13T08:00:00.000Z",
+      "durationMinutes": 170,
+      "location": "Online (NOS)",
+      "channels": [
+        {
+          "name": "NOS.nl Live",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://nos.nl/collectie/14017/livestream/2604196-paralympische-spelen-alpineskien-reuzenslalom-eerste-run-m"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://www.npostart.nl/live"
+        }
+      ],
+      "notes": "Automatisch opgehaald van NOS sport-livestreams."
+    },
+    {
+      "id": "nos-livestream-2604198",
+      "sport": "biatlon",
+      "title": "Paralympische Spelen: biatlon sprint achtervolging ",
+      "competition": "Paralympische Spelen",
+      "start": "2026-03-13T11:25:00.000Z",
+      "durationMinutes": 225,
+      "location": "Online (NOS)",
+      "channels": [
+        {
+          "name": "NOS.nl Live",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://nos.nl/collectie/14017/livestream/2604198-paralympische-spelen-biatlon-sprint-achtervolging"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://www.npostart.nl/live"
+        }
+      ],
+      "notes": "Automatisch opgehaald van NOS sport-livestreams."
+    },
+    {
+      "id": "nos-livestream-2604197",
+      "sport": "alpineskien",
+      "title": "Paralympische Spelen: alpineskiën reuzenslalom tweede run (m)",
+      "competition": "Paralympische Spelen",
+      "start": "2026-03-13T11:30:00.000Z",
+      "durationMinutes": 190,
+      "location": "Online (NOS)",
+      "channels": [
+        {
+          "name": "NOS.nl Live",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://nos.nl/collectie/14017/livestream/2604197-paralympische-spelen-alpineskien-reuzenslalom-tweede-run-m"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://www.npostart.nl/live"
+        }
+      ],
+      "notes": "Automatisch opgehaald van NOS sport-livestreams."
+    },
+    {
+      "id": "nos-livestream-2604201",
+      "sport": "ijshockey",
+      "title": "Paralympische Spelen: ijshockey halve finale",
+      "competition": "Paralympische Spelen",
+      "start": "2026-03-13T13:35:00.000Z",
+      "durationMinutes": 180,
+      "location": "Online (NOS)",
+      "channels": [
+        {
+          "name": "NOS.nl Live",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://nos.nl/collectie/14017/livestream/2604201-paralympische-spelen-ijshockey-halve-finale"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://www.npostart.nl/live"
+        }
+      ],
+      "notes": "Automatisch opgehaald van NOS sport-livestreams."
+    },
+    {
       "id": "teamsport-mlb-401833173",
       "sport": "honkbal",
       "title": "Atlanta Braves - New York Yankees",
@@ -3129,6 +3356,30 @@
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
+    },
+    {
+      "id": "nos-livestream-2604199",
+      "sport": "curling",
+      "title": "Paralympische Spelen: curling troostfinale gemengde teams",
+      "competition": "Paralympische Spelen",
+      "start": "2026-03-13T17:35:00.000Z",
+      "durationMinutes": 210,
+      "location": "Online (NOS)",
+      "channels": [
+        {
+          "name": "NOS.nl Live",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://nos.nl/collectie/14017/livestream/2604199-paralympische-spelen-curling-troostfinale-gemengde-teams"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free",
+          "url": "https://www.npostart.nl/live"
+        }
+      ],
+      "notes": "Automatisch opgehaald van NOS sport-livestreams."
     },
     {
       "id": "voetbal-ned.1-741217",
@@ -8848,276 +9099,6 @@
       "start": "2026-03-21T21:00:00.000Z",
       "durationMinutes": 130,
       "location": "Nationwide Arena, Columbus, USA",
-      "channels": [
-        {
-          "name": "Viaplay TV",
-          "platform": "tv",
-          "access": "paid",
-          "url": "https://viaplay.com/nl-nl/"
-        },
-        {
-          "name": "NHL.TV",
-          "platform": "stream",
-          "access": "paid",
-          "url": "https://www.nhl.com/info/where-to-stream"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810878",
-      "sport": "basketbal",
-      "title": "Charlotte Hornets - Memphis Grizzlies",
-      "competition": "NBA",
-      "start": "2026-03-21T23:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Spectrum Center, Charlotte",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid",
-          "url": "https://www.ziggosport.nl/"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid",
-          "url": "https://www.ziggogo.tv/nl/home"
-        },
-        {
-          "name": "NBA League Pass",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810879",
-      "sport": "basketbal",
-      "title": "Orlando Magic - Los Angeles Lakers",
-      "competition": "NBA",
-      "start": "2026-03-21T23:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Kia Center, Orlando",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid",
-          "url": "https://www.ziggosport.nl/"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid",
-          "url": "https://www.ziggogo.tv/nl/home"
-        },
-        {
-          "name": "NBA League Pass",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810880",
-      "sport": "basketbal",
-      "title": "New Orleans Pelicans - Cleveland Cavaliers",
-      "competition": "NBA",
-      "start": "2026-03-21T23:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Smoothie King Center, New Orleans",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid",
-          "url": "https://www.ziggosport.nl/"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid",
-          "url": "https://www.ziggogo.tv/nl/home"
-        },
-        {
-          "name": "NBA League Pass",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nhl-401803456",
-      "sport": "ijshockey",
-      "title": "Montreal Canadiens - New York Islanders",
-      "competition": "NHL",
-      "start": "2026-03-21T23:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Bell Centre, Montreal, Canada",
-      "channels": [
-        {
-          "name": "Viaplay TV",
-          "platform": "tv",
-          "access": "paid",
-          "url": "https://viaplay.com/nl-nl/"
-        },
-        {
-          "name": "NHL.TV",
-          "platform": "stream",
-          "access": "paid",
-          "url": "https://www.nhl.com/info/where-to-stream"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nhl-401803457",
-      "sport": "ijshockey",
-      "title": "Ottawa Senators - Toronto Maple Leafs",
-      "competition": "NHL",
-      "start": "2026-03-21T23:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Canadian Tire Centre, Ottawa, Canada",
-      "channels": [
-        {
-          "name": "Viaplay TV",
-          "platform": "tv",
-          "access": "paid",
-          "url": "https://viaplay.com/nl-nl/"
-        },
-        {
-          "name": "NHL.TV",
-          "platform": "stream",
-          "access": "paid",
-          "url": "https://www.nhl.com/info/where-to-stream"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nhl-401803458",
-      "sport": "ijshockey",
-      "title": "Vancouver Canucks - St. Louis Blues",
-      "competition": "NHL",
-      "start": "2026-03-21T23:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Rogers Arena, Vancouver, Canada",
-      "channels": [
-        {
-          "name": "Viaplay TV",
-          "platform": "tv",
-          "access": "paid",
-          "url": "https://viaplay.com/nl-nl/"
-        },
-        {
-          "name": "NHL.TV",
-          "platform": "stream",
-          "access": "paid",
-          "url": "https://www.nhl.com/info/where-to-stream"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810881",
-      "sport": "basketbal",
-      "title": "Atlanta Hawks - Golden State Warriors",
-      "competition": "NBA",
-      "start": "2026-03-22T00:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "State Farm Arena, Atlanta",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid",
-          "url": "https://www.ziggosport.nl/"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid",
-          "url": "https://www.ziggogo.tv/nl/home"
-        },
-        {
-          "name": "NBA League Pass",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810882",
-      "sport": "basketbal",
-      "title": "Houston Rockets - Miami Heat",
-      "competition": "NBA",
-      "start": "2026-03-22T00:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Toyota Center (Houston), Houston",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid",
-          "url": "https://www.ziggosport.nl/"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid",
-          "url": "https://www.ziggogo.tv/nl/home"
-        },
-        {
-          "name": "NBA League Pass",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nba-401810883",
-      "sport": "basketbal",
-      "title": "San Antonio Spurs - Indiana Pacers",
-      "competition": "NBA",
-      "start": "2026-03-22T00:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Frost Bank Center, San Antonio",
-      "channels": [
-        {
-          "name": "Ziggo Sport",
-          "platform": "tv",
-          "access": "paid",
-          "url": "https://www.ziggosport.nl/"
-        },
-        {
-          "name": "Ziggo GO",
-          "platform": "stream",
-          "access": "paid",
-          "url": "https://www.ziggogo.tv/nl/home"
-        },
-        {
-          "name": "NBA League Pass",
-          "platform": "stream",
-          "access": "paid"
-        }
-      ],
-      "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
-    },
-    {
-      "id": "teamsport-nhl-401803459",
-      "sport": "ijshockey",
-      "title": "Detroit Red Wings - Boston Bruins",
-      "competition": "NHL",
-      "start": "2026-03-22T00:00:00.000Z",
-      "durationMinutes": 130,
-      "location": "Little Caesars Arena, Detroit, USA",
       "channels": [
         {
           "name": "Viaplay TV",
