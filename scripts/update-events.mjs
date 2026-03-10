@@ -15,7 +15,7 @@ const RANGE_START = formatDateForApi(windowStart);
 const RANGE_END = formatDateForApi(windowEnd);
 const DATE_RANGE = `${RANGE_START}-${RANGE_END}`;
 const REQUEST_TIMEOUT_MS = 15000;
-const MAX_EVENTS = 360;
+const MAX_EVENTS = Number(process.env.MAX_EVENTS || 380);
 const NOS_SPORT_URL = 'https://nos.nl/sport';
 const ZIGGO_EPG_BASE_URL = 'https://www.ziggosport.nl/cache/site/ZiggosportNL/json/epg';
 const ESPN_SCHEDULE_BASE_URL = 'https://www.espn.nl/watch/speelkalender/_/type/upcoming';
@@ -1977,7 +1977,12 @@ const mergedWithScheduleOnly = dedupeEvents([...mergedEvents, ...scheduleOnlyEve
 const enrichedEvents = enrichEventsWithSchedules(mergedWithScheduleOnly, ziggoEpg.rows, espnSchedule.rows);
 const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
 const generatedAt = new Date().toISOString();
-const verifiedEvents = finalizeVerification(overriddenEvents, generatedAt).slice(0, MAX_EVENTS);
+const allVerifiedEvents = finalizeVerification(overriddenEvents, generatedAt);
+const verifiedEvents = MAX_EVENTS > 0 ? allVerifiedEvents.slice(0, MAX_EVENTS) : allVerifiedEvents;
+
+if (MAX_EVENTS > 0 && allVerifiedEvents.length > MAX_EVENTS) {
+  console.warn(`Event list truncated from ${allVerifiedEvents.length} to ${MAX_EVENTS}.`);
+}
 
 if (!verifiedEvents.length) {
   throw new Error('No events fetched; aborting dataset overwrite.');

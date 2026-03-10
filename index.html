@@ -106,57 +106,135 @@
     </script>
     <script>
       (function () {
+        var CONSENT_KEY = 'sportkijken-consent-v1';
         var MEASUREMENT_ID = 'G-KGLTSPFH64';
+        var consentState = 'unknown';
+
+        function readStoredConsent() {
+          try {
+            return window.localStorage.getItem(CONSENT_KEY);
+          } catch (error) {
+            return null;
+          }
+        }
+
+        function writeStoredConsent(value) {
+          try {
+            window.localStorage.setItem(CONSENT_KEY, value);
+          } catch (error) {
+            // Ignore blocked storage.
+          }
+        }
+
+        function emitConsentChange() {
+          window.dispatchEvent(new CustomEvent('sportkijken-consent-changed', {
+            detail: { state: consentState }
+          }));
+        }
 
         window.dataLayer = window.dataLayer || [];
         window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
         window.trackSportkijkenEvent = function (eventName, params) {
-          if (!eventName || typeof window.gtag !== 'function') return;
+          if (!eventName || consentState !== 'granted' || typeof window.gtag !== 'function') return;
           window.gtag('event', eventName, params || {});
         };
 
         function configureAnalytics() {
-          if (window.__gaConfigured) return;
+          if (window.__gaConfigured || consentState !== 'granted') return;
           window.__gaConfigured = true;
           window.gtag('js', new Date());
           window.gtag('config', MEASUREMENT_ID, { anonymize_ip: true });
         }
 
-        var existingScript = document.querySelector('script[data-ga-measurement-id="' + MEASUREMENT_ID + '"]');
-        if (existingScript) {
-          if (window.__gaScriptReady) {
-            configureAnalytics();
-          } else {
-            existingScript.addEventListener('load', function () {
-              window.__gaScriptReady = true;
+        function ensureAnalyticsScript() {
+          if (window.__gaScriptRequested) return;
+          window.__gaScriptRequested = true;
+
+          var existingScript = document.querySelector('script[data-ga-measurement-id="' + MEASUREMENT_ID + '"]');
+          if (existingScript) {
+            if (window.__gaScriptReady) {
               configureAnalytics();
-            }, { once: true });
+            } else {
+              existingScript.addEventListener('load', function () {
+                window.__gaScriptReady = true;
+                configureAnalytics();
+              }, { once: true });
+            }
+            return;
           }
-          return;
+
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.googletagmanager.com/gtag/js?id=' + MEASUREMENT_ID;
+          script.dataset.gaMeasurementId = MEASUREMENT_ID;
+          script.onload = function () {
+            window.__gaScriptReady = true;
+            configureAnalytics();
+          };
+          script.onerror = function () {
+            window.__gaConfigured = false;
+          };
+          document.head.appendChild(script);
         }
 
-        var script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + MEASUREMENT_ID;
-        script.dataset.gaMeasurementId = MEASUREMENT_ID;
-        script.onload = function () {
-          window.__gaScriptReady = true;
-          configureAnalytics();
+        function ensureKoFiWidget() {
+          if (window.__kofiScriptRequested) return;
+          window.__kofiScriptRequested = true;
+
+          function drawKoFiWidget() {
+            if (!window.kofiwidget2 || consentState !== 'granted' || window.__kofiWidgetDrawn) return;
+            window.__kofiWidgetDrawn = true;
+            window.kofiwidget2.init('Support me on Ko-fi', '#72a4f2', 'Y8Y41QY1SE');
+            window.kofiwidget2.draw();
+          }
+
+          var script = document.createElement('script');
+          script.src = 'https://storage.ko-fi.com/cdn/widget/Widget_2.js';
+          script.async = true;
+          script.onload = function () {
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', drawKoFiWidget, { once: true });
+              return;
+            }
+            drawKoFiWidget();
+          };
+          (document.body || document.head).appendChild(script);
+        }
+
+        function applyConsent(nextState) {
+          consentState = nextState === 'granted' ? 'granted' : 'denied';
+          writeStoredConsent(consentState);
+
+          if (consentState === 'granted') {
+            ensureAnalyticsScript();
+            if (window.__gaScriptReady) {
+              configureAnalytics();
+            }
+            ensureKoFiWidget();
+          }
+
+          emitConsentChange();
+        }
+
+        window.setSportkijkenConsent = applyConsent;
+        window.getSportkijkenConsent = function () {
+          return consentState;
         };
-        script.onerror = function () {
-          window.__gaConfigured = false;
-        };
-        document.head.appendChild(script);
+
+        var storedConsent = readStoredConsent();
+        if (storedConsent === 'granted' || storedConsent === 'denied') {
+          consentState = storedConsent;
+        }
+
+        if (consentState === 'granted') {
+          ensureAnalyticsScript();
+          ensureKoFiWidget();
+        }
       })();
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="text/javascript" src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
-    <script type="text/javascript">
-      kofiwidget2.init('Support me on Ko-fi', '#72a4f2', 'Y8Y41QY1SE');
-      kofiwidget2.draw();
-    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

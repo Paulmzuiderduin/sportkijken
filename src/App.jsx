@@ -62,6 +62,7 @@ const DAY_NUMBER_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
 });
 
 const SOURCE_EVENTS = Array.isArray(scheduleDataset.events) ? scheduleDataset.events : [];
+const CONSENT_STORAGE_KEY = 'sportkijken-consent-v1';
 
 function formatSportLabel(id) {
   return id
@@ -211,6 +212,30 @@ function loadPreferences() {
   }
 }
 
+function loadConsentState() {
+  if (typeof window === 'undefined') {
+    return 'unknown';
+  }
+
+  if (typeof window.getSportkijkenConsent === 'function') {
+    const value = window.getSportkijkenConsent();
+    if (value === 'granted' || value === 'denied' || value === 'unknown') {
+      return value;
+    }
+  }
+
+  try {
+    const stored = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+    if (stored === 'granted' || stored === 'denied') {
+      return stored;
+    }
+  } catch (error) {
+    // Ignore storage issues and keep unknown.
+  }
+
+  return 'unknown';
+}
+
 function escapeIcsValue(value) {
   return String(value)
     .replace(/\\/g, '\\\\')
@@ -335,6 +360,7 @@ function matchesMajorFilter(event, majorFilter) {
 function App() {
   const [preferences, setPreferences] = useState(loadPreferences);
   const [providersExpanded, setProvidersExpanded] = useState(false);
+  const [consentState, setConsentState] = useState(loadConsentState);
 
   const events = useMemo(() => {
     return [...SOURCE_EVENTS]
@@ -356,6 +382,54 @@ function App() {
 
   useEffect(() => {
     trackAnalyticsEvent('sportkijken_view', { page: 'home' });
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    const syncConsent = (event) => {
+      const detailState = event?.detail?.state;
+      if (detailState === 'granted' || detailState === 'denied' || detailState === 'unknown') {
+        setConsentState(detailState);
+        return;
+      }
+      setConsentState(loadConsentState());
+    };
+
+    window.addEventListener('sportkijken-consent-changed', syncConsent);
+    return () => window.removeEventListener('sportkijken-consent-changed', syncConsent);
+  }, []);
+
+  const datasetStatus = useMemo(() => {
+    const generatedAt = new Date(scheduleDataset.generatedAt || 0);
+    const generatedMs = generatedAt.getTime();
+    if (!Number.isFinite(generatedMs) || generatedMs <= 0) {
+      return {
+        level: 'warning',
+        message: 'Kon geen geldige update-tijd bepalen.'
+      };
+    }
+
+    const ageMinutes = Math.max(0, Math.round((Date.now() - generatedMs) / 60000));
+    if (ageMinutes > 180) {
+      return {
+        level: 'warning',
+        message: `Data is ${Math.round(ageMinutes / 60)} uur oud. Controleer zenderinformatie extra goed.`
+      };
+    }
+    if (ageMinutes > 90) {
+      return {
+        level: 'notice',
+        message: `Data is ${ageMinutes} minuten oud. Nieuwe wijzigingen kunnen nog binnenkomen.`
+      };
+    }
+
+    return {
+      level: 'ok',
+      message: `Data is ${ageMinutes} minuten oud.`
+    };
   }, []);
 
   const filteredEvents = useMemo(() => {
@@ -584,6 +658,23 @@ function App() {
     setPreferences((current) => ({ ...current, majorFilter: majorId }));
   };
 
+  const setConsent = (nextState) => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    if (typeof window.setSportkijkenConsent === 'function') {
+      window.setSportkijkenConsent(nextState);
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(CONSENT_STORAGE_KEY, nextState);
+    } catch (error) {
+      // Ignore localStorage issues.
+    }
+    setConsentState(nextState);
+  };
+
   const exportVisibleEventsAsIcs = () => {
     if (!filteredEvents.length) {
       return;
@@ -726,6 +817,9 @@ function App() {
               <button type="button" className="primary" onClick={exportVisibleEventsAsIcs}>
                 Exporteer selectie als .ics
               </button>
+              <a className="ghost contact-cta" href="https://ko-fi.com/Y8Y41QY1SE" target="_blank" rel="noreferrer">
+                Support op Ko-fi
+              </a>
               <a className="ghost contact-cta" href="mailto:info@paulzuiderduin.com">
                 Contact: info@paulzuiderduin.com
               </a>
@@ -761,6 +855,22 @@ function App() {
           </aside>
         </section>
 
+        {consentState === 'unknown' ? (
+          <section className="panel consent-banner" role="region" aria-label="Privacy-instellingen">
+            <p>
+              We gebruiken optionele analytics (GA4) en de Ko-fi widget alleen met jouw toestemming.
+            </p>
+            <div className="consent-actions">
+              <button type="button" className="primary" onClick={() => setConsent('granted')}>
+                Toestaan
+              </button>
+              <button type="button" className="ghost" onClick={() => setConsent('denied')}>
+                Niet toestaan
+              </button>
+            </div>
+          </section>
+        ) : null}
+
         <section className="panel filters-panel">
           <div className="filter-group">
             <p className="filter-title">Sporten</p>
@@ -773,6 +883,7 @@ function App() {
                     type="button"
                     className={`chip sport-chip ${selected ? 'is-selected' : ''}`}
                     onClick={() => toggleSport(sport.id)}
+                    aria-pressed={selected}
                     style={{ '--chip-accent': sport.accent }}
                   >
                     {sport.label}
@@ -816,6 +927,7 @@ function App() {
                     providerSelectedOnly: !current.providerSelectedOnly
                   }));
                 }}
+                aria-pressed={preferences.providerSelectedOnly}
               >
                 {preferences.providerSelectedOnly ? 'Toon alles' : 'Alleen geselecteerd'}
               </button>
@@ -832,6 +944,7 @@ function App() {
                     type="button"
                     className={`chip provider-chip ${selected ? 'is-selected' : ''}`}
                     onClick={() => toggleProvider(provider)}
+                    aria-pressed={selected}
                   >
                     {provider}
                   </button>
@@ -883,6 +996,7 @@ function App() {
                     type="button"
                     className={`chip ${preferences.rangeFilter === option.id ? 'is-selected' : ''}`}
                     onClick={() => setRangeFilter(option.id)}
+                    aria-pressed={preferences.rangeFilter === option.id}
                   >
                     {option.label}
                   </button>
@@ -899,6 +1013,7 @@ function App() {
                     type="button"
                     className={`chip ${preferences.accessFilter === option.id ? 'is-selected' : ''}`}
                     onClick={() => setAccessFilter(option.id)}
+                    aria-pressed={preferences.accessFilter === option.id}
                   >
                     {option.label}
                   </button>
@@ -915,6 +1030,7 @@ function App() {
                     type="button"
                     className={`chip ${preferences.majorFilter === option.id ? 'is-selected' : ''}`}
                     onClick={() => setMajorFilter(option.id)}
+                    aria-pressed={preferences.majorFilter === option.id}
                   >
                     {option.label}
                   </button>
@@ -947,7 +1063,16 @@ function App() {
               : 'Dataset wordt automatisch bijgewerkt (ongeveer elk uur) vanuit meerdere bronnen, inclusief NOS, Ziggo, ESPN en Viaplay.'}
           </p>
           <p>Laatst bijgewerkt: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</p>
-          <p>Laatst geverifieerd (algemeen): {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</p>
+          <p className={`dataset-status ${datasetStatus.level}`}>{datasetStatus.message}</p>
+          <div className="notice-actions">
+            <span>Privacy:</span>
+            <button type="button" className="ghost compact" onClick={() => setConsent('granted')}>
+              Analytics aan
+            </button>
+            <button type="button" className="ghost compact" onClick={() => setConsent('denied')}>
+              Analytics uit
+            </button>
+          </div>
         </section>
 
         <section className="panel seo-landing" aria-label="SEO landingsinformatie">

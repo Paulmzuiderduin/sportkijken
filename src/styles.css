@@ -360,6 +360,51 @@ h3,
   font-size: 0.92rem;
 }
 
+.consent-banner {
+  display: grid;
+  gap: 0.65rem;
+  background: linear-gradient(145deg, #fffef8, #fff8ec);
+}
+
+.consent-banner p {
+  margin: 0;
+  color: #54422d;
+  font-size: 0.92rem;
+}
+
+.consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.dataset-status.ok {
+  color: #0b6f49;
+}
+
+.dataset-status.notice {
+  color: #2a5f9b;
+}
+
+.dataset-status.warning {
+  color: #8a3b25;
+  font-weight: 700;
+}
+
+.notice-actions {
+  margin-top: 0.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.notice-actions span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
 .seo-landing {
   display: grid;
   gap: 0.7rem;
