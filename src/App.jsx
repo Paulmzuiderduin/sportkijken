@@ -215,6 +215,17 @@ function getEventAccessLabel(event) {
   return 'Betaald';
 }
 
+function confidenceMeta(event) {
+  const confidence = event.verification?.confidence || 'unverified';
+  if (confidence === 'confirmed') {
+    return { label: 'Bevestigd', className: 'confirmed' };
+  }
+  if (confidence === 'likely') {
+    return { label: 'Waarschijnlijk', className: 'likely' };
+  }
+  return { label: 'Onbevestigd', className: 'unverified' };
+}
+
 function App() {
   const [preferences, setPreferences] = useState(loadPreferences);
 
@@ -402,8 +413,11 @@ function App() {
       const descriptionLines = [
         `Competitie: ${event.competition}`,
         `Waar te kijken: ${channels}`,
+        event.verification
+          ? `Betrouwbaarheid: ${event.verification.confidence} (${event.verification.reason})`
+          : null,
         event.notes || 'Controleer het uitzendschema op de wedstrijddag.'
-      ];
+      ].filter(Boolean);
 
       lines.push('BEGIN:VEVENT');
       lines.push(`UID:${event.id}@sportkijken.paulzuiderduin.com`);
@@ -596,6 +610,8 @@ function App() {
                 <div className="cards">
                   {group.events.map((event) => {
                     const sportMeta = sportMetaFor(event.sport);
+                    const confidence = confidenceMeta(event);
+                    const sourceRef = (event.sourceRefs || []).find((ref) => ref.url?.startsWith('http')) || event.sourceRefs?.[0];
                     return (
                       <div key={event.id} className="event-card">
                         <div className="event-meta">
@@ -613,6 +629,10 @@ function App() {
 
                         <p className="event-time">
                           {TIME_FORMATTER.format(event.startDate)} - {TIME_FORMATTER.format(event.endDate)} uur (NL)
+                        </p>
+
+                        <p className={`verification-badge ${confidence.className}`}>
+                          {confidence.label}
                         </p>
 
                         <ul className="channel-list">
@@ -639,6 +659,25 @@ function App() {
                           </span>
                           <span>{event.location || 'Nederland'}</span>
                         </footer>
+
+                        {event.verification ? (
+                          <p className="event-source">
+                            Laatst geverifieerd: {new Date(event.verification.lastVerified).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
+                            {' '}• {event.verification.reason}
+                            {sourceRef ? (
+                              <>
+                                {' '}• Bron:{' '}
+                                {sourceRef.url.startsWith('http') ? (
+                                  <a className="source-link" href={sourceRef.url} target="_blank" rel="noreferrer">
+                                    {sourceRef.label || sourceRef.type || 'bron'}
+                                  </a>
+                                ) : (
+                                  <span>{sourceRef.label || sourceRef.url}</span>
+                                )}
+                              </>
+                            ) : null}
+                          </p>
+                        ) : null}
 
                         {event.notes ? <p className="event-note">{event.notes}</p> : null}
                       </div>

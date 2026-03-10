@@ -6,6 +6,7 @@ import { normalizeDataset } from './dataset-utils.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const datasetPath = resolve(__dirname, '../src/data/events.nl.json');
 const majorEventsPath = resolve(__dirname, '../src/data/major-events.nl.json');
+const overridesPath = resolve(__dirname, '../src/data/event-overrides.nl.json');
 
 const NOW = new Date();
 const windowStart = new Date(NOW.getTime() - 4 * 60 * 60 * 1000);
@@ -16,6 +17,7 @@ const DATE_RANGE = `${RANGE_START}-${RANGE_END}`;
 const REQUEST_TIMEOUT_MS = 15000;
 const MAX_EVENTS = 360;
 const NOS_SPORT_URL = 'https://nos.nl/sport';
+const VERIFY_LEVELS = ['confirmed', 'likely', 'unverified'];
 
 const CHANNEL_PRESETS = {
   espn: [
@@ -427,10 +429,48 @@ async function fetchJson(url) {
   }
 }
 
+function createSourceRef(label, url, type) {
+  if (!url) {
+    return null;
+  }
+  return { label, url, type };
+}
+
+function mergeSourceRefs(...lists) {
+  const merged = [];
+  const seen = new Set();
+
+  lists
+    .flat()
+    .filter(Boolean)
+    .forEach((ref) => {
+      const key = `${ref.type || 'unknown'}|${ref.url}`;
+      if (seen.has(key)) {
+        return;
+      }
+      seen.add(key);
+      merged.push(ref);
+    });
+
+  return merged;
+}
+
 function dedupeEvents(events) {
   const byId = new Map();
   events.forEach((event) => {
-    byId.set(event.id, event);
+    const existing = byId.get(event.id);
+    if (!existing) {
+      byId.set(event.id, event);
+      return;
+    }
+
+    byId.set(event.id, {
+      ...existing,
+      ...event,
+      channels: mergeChannels(existing.channels || [], event.channels || []),
+      sourceRefs: mergeSourceRefs(existing.sourceRefs || [], event.sourceRefs || []),
+      sourceType: existing.sourceType === event.sourceType ? existing.sourceType : (event.sourceType || existing.sourceType || 'mixed')
+    });
   });
   return [...byId.values()].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 }
@@ -517,7 +557,9 @@ function parseNosLivestreamEvent(item, fallbackUrl) {
       { name: 'NOS.nl Live', platform: 'stream', access: 'free', url },
       { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/live' }
     ],
-    notes: 'Automatisch opgehaald van NOS sport-livestreams.'
+    notes: 'Automatisch opgehaald van NOS sport-livestreams.',
+    sourceType: 'nos',
+    sourceRefs: [createSourceRef('NOS livestream', url, 'nos')].filter(Boolean)
   };
 }
 
@@ -559,7 +601,7 @@ async function fetchNosSportLivestreams() {
   return { events, sources, errors };
 }
 
-function parseTeamEvent(event, feed, idPrefix) {
+function parseTeamEvent(event, feed, idPrefix, sourceUrl) {
   const isoStart = tryIso(event.date);
   if (!isoStart || !isWithinWindow(isoStart)) {
     return null;
@@ -587,11 +629,13 @@ function parseTeamEvent(event, feed, idPrefix) {
     durationMinutes: feed.durationMinutes || 130,
     location,
     channels,
-    notes: feed.note
+    notes: feed.note,
+    sourceType: 'espn',
+    sourceRefs: [createSourceRef('ESPN scoreboard', sourceUrl, 'espn')].filter(Boolean)
   };
 }
 
-function parseF1Event(event, feed) {
+function parseF1Event(event, feed, _idPrefix, sourceUrl) {
   const isoStart = tryIso(event.date);
   if (!isoStart || !isWithinWindow(isoStart)) {
     return null;
@@ -625,7 +669,9 @@ function parseF1Event(event, feed) {
     durationMinutes,
     location,
     channels,
-    notes: feed.note
+    notes: feed.note,
+    sourceType: 'espn',
+    sourceRefs: [createSourceRef('ESPN scoreboard', sourceUrl, 'espn')].filter(Boolean)
   };
 }
 
@@ -646,7 +692,7 @@ function extractNamedVenue(event) {
   return 'Onbekend';
 }
 
-function parseNamedEvent(event, feed) {
+function parseNamedEvent(event, feed, _idPrefix, sourceUrl) {
   const isoStart = tryIso(event.date);
   if (!isoStart || !isWithinWindow(isoStart)) {
     return null;
@@ -669,7 +715,9 @@ function parseNamedEvent(event, feed) {
     durationMinutes: feed.durationMinutes || 180,
     location: extractNamedVenue(event),
     channels,
-    notes: feed.note
+    notes: feed.note,
+    sourceType: 'espn',
+    sourceRefs: [createSourceRef('ESPN scoreboard', sourceUrl, 'espn')].filter(Boolean)
   };
 }
 
@@ -684,7 +732,7 @@ async function fetchByFeeds(feeds, urlBuilder, parser, errorPrefix, idPrefix) {
     try {
       const data = await fetchJson(url);
       const parsed = (data.events || [])
-        .map((event) => parser(event, feed, idPrefix))
+        .map((event) => parser(event, feed, idPrefix, url))
         .filter(Boolean);
       allEvents.push(...parsed);
     } catch (error) {
@@ -703,16 +751,207 @@ function safeParseJson(raw) {
   }
 }
 
+function normalizeManualEvents(events) {
+  return (Array.isArray(events) ? events : [])
+    .filter((event) => {
+      const isoStart = tryIso(event.start);
+      return isoStart && isWithinWindow(isoStart);
+    })
+    .map((event) => ({
+      ...event,
+      sourceType: event.sourceType || 'manual',
+      sourceRefs: mergeSourceRefs(
+        event.sourceRefs || [],
+        [createSourceRef('Handmatige invoer', 'src/data/major-events.nl.json', 'manual')]
+      )
+    }));
+}
+
+function normalizeOverrideRules(parsed) {
+  if (Array.isArray(parsed)) {
+    return parsed;
+  }
+  if (parsed && Array.isArray(parsed.rules)) {
+    return parsed.rules;
+  }
+  return [];
+}
+
+function includesAnyNeedle(value, needles) {
+  const haystack = String(value || '').toLowerCase();
+  const list = Array.isArray(needles) ? needles : [needles];
+  return list.some((needle) => haystack.includes(String(needle || '').toLowerCase()));
+}
+
+function matchesOverrideRule(event, rule) {
+  const match = rule?.match || {};
+
+  if (match.id && event.id !== match.id) return false;
+  if (match.sport && event.sport !== match.sport) return false;
+  if (match.sourceType && event.sourceType !== match.sourceType) return false;
+  if (match.provider && !event.channels?.some((channel) => channel.name === match.provider)) return false;
+  if (match.competitionIncludes && !includesAnyNeedle(event.competition, match.competitionIncludes)) return false;
+  if (match.titleIncludes && !includesAnyNeedle(event.title, match.titleIncludes)) return false;
+
+  return true;
+}
+
+function applyOverrideToEvent(event, rule) {
+  const set = rule?.set || {};
+  const next = { ...event };
+
+  if (set.channels) {
+    next.channels = set.channels;
+  }
+  if (set.appendChannels) {
+    next.channels = mergeChannels(next.channels || [], set.appendChannels);
+  }
+  if (typeof set.notes === 'string') {
+    next.notes = set.notes;
+  }
+  if (typeof set.competition === 'string') {
+    next.competition = set.competition;
+  }
+  if (typeof set.location === 'string') {
+    next.location = set.location;
+  }
+  if (set.sourceType) {
+    next.sourceType = set.sourceType;
+  }
+  if (set.sourceRefs) {
+    next.sourceRefs = mergeSourceRefs(next.sourceRefs || [], set.sourceRefs);
+  }
+  if (set.verification) {
+    next.verification = {
+      ...(next.verification || {}),
+      ...set.verification
+    };
+  }
+
+  return next;
+}
+
+function applyOverrides(events, rules) {
+  if (!rules.length) {
+    return events;
+  }
+
+  return events.map((event) => {
+    let next = event;
+    rules.forEach((rule) => {
+      if (matchesOverrideRule(next, rule)) {
+        next = applyOverrideToEvent(next, rule);
+      }
+    });
+    return next;
+  });
+}
+
+function sourcePriorityForEvent(event) {
+  const baseByType = {
+    manual: 100,
+    nos: 92,
+    mixed: 85,
+    espn: 70,
+    unknown: 60
+  };
+
+  const base = baseByType[event.sourceType] || baseByType.unknown;
+  const competition = String(event.competition || '').toLowerCase();
+  const hasConditionalRule = (event.channels || []).some((channel) => channel.conditions);
+
+  if (competition.includes('uefa') && hasConditionalRule) {
+    return Math.min(100, base + 4);
+  }
+
+  return base;
+}
+
+function inferVerification(event, generatedAt) {
+  const provided = event.verification || {};
+  if (VERIFY_LEVELS.includes(provided.confidence)) {
+    return {
+      confidence: provided.confidence,
+      reason: provided.reason || 'Handmatig geverifieerd.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  const sourceTypes = new Set([
+    event.sourceType,
+    ...(event.sourceRefs || []).map((ref) => ref.type).filter(Boolean)
+  ]);
+  const hasConditions = (event.channels || []).some((channel) => channel.conditions);
+
+  if (sourceTypes.has('manual')) {
+    return {
+      confidence: 'confirmed',
+      reason: 'Handmatig toegevoegd of bevestigd.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  if (sourceTypes.has('nos') && sourceTypes.has('espn')) {
+    return {
+      confidence: 'confirmed',
+      reason: 'Gecontroleerd via meerdere bronnen (NOS + externe feed).',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  if (sourceTypes.has('nos')) {
+    return {
+      confidence: 'confirmed',
+      reason: 'Direct van NOS livestreambron.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  if (sourceTypes.has('espn') && hasConditions) {
+    return {
+      confidence: 'likely',
+      reason: 'Externe wedstrijdfeed met NL-rechtenregels toegepast.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  if (sourceTypes.has('espn')) {
+    return {
+      confidence: 'unverified',
+      reason: 'Externe wedstrijdfeed; controleer aanbieder op wedstrijddag.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  return {
+    confidence: 'likely',
+    reason: 'Automatisch samengesteld uit beschikbare bronnen.',
+    lastVerified: generatedAt,
+    priority: sourcePriorityForEvent(event)
+  };
+}
+
+function finalizeVerification(events, generatedAt) {
+  return events.map((event) => ({
+    ...event,
+    sourceRefs: mergeSourceRefs(event.sourceRefs || []),
+    verification: inferVerification(event, generatedAt)
+  }));
+}
+
 const previousRaw = await readFile(datasetPath, 'utf8').catch(() => null);
 const previous = previousRaw ? safeParseJson(previousRaw) : null;
 const manualRaw = await readFile(majorEventsPath, 'utf8').catch(() => '[]');
 const manualParsed = safeParseJson(manualRaw);
-const manualEvents = Array.isArray(manualParsed)
-  ? manualParsed.filter((event) => {
-      const isoStart = tryIso(event.start);
-      return isoStart && isWithinWindow(isoStart);
-    })
-  : [];
+const manualEvents = normalizeManualEvents(manualParsed);
+const overridesRaw = await readFile(overridesPath, 'utf8').catch(() => '[]');
+const overrideRules = normalizeOverrideRules(safeParseJson(overridesRaw));
 
 const football = await fetchByFeeds(
   soccerFeeds,
@@ -777,14 +1016,18 @@ const mergedEvents = dedupeEvents([
   ...namedSports.events,
   ...nosSportLivestreams.events,
   ...manualEvents
-]).slice(0, MAX_EVENTS);
+]);
 
-if (!mergedEvents.length) {
+const overriddenEvents = applyOverrides(mergedEvents, overrideRules);
+const generatedAt = new Date().toISOString();
+const verifiedEvents = finalizeVerification(overriddenEvents, generatedAt).slice(0, MAX_EVENTS);
+
+if (!verifiedEvents.length) {
   throw new Error('No events fetched; aborting dataset overwrite.');
 }
 
 const nextDataset = normalizeDataset({
-  generatedAt: new Date().toISOString(),
+  generatedAt,
   region: 'NL',
   isDemo: false,
   sources: [
@@ -794,9 +1037,10 @@ const nextDataset = normalizeDataset({
     ...teamSports.sources,
     ...namedSports.sources,
     ...nosSportLivestreams.sources,
-    'manual:src/data/major-events.nl.json'
+    'manual:src/data/major-events.nl.json',
+    'manual:src/data/event-overrides.nl.json'
   ],
-  events: mergedEvents
+  events: verifiedEvents
 });
 
 const previousEvents = previous && Array.isArray(previous.events) ? previous.events : null;

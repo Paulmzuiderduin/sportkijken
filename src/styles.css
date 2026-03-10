@@ -401,6 +401,30 @@ h3,
   font-size: 0.9rem;
 }
 
+.verification-badge {
+  margin: 0;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.2rem 0.56rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.verification-badge.confirmed {
+  background: rgba(13, 141, 90, 0.14);
+  color: #0f7a4f;
+}
+
+.verification-badge.likely {
+  background: rgba(18, 78, 141, 0.14);
+  color: #144f8c;
+}
+
+.verification-badge.unverified {
+  background: rgba(154, 61, 36, 0.14);
+  color: #8a3b25;
+}
+
 .channel-list {
   margin: 0;
   padding: 0;
@@ -474,6 +498,22 @@ h3,
   margin: 0;
   font-size: 0.79rem;
   color: #6b7686;
+}
+
+.event-source {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #5f7286;
+}
+
+.source-link {
+  color: #1a568f;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.source-link:hover {
+  text-decoration: underline;
 }
 
 .empty-state {

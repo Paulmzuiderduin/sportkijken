@@ -8,6 +8,7 @@ Nederlandstalige sportkijkgids voor `sportkijken.paulzuiderduin.com`.
 - Filter op aanbieders (bijvoorbeeld NOS.nl, NPO 1/2/3, NPO Start, Ziggo Sport, Viaplay, ESPN)
 - Bekijk per event: starttijd (NL), kanaal/stream en gratis of betaald
 - Directe kliklinks naar provider/livestreampagina's waar beschikbaar
+- Betrouwbaarheidslabel per event: `bevestigd`, `waarschijnlijk` of `onbevestigd`
 - Filter op periode en toegangstype
 - Lokale voorkeuren opslaan in browser (`localStorage`)
 - Export van huidige selectie als `.ics` kalenderbestand
@@ -39,8 +40,24 @@ npm run data:normalize
   past NL-kijkkanaalregels toe (inclusief NOS/NPO gratis streams bij relevante events)
   en past expliciete toegangsregels toe:
   Ziggo Sport gratis voor Ziggo-klanten, ESPN gratis voor KPN-klanten, en Ziggo GO gratis bij Europese wedstrijden van Nederlandse clubs,
+  berekent per event een betrouwbaarheidsscore met bronverwijzing,
   en schrijft alleen weg als eventdata echt veranderd is.
 - `data:normalize` valideert verplichte velden, sorteert events op datum en schrijft de dataset terug.
+- Handmatige overrides (optioneel): `src/data/event-overrides.nl.json` (array met regels op `match` + `set`).
+  Voorbeeld:
+  ```json
+  [
+    {
+      "match": { "id": "voetbal-uefa.champions-401812345" },
+      "set": {
+        "verification": {
+          "confidence": "confirmed",
+          "reason": "Handmatig gecontroleerd op aanbiederwebsite"
+        }
+      }
+    }
+  ]
+  ```
 
 ## Automatische updates
 
