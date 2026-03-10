@@ -17,6 +17,10 @@ const DATE_RANGE = `${RANGE_START}-${RANGE_END}`;
 const REQUEST_TIMEOUT_MS = 15000;
 const MAX_EVENTS = 360;
 const NOS_SPORT_URL = 'https://nos.nl/sport';
+const ZIGGO_EPG_BASE_URL = 'https://www.ziggosport.nl/cache/site/ZiggosportNL/json/epg';
+const ESPN_SCHEDULE_BASE_URL = 'https://www.espn.nl/watch/speelkalender/_/type/upcoming';
+const ZIGGO_EPG_LOOKAHEAD_DAYS = 30;
+const ESPN_SCHEDULE_LOOKAHEAD_DAYS = 28;
 const VERIFY_LEVELS = ['confirmed', 'likely', 'unverified'];
 
 const CHANNEL_PRESETS = {
@@ -126,6 +130,39 @@ const DUTCH_CLUB_KEYWORDS = [
   'vitesse',
   'willem ii'
 ];
+
+const TITLE_NOISE_WORDS = new Set([
+  'live',
+  'samenvatting',
+  'highlights',
+  'voorbeschouwing',
+  'nabeschouwing',
+  'studio',
+  'herhaling',
+  'sport',
+  'voetbal',
+  'wedstrijd',
+  'match',
+  'mannen',
+  'vrouwen'
+]);
+
+const TEAM_NOISE_WORDS = new Set([
+  'fc',
+  'cf',
+  'ac',
+  'as',
+  'sc',
+  'sv',
+  'club',
+  'team',
+  'the',
+  'de',
+  'het',
+  'united',
+  'women',
+  'vrouwen'
+]);
 
 const soccerFeeds = [
   {
@@ -332,6 +369,128 @@ function formatDateForApi(date) {
   return `${year}${month}${day}`;
 }
 
+function formatDateForYmd(date) {
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function addDays(date, days) {
+  const next = new Date(date);
+  next.setUTCDate(next.getUTCDate() + days);
+  return next;
+}
+
+function normalizeAsciiLower(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+function normalizeTitleForMatch(value) {
+  return normalizeAsciiLower(value)
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/[:/,]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function cleanTeamName(value) {
+  return normalizeTitleForMatch(value)
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .split(' ')
+    .filter((token) => token && token.length > 1 && !TEAM_NOISE_WORDS.has(token))
+    .join(' ');
+}
+
+function splitMatchupTitle(title) {
+  const normalized = normalizeTitleForMatch(title);
+  const parts = normalized
+    .split(/\s(?:-|–|—|vs\.?|v\.?)\s/i)
+    .map((part) => cleanTeamName(part))
+    .filter(Boolean);
+
+  if (parts.length !== 2) {
+    return null;
+  }
+
+  return parts;
+}
+
+function teamNameLikelyMatches(a, b) {
+  if (!a || !b) return false;
+  if (a === b || a.includes(b) || b.includes(a)) return true;
+
+  const tokensA = new Set(a.split(' ').filter(Boolean));
+  const tokensB = new Set(b.split(' ').filter(Boolean));
+  if (!tokensA.size || !tokensB.size) return false;
+
+  let overlap = 0;
+  tokensA.forEach((token) => {
+    if (tokensB.has(token)) {
+      overlap += 1;
+    }
+  });
+
+  const minimum = Math.max(1, Math.min(tokensA.size, tokensB.size) - 1);
+  return overlap >= minimum;
+}
+
+function isSameMatchup(titleA, titleB) {
+  const teamsA = splitMatchupTitle(titleA);
+  const teamsB = splitMatchupTitle(titleB);
+  if (!teamsA || !teamsB) {
+    return false;
+  }
+
+  return (
+    (teamNameLikelyMatches(teamsA[0], teamsB[0]) && teamNameLikelyMatches(teamsA[1], teamsB[1]))
+    || (teamNameLikelyMatches(teamsA[0], teamsB[1]) && teamNameLikelyMatches(teamsA[1], teamsB[0]))
+  );
+}
+
+function titleLikelyMatches(eventTitle, listingTitle) {
+  if (isSameMatchup(eventTitle, listingTitle)) {
+    return true;
+  }
+
+  const tokensA = normalizeTitleForMatch(eventTitle)
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .split(' ')
+    .filter((token) => token && token.length > 2 && !TITLE_NOISE_WORDS.has(token));
+  const tokensB = normalizeTitleForMatch(listingTitle)
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .split(' ')
+    .filter((token) => token && token.length > 2 && !TITLE_NOISE_WORDS.has(token));
+
+  if (!tokensA.length || !tokensB.length) {
+    return false;
+  }
+
+  const setA = new Set(tokensA);
+  const setB = new Set(tokensB);
+  let overlap = 0;
+  setA.forEach((token) => {
+    if (setB.has(token)) {
+      overlap += 1;
+    }
+  });
+
+  return overlap >= Math.max(2, Math.floor(Math.min(setA.size, setB.size) * 0.6));
+}
+
+function isReplayLikeTitle(title) {
+  const normalized = normalizeTitleForMatch(title);
+  return ['samenvatting', 'highlights', 'herhaling', 'voorbeschouwing', 'nabeschouwing'].some((word) => normalized.includes(word));
+}
+
+function hasProviderChannel(channels, providerName) {
+  const needle = normalizeAsciiLower(providerName);
+  return (channels || []).some((channel) => normalizeAsciiLower(channel.name).includes(needle));
+}
+
 function isWithinWindow(dateValue) {
   const date = new Date(dateValue);
   return date >= windowStart && date <= windowEnd;
@@ -423,6 +582,317 @@ function channelsForEvent(feed, title, competition) {
   }
 
   return channels;
+}
+
+function ziggoChannelFromName(channelName) {
+  const name = String(channelName || '').trim();
+  if (!name) {
+    return null;
+  }
+
+  const normalized = normalizeAsciiLower(name);
+  const isFree = normalized === 'ziggo sport' || normalized === 'ziggo sport kanaal 14';
+  const isOtt = normalized.includes('ott');
+
+  return {
+    name,
+    platform: isOtt ? 'stream' : 'tv',
+    access: isFree ? 'free' : 'paid',
+    url: isOtt ? 'https://www.ziggogo.tv/nl/home' : 'https://www.ziggosport.nl/programmagids/',
+    conditions: isFree
+      ? 'Gratis voor Ziggo-klanten met geschikt tv-pakket.'
+      : 'Kanaal vereist aanvullend Ziggo Sport-pakket of inloggen via Ziggo GO.'
+  };
+}
+
+function espnChannelFromName(channelName, watchUrl) {
+  const normalized = normalizeAsciiLower(channelName);
+  if (!normalized.includes('espn')) {
+    return null;
+  }
+
+  const name = String(channelName || '').trim().replace(/\s+/g, ' ');
+  const isFree = normalizeAsciiLower(name) === 'espn';
+
+  return {
+    name,
+    platform: 'tv',
+    access: isFree ? 'free' : 'paid',
+    url: watchUrl || 'https://www.espn.nl/watch/schedule',
+    conditions: isFree
+      ? 'Gratis voor KPN-klanten met geschikt tv-pakket.'
+      : 'Alleen met ESPN Compleet of geschikt tv-pakket.'
+  };
+}
+
+function parseEspnFittData(rawHtml) {
+  const match = rawHtml.match(/window\['__espnfitt__'\]=(\{[\s\S]*?\});<\/script>/);
+  if (!match) {
+    return null;
+  }
+  return safeParseJson(match[1]);
+}
+
+function extractEspnScheduleRows(payload, sourceUrl) {
+  const root = payload?.page?.content?.watch?.arngs;
+  const rows = [];
+
+  const walk = (node) => {
+    if (!node) return;
+    if (Array.isArray(node)) {
+      node.forEach(walk);
+      return;
+    }
+
+    if (Array.isArray(node.arngs)) {
+      node.arngs.forEach((airing) => {
+        const start = tryIso(airing?.stme || airing?.startTime);
+        if (!start || !isWithinWindow(start)) {
+          return;
+        }
+
+        const channels = (airing?.bcsts || airing?.broadcasts || [])
+          .map((broadcast) => broadcast?.nme || broadcast?.name)
+          .filter(Boolean);
+
+        if (!channels.length) {
+          return;
+        }
+
+        const hrf = airing?.hrf;
+        const watchUrl = hrf && hrf.startsWith('http')
+          ? hrf
+          : (hrf ? `https://www.espn.nl${hrf}` : 'https://www.espn.nl/watch/schedule');
+
+        rows.push({
+          title: airing?.nme || airing?.name || '',
+          start,
+          startMs: new Date(start).getTime(),
+          channels,
+          watchUrl,
+          sourceUrl
+        });
+      });
+    }
+
+    if (Array.isArray(node.sctgys)) {
+      walk(node.sctgys);
+    }
+  };
+
+  walk(root);
+  return rows;
+}
+
+async function fetchZiggoEpgRows() {
+  const rows = [];
+  const sources = [];
+  const errors = [];
+  const seen = new Set();
+  const startDay = new Date(Date.UTC(windowStart.getUTCFullYear(), windowStart.getUTCMonth(), windowStart.getUTCDate()));
+  let notFoundStreak = 0;
+
+  for (let dayOffset = 0; dayOffset <= ZIGGO_EPG_LOOKAHEAD_DAYS; dayOffset += 1) {
+    const day = addDays(startDay, dayOffset);
+    const ymd = formatDateForYmd(day);
+    const url = `${ZIGGO_EPG_BASE_URL}/epg-${ymd}.json`;
+
+    try {
+      const channels = await fetchJson(url);
+      notFoundStreak = 0;
+      if (!Array.isArray(channels)) {
+        continue;
+      }
+
+      sources.push(url);
+      channels.forEach((channelGroup) => {
+        const channelName = channelGroup?.channel;
+        (channelGroup?.programming || []).forEach((program) => {
+          const start = tryIso(program?.dateStart);
+          if (!start || !isWithinWindow(start)) {
+            return;
+          }
+
+          const title = String(program?.title || '').trim();
+          if (!title || !channelName) {
+            return;
+          }
+
+          const key = `${channelName}|${title}|${start}`;
+          if (seen.has(key)) {
+            return;
+          }
+          seen.add(key);
+
+          rows.push({
+            title,
+            start,
+            startMs: new Date(start).getTime(),
+            channels: [channelName],
+            sourceUrl: url
+          });
+        });
+      });
+    } catch (error) {
+      if (String(error.message).includes('HTTP 404')) {
+        notFoundStreak += 1;
+        if (dayOffset > 3 && notFoundStreak >= 3) {
+          break;
+        }
+        continue;
+      }
+      errors.push(`Ziggo EPG ${ymd}: ${error.message}`);
+    }
+  }
+
+  return { rows, sources, errors };
+}
+
+async function fetchEspnScheduleRows() {
+  const rows = [];
+  const sources = [];
+  const errors = [];
+  const seen = new Set();
+  const startDay = new Date(Date.UTC(windowStart.getUTCFullYear(), windowStart.getUTCMonth(), windowStart.getUTCDate()));
+  const totalDays = Math.min(
+    ESPN_SCHEDULE_LOOKAHEAD_DAYS,
+    Math.ceil((windowEnd.getTime() - startDay.getTime()) / (24 * 60 * 60 * 1000))
+  );
+
+  for (let dayOffset = 0; dayOffset <= totalDays; dayOffset += 1) {
+    const startDate = formatDateForApi(addDays(startDay, dayOffset));
+    const url = `${ESPN_SCHEDULE_BASE_URL}?startDate=${startDate}`;
+    sources.push(url);
+
+    try {
+      const html = await fetchText(url);
+      const payload = parseEspnFittData(html);
+      const extracted = extractEspnScheduleRows(payload, url);
+      extracted.forEach((row) => {
+        const key = `${row.title}|${row.start}|${row.channels.join(',')}`;
+        if (seen.has(key)) {
+          return;
+        }
+        seen.add(key);
+        rows.push(row);
+      });
+    } catch (error) {
+      errors.push(`ESPN schedule ${startDate}: ${error.message}`);
+    }
+  }
+
+  return { rows, sources, errors };
+}
+
+function scoreScheduleRow(event, row, maxLeadMinutes, maxLagMinutes) {
+  const eventStartMs = new Date(event.start).getTime();
+  const diffMinutes = Math.round((row.startMs - eventStartMs) / 60000);
+
+  if (diffMinutes < -maxLeadMinutes || diffMinutes > maxLagMinutes) {
+    return Number.NEGATIVE_INFINITY;
+  }
+  if (!titleLikelyMatches(event.title, row.title)) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  let score = 220 - Math.abs(diffMinutes);
+  if (diffMinutes >= -45 && diffMinutes <= 30) {
+    score += 35;
+  }
+  if (isSameMatchup(event.title, row.title)) {
+    score += 40;
+  }
+  if (isReplayLikeTitle(row.title)) {
+    score -= 120;
+  }
+
+  return score;
+}
+
+function findScheduleRowsForEvent(event, rows, maxLeadMinutes = 180, maxLagMinutes = 120) {
+  const scored = rows
+    .map((row) => ({ row, score: scoreScheduleRow(event, row, maxLeadMinutes, maxLagMinutes) }))
+    .filter((candidate) => Number.isFinite(candidate.score))
+    .sort((a, b) => b.score - a.score);
+
+  if (!scored.length || scored[0].score < 70) {
+    return [];
+  }
+
+  const anchor = scored[0].row;
+  const grouped = scored
+    .map((candidate) => candidate.row)
+    .filter((row) => titleLikelyMatches(anchor.title, row.title))
+    .filter((row) => Math.abs(row.startMs - anchor.startMs) <= 45 * 60 * 1000)
+    .filter((row) => !isReplayLikeTitle(row.title) || isReplayLikeTitle(anchor.title));
+
+  return grouped.length ? grouped : [anchor];
+}
+
+function removeChannelsByNeedles(channels, needles) {
+  const normalizedNeedles = needles.map((needle) => normalizeAsciiLower(needle));
+  return (channels || []).filter((channel) => {
+    const normalizedName = normalizeAsciiLower(channel.name);
+    return !normalizedNeedles.some((needle) => normalizedName.includes(needle));
+  });
+}
+
+function enrichEventChannels(event, ziggoRows, espnRows) {
+  let nextChannels = event.channels || [];
+  let nextSourceRefs = event.sourceRefs || [];
+  let sourceType = event.sourceType;
+
+  if (hasProviderChannel(nextChannels, 'ziggo')) {
+    const matches = findScheduleRowsForEvent(event, ziggoRows, 210, 150);
+    if (matches.length) {
+      const ziggoChannels = mergeChannels(
+        ...matches.map((row) => row.channels.map((channelName) => ziggoChannelFromName(channelName)).filter(Boolean))
+      );
+      if (ziggoChannels.length) {
+        const carryOverZiggoGo = (nextChannels || []).filter((channel) => channel.name === 'Ziggo GO');
+        const nonZiggoChannels = removeChannelsByNeedles(nextChannels, ['ziggo']);
+        nextChannels = mergeChannels(nonZiggoChannels, ziggoChannels, carryOverZiggoGo);
+        nextSourceRefs = mergeSourceRefs(
+          nextSourceRefs,
+          matches.map((match) => createSourceRef('Ziggo Sport programmagids', match.sourceUrl, 'ziggo')).filter(Boolean)
+        );
+        sourceType = sourceType === 'espn' ? 'mixed' : sourceType;
+      }
+    }
+  }
+
+  if (hasProviderChannel(nextChannels, 'espn')) {
+    const matches = findScheduleRowsForEvent(event, espnRows, 120, 120);
+    if (matches.length) {
+      const espnChannels = mergeChannels(
+        ...matches.map((row) => (
+          row.channels
+            .map((channelName) => espnChannelFromName(channelName, row.watchUrl))
+            .filter(Boolean)
+        ))
+      );
+      if (espnChannels.length) {
+        const nonEspnChannels = removeChannelsByNeedles(nextChannels, ['espn']);
+        nextChannels = mergeChannels(nonEspnChannels, espnChannels);
+        nextSourceRefs = mergeSourceRefs(
+          nextSourceRefs,
+          matches.map((match) => createSourceRef('ESPN TV-gids', match.sourceUrl, 'espn-schedule')).filter(Boolean)
+        );
+        sourceType = sourceType === 'espn' ? 'mixed' : sourceType;
+      }
+    }
+  }
+
+  return {
+    ...event,
+    channels: nextChannels,
+    sourceRefs: nextSourceRefs,
+    sourceType
+  };
+}
+
+function enrichEventsWithSchedules(events, ziggoRows, espnRows) {
+  return events.map((event) => enrichEventChannels(event, ziggoRows, espnRows));
 }
 
 async function fetchText(url) {
@@ -893,7 +1363,9 @@ function sourcePriorityForEvent(event) {
   const baseByType = {
     manual: 100,
     nos: 92,
+    ziggo: 89,
     mixed: 85,
+    'espn-schedule': 82,
     espn: 70,
     unknown: 60
   };
@@ -939,6 +1411,33 @@ function inferVerification(event, generatedAt) {
     return {
       confidence: 'confirmed',
       reason: 'Gecontroleerd via meerdere bronnen (NOS + externe feed).',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  if (sourceTypes.has('ziggo') && sourceTypes.has('espn')) {
+    return {
+      confidence: 'likely',
+      reason: 'Wedstrijd + kanaalindeling gekoppeld via ESPN feed en Ziggo EPG.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  if (sourceTypes.has('espn-schedule') && sourceTypes.has('espn')) {
+    return {
+      confidence: 'likely',
+      reason: 'ESPN kanaalindeling gekoppeld aan ESPN TV-gids.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  if (sourceTypes.has('ziggo')) {
+    return {
+      confidence: 'likely',
+      reason: 'Kanaalindeling gekoppeld via Ziggo Sport programmagids.',
       lastVerified: generatedAt,
       priority: sourcePriorityForEvent(event)
     };
@@ -1036,6 +1535,8 @@ const namedSports = await fetchByFeeds(
 );
 
 const nosSportLivestreams = await fetchNosSportLivestreams();
+const ziggoEpg = await fetchZiggoEpgRows();
+const espnSchedule = await fetchEspnScheduleRows();
 
 const fetchErrors = [
   ...football.errors,
@@ -1043,7 +1544,9 @@ const fetchErrors = [
   ...tennis.errors,
   ...teamSports.errors,
   ...namedSports.errors,
-  ...nosSportLivestreams.errors
+  ...nosSportLivestreams.errors,
+  ...ziggoEpg.errors,
+  ...espnSchedule.errors
 ];
 
 if (fetchErrors.length) {
@@ -1060,7 +1563,8 @@ const mergedEvents = dedupeEvents([
   ...manualEvents
 ]);
 
-const overriddenEvents = applyOverrides(mergedEvents, overrideRules);
+const enrichedEvents = enrichEventsWithSchedules(mergedEvents, ziggoEpg.rows, espnSchedule.rows);
+const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
 const generatedAt = new Date().toISOString();
 const verifiedEvents = finalizeVerification(overriddenEvents, generatedAt).slice(0, MAX_EVENTS);
 
@@ -1079,6 +1583,8 @@ const nextDataset = normalizeDataset({
     ...teamSports.sources,
     ...namedSports.sources,
     ...nosSportLivestreams.sources,
+    ...ziggoEpg.sources,
+    ...espnSchedule.sources,
     'manual:src/data/major-events.nl.json',
     'manual:src/data/event-overrides.nl.json'
   ],
