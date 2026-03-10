@@ -420,6 +420,11 @@ h3,
   padding-bottom: 0.42rem;
 }
 
+.channel-main {
+  display: grid;
+  gap: 0.15rem;
+}
+
 .channel-link {
   color: #134c8b;
   text-decoration: none;
@@ -428,6 +433,12 @@ h3,
 
 .channel-link:hover {
   text-decoration: underline;
+}
+
+.channel-condition {
+  color: #63758a;
+  font-size: 0.74rem;
+  line-height: 1.3;
 }
 
 .access,

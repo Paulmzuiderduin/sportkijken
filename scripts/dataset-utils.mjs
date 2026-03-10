@@ -14,6 +14,10 @@ export function assertValidChannel(channel, eventId) {
   if (channel.url && typeof channel.url !== 'string') {
     throw new Error(`Invalid channel url for event ${eventId}: ${channel.url}`);
   }
+
+  if (channel.conditions && typeof channel.conditions !== 'string') {
+    throw new Error(`Invalid channel conditions for event ${eventId}: ${channel.conditions}`);
+  }
 }
 
 export function normalizeEvent(event) {
@@ -30,7 +34,8 @@ export function normalizeEvent(event) {
       name: channel.name.trim(),
       platform: channel.platform,
       access: channel.access,
-      ...(channel.url ? { url: channel.url.trim() } : {})
+      ...(channel.url ? { url: channel.url.trim() } : {}),
+      ...(channel.conditions ? { conditions: channel.conditions.trim() } : {})
     }))
   };
 }

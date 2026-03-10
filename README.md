@@ -37,7 +37,8 @@ npm run data:normalize
 - `data:update` haalt automatisch events op uit meerdere bronnen:
   ESPN-scoreboards (o.a. voetbal, formule 1, tennis) + NOS sport-livestreams (`nos.nl/sport`),
   past NL-kijkkanaalregels toe (inclusief NOS/NPO gratis streams bij relevante events)
-  en markeert bij UEFA-voetbal geselecteerde Ziggo Sport-wedstrijden als gratis (heuristiek voor NL-clubs/finalerondes),
+  en past expliciete toegangsregels toe:
+  Ziggo Sport gratis voor Ziggo-klanten, ESPN gratis voor KPN-klanten, en Ziggo GO gratis bij Europese wedstrijden van Nederlandse clubs,
   en schrijft alleen weg als eventdata echt veranderd is.
 - `data:normalize` valideert verplichte velden, sorteert events op datum en schrijft de dataset terug.
 

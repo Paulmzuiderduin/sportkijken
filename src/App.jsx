@@ -394,7 +394,8 @@ function App() {
       const channels = event.channels
         .map((channel) => {
           const base = `${channel.name} (${channel.access === 'free' ? 'gratis' : 'betaald'})`;
-          return channel.url ? `${base} ${channel.url}` : base;
+          const withCondition = channel.conditions ? `${base} - ${channel.conditions}` : base;
+          return channel.url ? `${withCondition} ${channel.url}` : withCondition;
         })
         .join(', ');
 
@@ -617,13 +618,16 @@ function App() {
                         <ul className="channel-list">
                           {event.channels.map((channel) => (
                             <li key={`${event.id}-${channel.name}-${channel.platform}`}>
-                              {channel.url ? (
-                                <a className="channel-link" href={channel.url} target="_blank" rel="noreferrer">
-                                  {channel.name} ({channel.platform})
-                                </a>
-                              ) : (
-                                <span>{channel.name} ({channel.platform})</span>
-                              )}
+                              <div className="channel-main">
+                                {channel.url ? (
+                                  <a className="channel-link" href={channel.url} target="_blank" rel="noreferrer">
+                                    {channel.name} ({channel.platform})
+                                  </a>
+                                ) : (
+                                  <span>{channel.name} ({channel.platform})</span>
+                                )}
+                                {channel.conditions ? <small className="channel-condition">{channel.conditions}</small> : null}
+                              </div>
                               <span className={`access ${channel.access}`}>{channel.access === 'free' ? 'Gratis' : 'Betaald'}</span>
                             </li>
                           ))}

@@ -19,12 +19,30 @@ const NOS_SPORT_URL = 'https://nos.nl/sport';
 
 const CHANNEL_PRESETS = {
   espn: [
-    { name: 'ESPN', platform: 'tv', access: 'paid', url: 'https://www.espn.nl/' },
+    {
+      name: 'ESPN',
+      platform: 'tv',
+      access: 'free',
+      url: 'https://www.espn.nl/',
+      conditions: 'Gratis voor KPN-klanten met geschikt tv-pakket.'
+    },
     { name: 'ESPN Watch', platform: 'stream', access: 'paid', url: 'https://www.espn.nl/watch/' }
   ],
   ziggo: [
-    { name: 'Ziggo Sport', platform: 'tv', access: 'paid', url: 'https://www.ziggosport.nl/' },
-    { name: 'Ziggo GO', platform: 'stream', access: 'paid', url: 'https://www.ziggogo.tv/nl/home' }
+    {
+      name: 'Ziggo Sport',
+      platform: 'tv',
+      access: 'free',
+      url: 'https://www.ziggosport.nl/',
+      conditions: 'Gratis voor Ziggo-klanten met geschikt tv-pakket.'
+    },
+    {
+      name: 'Ziggo GO',
+      platform: 'stream',
+      access: 'paid',
+      url: 'https://www.ziggogo.tv/nl/home',
+      conditions: 'Inloggen met Ziggo-account vereist.'
+    }
   ],
   viaplay: [
     { name: 'Viaplay TV', platform: 'tv', access: 'paid', url: 'https://viaplay.com/nl-nl/' },
@@ -35,7 +53,7 @@ const CHANNEL_PRESETS = {
     { name: 'HBO Max', platform: 'stream', access: 'paid', url: 'https://www.max.com/nl/' }
   ],
   nos: [
-    { name: 'NOS.nl Live', platform: 'stream', access: 'free', url: 'https://nos.nl/livestream/sport' },
+    { name: 'NOS.nl Live', platform: 'stream', access: 'free', url: 'https://nos.nl/live' },
     { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/live' }
   ],
   npoTv: [
@@ -49,7 +67,7 @@ const CHANNEL_PRESETS = {
     { name: 'NPO 2', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-2' },
     { name: 'NPO 3', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-3' },
     { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/live' },
-    { name: 'NOS.nl Live', platform: 'stream', access: 'free', url: 'https://nos.nl/livestream/sport' }
+    { name: 'NOS.nl Live', platform: 'stream', access: 'free', url: 'https://nos.nl/live' }
   ],
   mlb: [
     { name: 'ESPN 4', platform: 'tv', access: 'paid', url: 'https://www.espn.nl/' },
@@ -91,24 +109,20 @@ const MAJOR_FREE_KEYWORDS = [
   'teamnl'
 ];
 
-const ZIGGO_FREE_SOCCER_KEYWORDS = [
+const DUTCH_CLUB_KEYWORDS = [
   'ajax',
   'psv',
   'feyenoord',
-  'az ',
   'az alkmaar',
+  'az ',
   'fc twente',
   'twente',
+  'fc utrecht',
   'utrecht',
-  'nederland',
-  'oranje',
-  'final',
-  'semi-final',
-  'halve finale',
-  'kwartfinale',
-  'quarterfinal',
-  'round of 16',
-  'achtste finale'
+  'go ahead eagles',
+  'nec',
+  'vitesse',
+  'willem ii'
 ];
 
 const soccerFeeds = [
@@ -131,24 +145,24 @@ const soccerFeeds = [
     sport: 'voetbal',
     competition: 'UEFA Champions League',
     channels: CHANNEL_PRESETS.ziggo,
-    note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen; deel van de wedstrijden kan gratis op Ziggo Sport zijn.',
-    allowZiggoFreeHeuristic: true
+    note: 'Automatisch opgehaald. Europese wedstrijden van Nederlandse clubs zijn via Ziggo GO te volgen.',
+    allowDutchClubZiggoGoFree: true
   },
   {
     slug: 'uefa.europa',
     sport: 'voetbal',
     competition: 'UEFA Europa League',
     channels: CHANNEL_PRESETS.ziggo,
-    note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen; deel van de wedstrijden kan gratis op Ziggo Sport zijn.',
-    allowZiggoFreeHeuristic: true
+    note: 'Automatisch opgehaald. Europese wedstrijden van Nederlandse clubs zijn via Ziggo GO te volgen.',
+    allowDutchClubZiggoGoFree: true
   },
   {
     slug: 'uefa.europa.conf',
     sport: 'voetbal',
     competition: 'UEFA Conference League',
     channels: CHANNEL_PRESETS.ziggo,
-    note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen; deel van de wedstrijden kan gratis op Ziggo Sport zijn.',
-    allowZiggoFreeHeuristic: true
+    note: 'Automatisch opgehaald. Europese wedstrijden van Nederlandse clubs zijn via Ziggo GO te volgen.',
+    allowDutchClubZiggoGoFree: true
   },
   {
     slug: 'uefa.nations',
@@ -330,23 +344,25 @@ function shouldAddNosChannels(feed, title, competition) {
   return MAJOR_FREE_KEYWORDS.some((keyword) => haystack.includes(keyword));
 }
 
-function shouldMarkZiggoSportFree(feed, title, competition) {
-  if (!feed.allowZiggoFreeHeuristic) {
+function shouldMarkDutchClubUefaMatchOnZiggoGo(feed, title, competition) {
+  if (!feed.allowDutchClubZiggoGoFree) {
     return false;
   }
 
   const haystack = `${title} ${competition}`.toLowerCase();
-  return ZIGGO_FREE_SOCCER_KEYWORDS.some((keyword) => haystack.includes(keyword));
+  return DUTCH_CLUB_KEYWORDS.some((keyword) => haystack.includes(keyword));
 }
 
-function markZiggoSportFree(channels) {
+function markZiggoGoFreeForDutchClubs(channels) {
   return channels.map((channel) => {
-    if (channel.name !== 'Ziggo Sport') {
+    if (channel.name !== 'Ziggo GO') {
       return channel;
     }
+
     return {
       ...channel,
-      access: 'free'
+      access: 'free',
+      conditions: 'Europese wedstrijden van Nederlandse clubs zijn vrij te volgen via Ziggo GO.'
     };
   });
 }
@@ -354,8 +370,8 @@ function markZiggoSportFree(channels) {
 function channelsForEvent(feed, title, competition) {
   let channels = feed.channels;
 
-  if (shouldMarkZiggoSportFree(feed, title, competition)) {
-    channels = markZiggoSportFree(channels);
+  if (shouldMarkDutchClubUefaMatchOnZiggoGo(feed, title, competition)) {
+    channels = markZiggoGoFreeForDutchClubs(channels);
   }
 
   if (shouldAddNosChannels(feed, title, competition)) {
