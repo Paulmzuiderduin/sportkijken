@@ -504,7 +504,7 @@ h3,
 
 .event-card footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   gap: 0.45rem;
   font-size: 0.84rem;
@@ -515,22 +515,6 @@ h3,
   margin: 0;
   font-size: 0.79rem;
   color: #6b7686;
-}
-
-.event-source {
-  margin: 0;
-  font-size: 0.75rem;
-  color: #5f7286;
-}
-
-.source-link {
-  color: #1a568f;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.source-link:hover {
-  text-decoration: underline;
 }
 
 .empty-state {

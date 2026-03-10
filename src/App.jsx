@@ -513,7 +513,6 @@ function App() {
   const renderEventCard = (event) => {
     const sportMeta = sportMetaFor(event.sport);
     const confidence = confidenceMeta(event);
-    const sourceRef = (event.sourceRefs || []).find((ref) => ref.url?.startsWith('http')) || event.sourceRefs?.[0];
 
     return (
       <div key={event.id} className="event-card">
@@ -560,27 +559,7 @@ function App() {
           <span className={`event-access ${getEventAccessLabel(event) === 'Gratis' ? 'free' : 'paid'}`}>
             {getEventAccessLabel(event)}
           </span>
-          <span>{event.location || 'Nederland'}</span>
         </footer>
-
-        {event.verification ? (
-          <p className="event-source">
-            Laatst geverifieerd: {new Date(event.verification.lastVerified).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
-            {' '}• {event.verification.reason}
-            {sourceRef ? (
-              <>
-                {' '}• Bron:{' '}
-                {sourceRef.url.startsWith('http') ? (
-                  <a className="source-link" href={sourceRef.url} target="_blank" rel="noreferrer">
-                    {sourceRef.label || sourceRef.type || 'bron'}
-                  </a>
-                ) : (
-                  <span>{sourceRef.label || sourceRef.url}</span>
-                )}
-              </>
-            ) : null}
-          </p>
-        ) : null}
 
         {event.notes ? <p className="event-note">{event.notes}</p> : null}
       </div>
@@ -737,6 +716,7 @@ function App() {
               : 'Dataset wordt automatisch bijgewerkt (ongeveer elk uur) vanuit meerdere bronnen, inclusief NOS, Ziggo, ESPN en Viaplay.'}
           </p>
           <p>Laatst bijgewerkt: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</p>
+          <p>Laatst geverifieerd (algemeen): {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</p>
         </section>
 
         <section className="agenda">
