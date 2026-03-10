@@ -143,6 +143,48 @@ const soccerFeeds = [
     note: 'Automatisch opgehaald. Bekerrechten kunnen per ronde verschillen.'
   },
   {
+    slug: 'ned.2',
+    sport: 'voetbal',
+    competition: 'Keuken Kampioen Divisie',
+    channels: CHANNEL_PRESETS.espn,
+    note: 'Automatisch opgehaald. Beschikbaarheid op ESPN-kanalen kan per speelronde verschillen.'
+  },
+  {
+    slug: 'eng.1',
+    sport: 'voetbal',
+    competition: 'Premier League',
+    channels: CHANNEL_PRESETS.viaplay,
+    note: 'Automatisch opgehaald. In Nederland primair via Viaplay.'
+  },
+  {
+    slug: 'esp.1',
+    sport: 'voetbal',
+    competition: 'La Liga',
+    channels: CHANNEL_PRESETS.ziggo,
+    note: 'Automatisch opgehaald. In Nederland primair via Ziggo Sport/Ziggo GO.'
+  },
+  {
+    slug: 'ita.1',
+    sport: 'voetbal',
+    competition: 'Serie A',
+    channels: CHANNEL_PRESETS.ziggo,
+    note: 'Automatisch opgehaald. In Nederland primair via Ziggo Sport/Ziggo GO.'
+  },
+  {
+    slug: 'ger.1',
+    sport: 'voetbal',
+    competition: 'Bundesliga',
+    channels: CHANNEL_PRESETS.viaplay,
+    note: 'Automatisch opgehaald. In Nederland primair via Viaplay.'
+  },
+  {
+    slug: 'fra.1',
+    sport: 'voetbal',
+    competition: 'Ligue 1',
+    channels: CHANNEL_PRESETS.viaplay,
+    note: 'Automatisch opgehaald. In Nederland primair via Viaplay.'
+  },
+  {
     slug: 'uefa.champions',
     sport: 'voetbal',
     competition: 'UEFA Champions League',
