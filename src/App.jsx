@@ -420,7 +420,7 @@ function App() {
             <p>
               {scheduleDataset.isDemo
               ? 'MVP-notitie: deze versie gebruikt een handmatige dataset. Rechten en tijden kunnen wijzigen.'
-              : 'Dataset wordt automatisch bijgewerkt (ongeveer elke 3 uur).'}
+              : 'Dataset wordt automatisch bijgewerkt (ongeveer elk uur).'}
             </p>
           <p>Laatst bijgewerkt: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</p>
         </section>

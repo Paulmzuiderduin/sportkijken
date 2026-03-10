@@ -39,7 +39,7 @@ npm run data:normalize
 ## Automatische updates
 
 - Workflow: `.github/workflows/update-data.yml`
-- Frequentie: elke 3 uur (`cron: 17 */3 * * *`, UTC)
+- Frequentie: elk uur (`cron: 17 * * * *`, UTC)
 - Bij gewijzigde data commit + push naar `main`, waarna de Pages deploy-workflow automatisch draait.
 
 ## Deploy-doel
