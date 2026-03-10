@@ -1,0 +1,240 @@
+{
+  "generatedAt": "2026-03-10T17:26:46.689Z",
+  "region": "NL",
+  "isDemo": true,
+  "sources": [
+    "Handmatig samengestelde MVP-dataset",
+    "Publieke uitzendschema's (controle nodig op wedstrijddag)"
+  ],
+  "events": [
+    {
+      "id": "voetbal-eredivisie-topwedstrijd-2026-03-14",
+      "sport": "voetbal",
+      "title": "Eredivisie topwedstrijd",
+      "competition": "Eredivisie",
+      "start": "2026-03-14T19:00:00Z",
+      "durationMinutes": 120,
+      "location": "Nederland",
+      "channels": [
+        {
+          "name": "ESPN 1",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ],
+      "notes": "Controleer exacte aftrap en kanaal op wedstrijddag."
+    },
+    {
+      "id": "tennis-indian-wells-finale-2026-03-15",
+      "sport": "tennis",
+      "title": "Indian Wells enkelspel finale",
+      "competition": "ATP/WTA 1000",
+      "start": "2026-03-15T20:00:00Z",
+      "durationMinutes": 170,
+      "location": "Indian Wells",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ]
+    },
+    {
+      "id": "voetbal-europa-league-2026-03-19",
+      "sport": "voetbal",
+      "title": "UEFA Europa League avondwedstrijd",
+      "competition": "UEFA Europa League",
+      "start": "2026-03-19T20:00:00Z",
+      "durationMinutes": 130,
+      "location": "Europa",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "Ziggo GO",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ]
+    },
+    {
+      "id": "f1-australie-race-2026-03-22",
+      "sport": "formule-1",
+      "title": "Grand Prix van Australië - Race",
+      "competition": "FIA Formula 1 World Championship",
+      "start": "2026-03-22T04:00:00Z",
+      "durationMinutes": 150,
+      "location": "Melbourne",
+      "channels": [
+        {
+          "name": "Viaplay",
+          "platform": "stream",
+          "access": "paid"
+        },
+        {
+          "name": "Viaplay TV",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ]
+    },
+    {
+      "id": "voetbal-interland-nederland-2026-03-24",
+      "sport": "voetbal",
+      "title": "Interland Nederland (voorbeeld)",
+      "competition": "Nationaal team",
+      "start": "2026-03-24T19:45:00Z",
+      "durationMinutes": 120,
+      "location": "Nederland",
+      "channels": [
+        {
+          "name": "NPO 1",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        }
+      ]
+    },
+    {
+      "id": "tennis-miami-open-finale-2026-03-29",
+      "sport": "tennis",
+      "title": "Miami Open finale (voorbeeld)",
+      "competition": "ATP/WTA 1000",
+      "start": "2026-03-29T18:30:00Z",
+      "durationMinutes": 170,
+      "location": "Miami",
+      "channels": [
+        {
+          "name": "Ziggo Sport",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ]
+    },
+    {
+      "id": "f1-japan-race-2026-04-05",
+      "sport": "formule-1",
+      "title": "Grand Prix van Japan - Race",
+      "competition": "FIA Formula 1 World Championship",
+      "start": "2026-04-05T05:00:00Z",
+      "durationMinutes": 150,
+      "location": "Suzuka",
+      "channels": [
+        {
+          "name": "Viaplay",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ]
+    },
+    {
+      "id": "tennis-davis-cup-kwalificatie-2026-04-10",
+      "sport": "tennis",
+      "title": "Davis Cup kwalificatie (Nederland)",
+      "competition": "Davis Cup",
+      "start": "2026-04-10T12:00:00Z",
+      "durationMinutes": 240,
+      "location": "Nederland",
+      "channels": [
+        {
+          "name": "NPO 3",
+          "platform": "tv",
+          "access": "free"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        }
+      ],
+      "notes": "In MVP als voorbeeld opgenomen; check de definitieve rechten."
+    },
+    {
+      "id": "f1-bahrain-race-2026-04-12",
+      "sport": "formule-1",
+      "title": "Grand Prix van Bahrein - Race",
+      "competition": "FIA Formula 1 World Championship",
+      "start": "2026-04-12T15:00:00Z",
+      "durationMinutes": 150,
+      "location": "Sakhir",
+      "channels": [
+        {
+          "name": "Viaplay",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ]
+    },
+    {
+      "id": "voetbal-eredivisie-zondagavond-2026-04-12",
+      "sport": "voetbal",
+      "title": "Eredivisie zondagavondwedstrijd",
+      "competition": "Eredivisie",
+      "start": "2026-04-12T18:00:00Z",
+      "durationMinutes": 120,
+      "location": "Nederland",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        }
+      ]
+    },
+    {
+      "id": "voetbal-bekerfinale-2026-04-19",
+      "sport": "voetbal",
+      "title": "Nationale bekerfinale (voorbeeld)",
+      "competition": "Bekertoernooi",
+      "start": "2026-04-19T17:00:00Z",
+      "durationMinutes": 140,
+      "location": "Nederland",
+      "channels": [
+        {
+          "name": "ESPN",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "NPO Start",
+          "platform": "stream",
+          "access": "free"
+        }
+      ]
+    },
+    {
+      "id": "tennis-roland-garros-start-2026-05-24",
+      "sport": "tennis",
+      "title": "Roland Garros - openingsdag",
+      "competition": "Grand Slam",
+      "start": "2026-05-24T09:00:00Z",
+      "durationMinutes": 480,
+      "location": "Parijs",
+      "channels": [
+        {
+          "name": "Eurosport",
+          "platform": "tv",
+          "access": "paid"
+        },
+        {
+          "name": "HBO Max",
+          "platform": "stream",
+          "access": "paid"
+        }
+      ]
+    }
+  ]
+}

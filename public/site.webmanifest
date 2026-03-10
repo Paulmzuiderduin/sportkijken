@@ -1,0 +1,16 @@
+{
+  "name": "Sportkijken",
+  "short_name": "Sportkijken",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f5f8",
+  "theme_color": "#0f3768",
+  "description": "Overzicht van waar en wanneer je sport kunt kijken in Nederland.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
