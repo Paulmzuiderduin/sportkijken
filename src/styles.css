@@ -397,6 +397,16 @@ h3,
   padding-bottom: 0.42rem;
 }
 
+.channel-link {
+  color: #134c8b;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.channel-link:hover {
+  text-decoration: underline;
+}
+
 .access,
 .event-access {
   border-radius: 999px;

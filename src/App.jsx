@@ -392,7 +392,10 @@ function App() {
 
     filteredEvents.forEach((event) => {
       const channels = event.channels
-        .map((channel) => `${channel.name} (${channel.access === 'free' ? 'gratis' : 'betaald'})`)
+        .map((channel) => {
+          const base = `${channel.name} (${channel.access === 'free' ? 'gratis' : 'betaald'})`;
+          return channel.url ? `${base} ${channel.url}` : base;
+        })
         .join(', ');
 
       const descriptionLines = [
@@ -614,7 +617,13 @@ function App() {
                         <ul className="channel-list">
                           {event.channels.map((channel) => (
                             <li key={`${event.id}-${channel.name}-${channel.platform}`}>
-                              <span>{channel.name} ({channel.platform})</span>
+                              {channel.url ? (
+                                <a className="channel-link" href={channel.url} target="_blank" rel="noreferrer">
+                                  {channel.name} ({channel.platform})
+                                </a>
+                              ) : (
+                                <span>{channel.name} ({channel.platform})</span>
+                              )}
                               <span className={`access ${channel.access}`}>{channel.access === 'free' ? 'Gratis' : 'Betaald'}</span>
                             </li>
                           ))}

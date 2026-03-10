@@ -10,6 +10,10 @@ export function assertValidChannel(channel, eventId) {
   if (!['free', 'paid'].includes(channel.access)) {
     throw new Error(`Invalid channel access for event ${eventId}: ${channel.access}`);
   }
+
+  if (channel.url && typeof channel.url !== 'string') {
+    throw new Error(`Invalid channel url for event ${eventId}: ${channel.url}`);
+  }
 }
 
 export function normalizeEvent(event) {
@@ -25,7 +29,8 @@ export function normalizeEvent(event) {
     channels: event.channels.map((channel) => ({
       name: channel.name.trim(),
       platform: channel.platform,
-      access: channel.access
+      access: channel.access,
+      ...(channel.url ? { url: channel.url.trim() } : {})
     }))
   };
 }

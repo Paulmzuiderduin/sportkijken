@@ -5,6 +5,7 @@ import { normalizeDataset } from './dataset-utils.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const datasetPath = resolve(__dirname, '../src/data/events.nl.json');
+const majorEventsPath = resolve(__dirname, '../src/data/major-events.nl.json');
 
 const NOW = new Date();
 const windowStart = new Date(NOW.getTime() - 4 * 60 * 60 * 1000);
@@ -17,59 +18,59 @@ const MAX_EVENTS = 360;
 
 const CHANNEL_PRESETS = {
   espn: [
-    { name: 'ESPN', platform: 'tv', access: 'paid' },
-    { name: 'ESPN Watch', platform: 'stream', access: 'paid' }
+    { name: 'ESPN', platform: 'tv', access: 'paid', url: 'https://www.espn.nl/' },
+    { name: 'ESPN Watch', platform: 'stream', access: 'paid', url: 'https://www.espn.nl/watch/' }
   ],
   ziggo: [
-    { name: 'Ziggo Sport', platform: 'tv', access: 'paid' },
-    { name: 'Ziggo GO', platform: 'stream', access: 'paid' }
+    { name: 'Ziggo Sport', platform: 'tv', access: 'paid', url: 'https://www.ziggosport.nl/' },
+    { name: 'Ziggo GO', platform: 'stream', access: 'paid', url: 'https://www.ziggogo.tv/nl/home' }
   ],
   viaplay: [
-    { name: 'Viaplay TV', platform: 'tv', access: 'paid' },
-    { name: 'Viaplay', platform: 'stream', access: 'paid' }
+    { name: 'Viaplay TV', platform: 'tv', access: 'paid', url: 'https://viaplay.com/nl-nl/' },
+    { name: 'Viaplay', platform: 'stream', access: 'paid', url: 'https://viaplay.com/nl-nl/sport' }
   ],
   eurosport: [
-    { name: 'Eurosport', platform: 'tv', access: 'paid' },
-    { name: 'HBO Max', platform: 'stream', access: 'paid' }
+    { name: 'Eurosport', platform: 'tv', access: 'paid', url: 'https://www.eurosport.nl/' },
+    { name: 'HBO Max', platform: 'stream', access: 'paid', url: 'https://www.max.com/nl/' }
   ],
   nos: [
-    { name: 'NOS.nl Live', platform: 'stream', access: 'free' },
-    { name: 'NPO Start', platform: 'stream', access: 'free' }
+    { name: 'NOS.nl Live', platform: 'stream', access: 'free', url: 'https://nos.nl/livestream/sport' },
+    { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/live' }
   ],
   npoTv: [
-    { name: 'NPO 1', platform: 'tv', access: 'free' },
-    { name: 'NPO 2', platform: 'tv', access: 'free' },
-    { name: 'NPO 3', platform: 'tv', access: 'free' },
-    { name: 'NPO Start', platform: 'stream', access: 'free' }
+    { name: 'NPO 1', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-1' },
+    { name: 'NPO 2', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-2' },
+    { name: 'NPO 3', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-3' },
+    { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/live' }
   ],
   npoNosFull: [
-    { name: 'NPO 1', platform: 'tv', access: 'free' },
-    { name: 'NPO 2', platform: 'tv', access: 'free' },
-    { name: 'NPO 3', platform: 'tv', access: 'free' },
-    { name: 'NPO Start', platform: 'stream', access: 'free' },
-    { name: 'NOS.nl Live', platform: 'stream', access: 'free' }
+    { name: 'NPO 1', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-1' },
+    { name: 'NPO 2', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-2' },
+    { name: 'NPO 3', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-3' },
+    { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/live' },
+    { name: 'NOS.nl Live', platform: 'stream', access: 'free', url: 'https://nos.nl/livestream/sport' }
   ],
   mlb: [
-    { name: 'ESPN 4', platform: 'tv', access: 'paid' },
-    { name: 'MLB.TV', platform: 'stream', access: 'paid' }
+    { name: 'ESPN 4', platform: 'tv', access: 'paid', url: 'https://www.espn.nl/' },
+    { name: 'MLB.TV', platform: 'stream', access: 'paid', url: 'https://www.mlb.com/live-stream-games' }
   ],
   nfl: [
-    { name: 'NFL Game Pass', platform: 'stream', access: 'paid' },
-    { name: 'ESPN 4', platform: 'tv', access: 'paid' },
-    { name: 'DAZN', platform: 'stream', access: 'paid' }
+    { name: 'NFL Game Pass', platform: 'stream', access: 'paid', url: 'https://www.dazn.com/nl-NL/competition/Competition:1yf5v6n6j5ok3x5s6xqq6v9ha' },
+    { name: 'ESPN 4', platform: 'tv', access: 'paid', url: 'https://www.espn.nl/' },
+    { name: 'DAZN', platform: 'stream', access: 'paid', url: 'https://www.dazn.com/nl-NL/home' }
   ],
   wnba: [
-    { name: 'Ziggo Sport', platform: 'tv', access: 'paid' },
-    { name: 'WNBA League Pass', platform: 'stream', access: 'paid' },
-    { name: 'ESPN Watch', platform: 'stream', access: 'paid' }
+    { name: 'Ziggo Sport', platform: 'tv', access: 'paid', url: 'https://www.ziggosport.nl/' },
+    { name: 'WNBA League Pass', platform: 'stream', access: 'paid', url: 'https://www.wnba.com/leaguepass/' },
+    { name: 'ESPN Watch', platform: 'stream', access: 'paid', url: 'https://www.espn.nl/watch/' }
   ],
   nhl: [
-    { name: 'Viaplay TV', platform: 'tv', access: 'paid' },
-    { name: 'NHL.TV', platform: 'stream', access: 'paid' }
+    { name: 'Viaplay TV', platform: 'tv', access: 'paid', url: 'https://viaplay.com/nl-nl/' },
+    { name: 'NHL.TV', platform: 'stream', access: 'paid', url: 'https://www.nhl.com/info/where-to-stream' }
   ],
   ufc: [
-    { name: 'UFC Fight Pass', platform: 'stream', access: 'paid' },
-    { name: 'Discovery+', platform: 'stream', access: 'paid' }
+    { name: 'UFC Fight Pass', platform: 'stream', access: 'paid', url: 'https://ufcfightpass.com/' },
+    { name: 'Discovery+', platform: 'stream', access: 'paid', url: 'https://www.discoveryplus.com/nl/' }
   ]
 };
 
@@ -160,7 +161,7 @@ const tennisFeeds = [
     competition: 'ATP',
     channels: CHANNEL_PRESETS.eurosport,
     note: 'Automatisch opgehaald. Beschikbaarheid verschilt per toernooi.',
-    forceNos: true
+    addNosForMajors: true
   },
   {
     slug: 'wta',
@@ -168,7 +169,7 @@ const tennisFeeds = [
     competition: 'WTA',
     channels: CHANNEL_PRESETS.eurosport,
     note: 'Automatisch opgehaald. Beschikbaarheid verschilt per toernooi.',
-    forceNos: true
+    addNosForMajors: true
   }
 ];
 
@@ -222,8 +223,7 @@ const namedFeeds = [
     feedSlug: 'pga',
     competition: 'PGA Tour',
     channels: CHANNEL_PRESETS.ziggo,
-    note: 'Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen.',
-    forceNos: true
+    note: 'Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen.'
   },
   {
     sport: 'golf',
@@ -231,8 +231,7 @@ const namedFeeds = [
     feedSlug: 'lpga',
     competition: 'LPGA',
     channels: CHANNEL_PRESETS.ziggo,
-    note: 'Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen.',
-    forceNos: true
+    note: 'Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen.'
   },
   {
     sport: 'vechtsport',
@@ -491,6 +490,14 @@ function safeParseJson(raw) {
 
 const previousRaw = await readFile(datasetPath, 'utf8').catch(() => null);
 const previous = previousRaw ? safeParseJson(previousRaw) : null;
+const manualRaw = await readFile(majorEventsPath, 'utf8').catch(() => '[]');
+const manualParsed = safeParseJson(manualRaw);
+const manualEvents = Array.isArray(manualParsed)
+  ? manualParsed.filter((event) => {
+      const isoStart = tryIso(event.start);
+      return isoStart && isWithinWindow(isoStart);
+    })
+  : [];
 
 const football = await fetchByFeeds(
   soccerFeeds,
@@ -549,7 +556,8 @@ const mergedEvents = dedupeEvents([
   ...f1.events,
   ...tennis.events,
   ...teamSports.events,
-  ...namedSports.events
+  ...namedSports.events,
+  ...manualEvents
 ]).slice(0, MAX_EVENTS);
 
 if (!mergedEvents.length) {
@@ -560,7 +568,14 @@ const nextDataset = normalizeDataset({
   generatedAt: new Date().toISOString(),
   region: 'NL',
   isDemo: false,
-  sources: [...football.sources, ...f1.sources, ...tennis.sources, ...teamSports.sources, ...namedSports.sources],
+  sources: [
+    ...football.sources,
+    ...f1.sources,
+    ...tennis.sources,
+    ...teamSports.sources,
+    ...namedSports.sources,
+    'manual:src/data/major-events.nl.json'
+  ],
   events: mergedEvents
 });
 

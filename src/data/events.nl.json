@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-10T18:48:24.216Z",
+  "generatedAt": "2026-03-10T19:03:37.837Z",
   "region": "NL",
   "isDemo": false,
   "sources": [
@@ -20,7 +20,8 @@
     "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?dates=20260310-20260524",
     "https://site.api.espn.com/apis/site/v2/sports/golf/lpga/scoreboard?dates=20260310-20260524",
-    "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260310-20260524"
+    "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260310-20260524",
+    "manual:src/data/major-events.nl.json"
   ],
   "events": [
     {
@@ -35,12 +36,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -57,12 +60,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -79,12 +84,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -101,12 +108,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -123,12 +132,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -145,12 +156,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -167,12 +180,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -189,12 +204,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -211,12 +228,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -233,12 +252,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -255,12 +276,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -277,12 +300,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -299,12 +324,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -321,12 +348,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -343,12 +372,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -365,12 +396,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -387,12 +420,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -409,12 +444,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -431,12 +468,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -458,12 +497,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -480,12 +521,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -502,12 +545,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -524,12 +569,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -546,12 +593,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -568,12 +617,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -590,12 +641,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -612,12 +665,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -639,12 +694,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -666,12 +723,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -693,12 +752,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -715,12 +776,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -742,12 +805,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -769,12 +834,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -796,12 +863,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -818,12 +887,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -840,12 +911,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -862,12 +935,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -889,12 +964,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -916,12 +993,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -943,12 +1022,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -965,12 +1046,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -987,12 +1070,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -1014,12 +1099,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1036,12 +1123,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1058,12 +1147,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1080,12 +1171,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1102,12 +1195,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1124,12 +1219,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1146,12 +1243,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1168,12 +1267,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1190,12 +1291,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1212,12 +1315,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1234,12 +1339,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1256,12 +1363,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1278,12 +1387,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1300,12 +1411,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1322,12 +1435,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1344,12 +1459,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1366,12 +1483,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -1393,12 +1512,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1415,12 +1536,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1437,12 +1560,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -1464,12 +1589,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -1491,12 +1618,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -1518,12 +1647,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -1545,12 +1676,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -1572,37 +1705,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
-        },
-        {
-          "name": "NPO 1",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO 2",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO 3",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO Start",
-          "platform": "stream",
-          "access": "free"
-        },
-        {
-          "name": "NOS.nl Live",
-          "platform": "stream",
-          "access": "free"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1619,12 +1729,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1641,12 +1753,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1663,12 +1777,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1685,12 +1801,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -1707,12 +1825,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1729,12 +1849,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1751,12 +1873,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1773,12 +1897,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1795,12 +1921,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1817,12 +1945,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1839,12 +1969,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1861,12 +1993,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1883,12 +2017,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1905,12 +2041,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1927,12 +2065,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1949,12 +2089,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1971,12 +2113,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -1993,12 +2137,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -2015,12 +2161,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -2037,12 +2185,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -2059,12 +2209,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2081,12 +2233,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2103,12 +2257,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2125,12 +2281,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2147,12 +2305,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2169,12 +2329,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -2196,12 +2358,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -2223,12 +2387,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -2250,12 +2416,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2272,12 +2440,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2294,12 +2464,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2316,12 +2488,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2338,12 +2512,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2360,12 +2536,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2382,12 +2560,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2404,12 +2584,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -2431,12 +2613,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -2458,12 +2642,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -2485,12 +2671,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2507,12 +2695,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2529,12 +2719,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2551,12 +2743,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -2578,12 +2772,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2600,12 +2796,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2622,12 +2820,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2644,12 +2844,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2666,12 +2868,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2688,12 +2892,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -2715,12 +2921,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2737,12 +2945,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2759,12 +2969,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2781,12 +2993,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -2808,12 +3022,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "Viaplay",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/sport"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer de uitzending voor race/kwalificatie/sprint."
@@ -2830,12 +3046,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2852,12 +3070,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2874,12 +3094,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2896,12 +3118,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2918,12 +3142,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -2940,12 +3166,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2962,12 +3190,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -2984,12 +3214,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3006,12 +3238,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3028,12 +3262,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3050,12 +3286,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3072,12 +3310,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3094,12 +3334,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3116,12 +3358,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3138,12 +3382,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3160,12 +3406,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3182,12 +3430,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3209,12 +3459,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3236,12 +3488,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3263,12 +3517,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3290,12 +3546,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3317,12 +3575,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3339,12 +3599,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3361,12 +3623,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3383,12 +3647,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3405,12 +3671,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3432,12 +3700,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3459,12 +3729,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3486,12 +3758,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -3508,12 +3782,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3530,12 +3806,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3557,12 +3835,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3579,12 +3859,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3601,12 +3883,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3623,12 +3907,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3645,12 +3931,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3667,12 +3955,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3689,12 +3979,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -3711,12 +4003,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -3733,12 +4027,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3760,12 +4056,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3782,12 +4080,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -3809,12 +4109,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -3831,12 +4133,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3853,12 +4157,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3875,12 +4181,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3897,12 +4205,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3919,12 +4229,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3941,12 +4253,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3963,12 +4277,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -3985,12 +4301,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4007,12 +4325,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4029,12 +4349,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4051,12 +4373,14 @@
         {
           "name": "UFC Fight Pass",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://ufcfightpass.com/"
         },
         {
           "name": "Discovery+",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.discoveryplus.com/nl/"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4073,12 +4397,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -4100,12 +4426,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4122,12 +4450,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4144,12 +4474,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4166,12 +4498,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4188,12 +4522,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4210,12 +4546,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4232,12 +4570,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4254,12 +4594,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4276,12 +4618,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4298,12 +4642,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -4325,12 +4671,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4347,12 +4695,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -4374,12 +4724,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4396,12 +4748,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4418,12 +4772,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4440,12 +4796,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -4467,12 +4825,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -4489,12 +4849,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -4511,12 +4873,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -4533,12 +4897,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -4555,12 +4921,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -4582,12 +4950,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4604,12 +4974,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4626,12 +4998,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4648,12 +5022,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4670,12 +5046,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4692,12 +5070,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4714,12 +5094,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4736,12 +5118,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4758,12 +5142,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -4785,12 +5171,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -4812,12 +5200,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -4839,12 +5229,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4861,12 +5253,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4883,12 +5277,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4905,12 +5301,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4927,12 +5325,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4949,12 +5349,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4971,12 +5373,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -4993,12 +5397,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5015,12 +5421,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5037,12 +5445,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5064,12 +5474,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5086,12 +5498,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5108,12 +5522,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5130,12 +5546,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5157,12 +5575,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5179,12 +5599,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5201,12 +5623,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5228,12 +5652,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5250,12 +5676,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5272,12 +5700,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5294,12 +5724,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5316,12 +5748,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5338,12 +5772,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5360,12 +5796,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5382,12 +5820,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5404,12 +5844,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5426,12 +5868,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5448,12 +5892,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5475,12 +5921,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5502,12 +5950,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5524,12 +5974,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5546,12 +5998,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5568,12 +6022,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5595,12 +6051,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5622,12 +6080,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5649,12 +6109,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5676,12 +6138,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5698,12 +6162,14 @@
         {
           "name": "ESPN 4",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "MLB.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.mlb.com/live-stream-games"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5720,12 +6186,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5747,12 +6215,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -5769,12 +6239,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5796,37 +6268,14 @@
         {
           "name": "Eurosport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.eurosport.nl/"
         },
         {
           "name": "HBO Max",
           "platform": "stream",
-          "access": "paid"
-        },
-        {
-          "name": "NPO 1",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO 2",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO 3",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO Start",
-          "platform": "stream",
-          "access": "free"
-        },
-        {
-          "name": "NOS.nl Live",
-          "platform": "stream",
-          "access": "free"
+          "access": "paid",
+          "url": "https://www.max.com/nl/"
         }
       ],
       "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
@@ -5843,12 +6292,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -5865,12 +6316,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -5887,12 +6340,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -5909,12 +6364,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -5931,12 +6388,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5958,12 +6417,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -5985,12 +6446,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6012,12 +6475,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6034,12 +6499,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6056,12 +6523,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6078,12 +6547,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6105,12 +6576,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6127,12 +6600,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6154,12 +6629,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6181,12 +6658,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6203,12 +6682,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6225,12 +6706,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6252,12 +6735,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6279,12 +6764,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6301,12 +6788,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6323,12 +6812,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6345,12 +6836,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -6367,12 +6860,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -6389,12 +6884,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -6411,12 +6908,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -6433,12 +6932,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -6455,12 +6956,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6482,12 +6985,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6504,12 +7009,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6526,12 +7033,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6553,12 +7062,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6580,12 +7091,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6602,12 +7115,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6629,12 +7144,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6656,12 +7173,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6683,12 +7202,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6710,12 +7231,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6737,12 +7260,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -6764,12 +7289,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6786,12 +7313,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6808,12 +7337,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6830,37 +7361,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
-        },
-        {
-          "name": "NPO 1",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO 2",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO 3",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO Start",
-          "platform": "stream",
-          "access": "free"
-        },
-        {
-          "name": "NOS.nl Live",
-          "platform": "stream",
-          "access": "free"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6877,37 +7385,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
-        },
-        {
-          "name": "NPO 1",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO 2",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO 3",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO Start",
-          "platform": "stream",
-          "access": "free"
-        },
-        {
-          "name": "NOS.nl Live",
-          "platform": "stream",
-          "access": "free"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -6924,12 +7409,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -6946,12 +7433,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -6968,12 +7457,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -6990,12 +7481,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7012,12 +7505,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7034,12 +7529,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7056,12 +7553,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7078,12 +7577,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7100,12 +7601,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7122,12 +7625,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7144,12 +7649,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7166,12 +7673,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7188,12 +7697,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7210,12 +7721,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7232,12 +7745,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse rechten kunnen wijzigen."
@@ -7254,12 +7769,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7281,12 +7798,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7308,12 +7827,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7330,12 +7851,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7352,12 +7875,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7374,12 +7899,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7396,12 +7923,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7418,12 +7947,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7445,12 +7976,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7472,12 +8005,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7499,12 +8034,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7526,12 +8063,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7548,12 +8087,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7575,12 +8116,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7597,12 +8140,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7624,12 +8169,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7646,12 +8193,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7668,12 +8217,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7690,12 +8241,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7712,12 +8265,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -7734,12 +8289,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7756,12 +8313,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7778,12 +8337,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7805,12 +8366,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7832,12 +8395,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7859,12 +8424,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7886,12 +8453,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7913,12 +8482,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7935,12 +8506,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -7962,12 +8535,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -7984,12 +8559,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8006,37 +8583,14 @@
         {
           "name": "Eurosport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.eurosport.nl/"
         },
         {
           "name": "HBO Max",
           "platform": "stream",
-          "access": "paid"
-        },
-        {
-          "name": "NPO 1",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO 2",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO 3",
-          "platform": "tv",
-          "access": "free"
-        },
-        {
-          "name": "NPO Start",
-          "platform": "stream",
-          "access": "free"
-        },
-        {
-          "name": "NOS.nl Live",
-          "platform": "stream",
-          "access": "free"
+          "access": "paid",
+          "url": "https://www.max.com/nl/"
         }
       ],
       "notes": "Automatisch opgehaald. Beschikbaarheid verschilt per toernooi."
@@ -8053,12 +8607,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -8075,12 +8631,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8097,12 +8655,14 @@
         {
           "name": "UFC Fight Pass",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://ufcfightpass.com/"
         },
         {
           "name": "Discovery+",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.discoveryplus.com/nl/"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8119,12 +8679,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -8141,12 +8703,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8163,12 +8727,14 @@
         {
           "name": "ESPN",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/"
         },
         {
           "name": "ESPN Watch",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.espn.nl/watch/"
         }
       ],
       "notes": "Automatisch opgehaald. Controleer exacte zenderindeling op wedstrijddag."
@@ -8185,12 +8751,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8207,12 +8775,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8229,12 +8799,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8251,12 +8823,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -8278,12 +8852,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8300,12 +8876,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -8327,12 +8905,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -8354,12 +8934,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -8381,12 +8963,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8403,12 +8987,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8425,12 +9011,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."
@@ -8447,12 +9035,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -8474,12 +9064,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -8501,12 +9093,14 @@
         {
           "name": "Ziggo Sport",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggosport.nl/"
         },
         {
           "name": "Ziggo GO",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.ziggogo.tv/nl/home"
         },
         {
           "name": "NBA League Pass",
@@ -8528,12 +9122,14 @@
         {
           "name": "Viaplay TV",
           "platform": "tv",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://viaplay.com/nl-nl/"
         },
         {
           "name": "NHL.TV",
           "platform": "stream",
-          "access": "paid"
+          "access": "paid",
+          "url": "https://www.nhl.com/info/where-to-stream"
         }
       ],
       "notes": "Automatisch opgehaald. Nederlandse tv/streamrechten kunnen wijzigen."

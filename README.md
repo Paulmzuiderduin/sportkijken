@@ -7,6 +7,7 @@ Nederlandstalige sportkijkgids voor `sportkijken.paulzuiderduin.com`.
 - Selecteer sport(en): voetbal, formule 1, tennis, basketbal, american football, honkbal, ijshockey, golf, vechtsport
 - Filter op aanbieders (bijvoorbeeld NOS.nl, NPO 1/2/3, NPO Start, Ziggo Sport, Viaplay, ESPN)
 - Bekijk per event: starttijd (NL), kanaal/stream en gratis of betaald
+- Directe kliklinks naar provider/livestreampagina's waar beschikbaar
 - Filter op periode en toegangstype
 - Lokale voorkeuren opslaan in browser (`localStorage`)
 - Export van huidige selectie als `.ics` kalenderbestand
@@ -62,3 +63,6 @@ npm run data:normalize
 
 Tijden worden automatisch ververst, maar uitzendrechten in Nederland kunnen per wedstrijd wijzigen.
 Controleer bij twijfel altijd de zender op wedstrijddag.
+
+Olympische eventdata komt niet betrouwbaar uit de huidige ESPN-feeds. Gebruik
+`src/data/major-events.nl.json` voor handmatige toevoegingen van grote events wanneer nodig.
