@@ -164,6 +164,70 @@ const TEAM_NOISE_WORDS = new Set([
   'vrouwen'
 ]);
 
+const SCHEDULE_ONLY_SKIP_KEYWORDS = [
+  'samenvatting',
+  'hoogtepunten',
+  'highlights',
+  'herhaling',
+  'voorbeschouwing',
+  'nabeschouwing',
+  'dossier',
+  'vandaag',
+  'espn vandaag',
+  'top 25 goals',
+  'sportscenter',
+  'today',
+  'praat',
+  'insights',
+  'on the fly',
+  'the iconic',
+  'the rising',
+  'dream team',
+  'football nations',
+  'greatest stage',
+  'switch',
+  'matchday',
+  'rondo',
+  'heldinnen',
+  'zolder van',
+  'race cafe',
+  'this week',
+  'preview',
+  'tekengeld',
+  'classic match',
+  'on the range',
+  'adios rafa',
+  'film',
+  'documentaire'
+];
+
+const SCHEDULE_ONLY_EVENT_KEYWORDS = [
+  'grand prix',
+  'kampioenschap',
+  'championship',
+  'world cup',
+  'wereldkampioenschap',
+  'olympisch',
+  'olympic',
+  'paralymp',
+  'ek ',
+  'wk ',
+  ' kwalificatie',
+  ' qualification',
+  'open',
+  'masters',
+  'beker',
+  'cup',
+  'finale',
+  'semi-finale',
+  'semifinal',
+  'kwartfinale',
+  'quarterfinal',
+  'race',
+  'etappe',
+  'stage'
+];
+
 const soccerFeeds = [
   {
     slug: 'ned.1',
@@ -637,12 +701,15 @@ function extractEspnScheduleRows(payload, sourceUrl) {
   const root = payload?.page?.content?.watch?.arngs;
   const rows = [];
 
-  const walk = (node) => {
+  const walk = (node, path = []) => {
     if (!node) return;
     if (Array.isArray(node)) {
-      node.forEach(walk);
+      node.forEach((child) => walk(child, path));
       return;
     }
+
+    const nodeName = String(node?.nme || node?.name || '').trim();
+    const nextPath = nodeName ? [...path, nodeName] : path;
 
     if (Array.isArray(node.arngs)) {
       node.arngs.forEach((airing) => {
@@ -663,12 +730,25 @@ function extractEspnScheduleRows(payload, sourceUrl) {
         const watchUrl = hrf && hrf.startsWith('http')
           ? hrf
           : (hrf ? `https://www.espn.nl${hrf}` : 'https://www.espn.nl/watch/schedule');
+        const categories = [
+          ...nextPath,
+          ...((airing?.ctgys || []).map((category) => category?.name || category?.nme)),
+          ...((airing?.sctgys || []).map((category) => category?.name || category?.nme))
+        ]
+          .map((value) => String(value || '').trim())
+          .filter(Boolean);
+        const uniqueCategories = [...new Set(categories)];
 
         rows.push({
           title: airing?.nme || airing?.name || '',
+          description: airing?.fnme || '',
+          type: airing?.tp || '',
           start,
           startMs: new Date(start).getTime(),
+          end: tryIso(airing?.etme || airing?.endTime || airing?.endDate),
           channels,
+          categories: uniqueCategories,
+          sectionName: nextPath[0] || '',
           watchUrl,
           sourceUrl
         });
@@ -676,11 +756,11 @@ function extractEspnScheduleRows(payload, sourceUrl) {
     }
 
     if (Array.isArray(node.sctgys)) {
-      walk(node.sctgys);
+      walk(node.sctgys, nextPath);
     }
   };
 
-  walk(root);
+  walk(root, []);
   return rows;
 }
 
@@ -728,6 +808,10 @@ async function fetchZiggoEpgRows() {
             title,
             start,
             startMs: new Date(start).getTime(),
+            end: tryIso(program?.dateEnd || program?.endDate || program?.dateStop),
+            description: String(program?.description || program?.subTitle || program?.subtitle || '').trim(),
+            live: program?.live === true || program?.isLive === true,
+            channelName: channelName,
             channels: [channelName],
             sourceUrl: url
           });
@@ -895,6 +979,228 @@ function enrichEventsWithSchedules(events, ziggoRows, espnRows) {
   return events.map((event) => enrichEventChannels(event, ziggoRows, espnRows));
 }
 
+function competitionFromCandidates(candidates, fallback = 'Sport') {
+  for (const candidate of candidates) {
+    const value = String(candidate || '').trim();
+    if (!value) {
+      continue;
+    }
+
+    const normalized = normalizeAsciiLower(value);
+    if (['sport', 'sports', 'others', 'upcoming', 'live', 'livestream'].includes(normalized)) {
+      continue;
+    }
+    return value;
+  }
+
+  return fallback;
+}
+
+function durationFromStartEnd(startIso, endIso, fallbackMinutes = 120) {
+  const end = tryIso(endIso);
+  if (!end) {
+    return fallbackMinutes;
+  }
+  const diffMinutes = Math.round((new Date(end).getTime() - new Date(startIso).getTime()) / 60000);
+  return diffMinutes > 10 ? diffMinutes : fallbackMinutes;
+}
+
+function normalizedTitleKey(title) {
+  return normalizeTitleForMatch(title)
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .replace(/\b(live|livestream|wedstrijd|match|sport)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function scheduleOnlyShouldSkip(title) {
+  const normalized = normalizeAsciiLower(title).replace(/\s+/g, ' ').trim();
+  return !normalized || SCHEDULE_ONLY_SKIP_KEYWORDS.some((keyword) => normalized.includes(keyword));
+}
+
+function looksLikeScheduledSportEvent(title) {
+  const raw = String(title || '');
+  const normalized = normalizeTitleForMatch(raw);
+  if (!normalized) {
+    return false;
+  }
+  if (/\s(?:-|–|—|vs\.?|v\.?)\s/i.test(raw)) {
+    return true;
+  }
+  return SCHEDULE_ONLY_EVENT_KEYWORDS.some((keyword) => normalized.includes(keyword.trim()));
+}
+
+function inferEspnScheduleSport(row) {
+  const detected = detectSportFromCandidates([
+    row.title,
+    row.description,
+    row.sectionName,
+    ...(row.categories || [])
+  ]);
+  if (detected) {
+    return detected;
+  }
+
+  const titlePrefix = row.title.includes(':') ? row.title.split(':')[0] : '';
+  return inferSportFromCandidates([row.sectionName, ...(row.categories || []), titlePrefix], null);
+}
+
+function inferZiggoScheduleSport(row) {
+  const detected = detectSportFromCandidates([row.title, row.description, row.channelName]);
+  if (detected) {
+    return detected;
+  }
+
+  const titlePrefix = row.title.includes(':') ? row.title.split(':')[0] : '';
+  return inferSportFromCandidates([titlePrefix], null);
+}
+
+function scheduleOnlyLikelyDuplicate(candidate, existingEvents) {
+  const candidateStartMs = new Date(candidate.start).getTime();
+  const candidateTitleKey = normalizedTitleKey(candidate.title);
+
+  for (const event of existingEvents) {
+    const eventStartMs = new Date(event.start).getTime();
+    if (!Number.isFinite(eventStartMs)) {
+      continue;
+    }
+    if (Math.abs(eventStartMs - candidateStartMs) > 4 * 60 * 60 * 1000) {
+      continue;
+    }
+
+    if (titleLikelyMatches(candidate.title, event.title) || titleLikelyMatches(event.title, candidate.title)) {
+      return true;
+    }
+
+    const eventTitleKey = normalizedTitleKey(event.title);
+    if (candidateTitleKey && eventTitleKey && candidateTitleKey === eventTitleKey) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function createScheduleOnlyId(prefix, row) {
+  const title = slugify(row.title).slice(0, 72) || 'event';
+  const startKey = formatDateForApi(new Date(row.start));
+  return `${prefix}-${startKey}-${title}`;
+}
+
+function parseEspnScheduleOnlyEvent(row) {
+  if (scheduleOnlyShouldSkip(row.title) || !looksLikeScheduledSportEvent(row.title)) {
+    return null;
+  }
+
+  const type = normalizeAsciiLower(row.type);
+  if (type && !['live', 'upcoming'].includes(type)) {
+    return null;
+  }
+
+  const sport = inferEspnScheduleSport(row);
+  if (!sport) {
+    return null;
+  }
+
+  const channels = mergeChannels(
+    ...(row.channels || []).map((channelName) => espnChannelFromName(channelName, row.watchUrl)).filter(Boolean)
+  );
+  if (!channels.length) {
+    return null;
+  }
+
+  const competition = competitionFromCandidates(
+    [row.sectionName, ...(row.categories || []), sport.replace(/-/g, ' ')],
+    'ESPN'
+  );
+
+  return {
+    id: createScheduleOnlyId('espn-schedule', row),
+    sport,
+    title: row.title,
+    competition,
+    start: row.start,
+    durationMinutes: durationFromStartEnd(row.start, row.end, 120),
+    location: 'Online',
+    channels,
+    notes: 'Automatisch toegevoegd vanuit ESPN TV-gids (schedule-only).',
+    sourceType: 'espn-schedule',
+    sourceRefs: [createSourceRef('ESPN TV-gids', row.sourceUrl, 'espn-schedule')].filter(Boolean)
+  };
+}
+
+function parseZiggoScheduleOnlyEvent(row) {
+  if (scheduleOnlyShouldSkip(row.title)) {
+    return null;
+  }
+  if (!row.live && !looksLikeScheduledSportEvent(row.title)) {
+    return null;
+  }
+
+  const sport = inferZiggoScheduleSport(row);
+  if (!sport) {
+    return null;
+  }
+
+  const channels = mergeChannels(
+    ...(row.channels || []).map((channelName) => ziggoChannelFromName(channelName)).filter(Boolean)
+  );
+  if (!channels.length) {
+    return null;
+  }
+
+  const competition = competitionFromCandidates(
+    [row.channelName, row.title.split(':')[0], sport.replace(/-/g, ' ')],
+    'Ziggo Sport'
+  );
+
+  return {
+    id: createScheduleOnlyId('ziggo-schedule', row),
+    sport,
+    title: row.title,
+    competition,
+    start: row.start,
+    durationMinutes: durationFromStartEnd(row.start, row.end, 120),
+    location: 'Online',
+    channels,
+    notes: row.live
+      ? 'Automatisch toegevoegd vanuit Ziggo Sport EPG (live-indicatie aanwezig).'
+      : 'Automatisch toegevoegd vanuit Ziggo Sport EPG (schedule-only).',
+    sourceType: 'ziggo',
+    sourceRefs: [createSourceRef('Ziggo Sport programmagids', row.sourceUrl, 'ziggo')].filter(Boolean)
+  };
+}
+
+function buildScheduleOnlyEvents(existingEvents, ziggoRows, espnRows) {
+  const scheduleOnlyEvents = [];
+  const combinedExisting = [...existingEvents];
+
+  const addIfUnique = (candidate) => {
+    if (!candidate) {
+      return;
+    }
+    if (scheduleOnlyLikelyDuplicate(candidate, combinedExisting)) {
+      return;
+    }
+    scheduleOnlyEvents.push(candidate);
+    combinedExisting.push(candidate);
+  };
+
+  espnRows
+    .map((row) => parseEspnScheduleOnlyEvent(row))
+    .filter(Boolean)
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
+    .forEach(addIfUnique);
+
+  ziggoRows
+    .map((row) => parseZiggoScheduleOnlyEvent(row))
+    .filter(Boolean)
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
+    .forEach(addIfUnique);
+
+  return scheduleOnlyEvents;
+}
+
 async function fetchText(url) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -997,15 +1303,32 @@ function slugify(value) {
     .replace(/^-+|-+$/g, '');
 }
 
-const NOS_SPORT_KEYWORDS = [
+const SPORT_KEYWORDS = [
   { sport: 'formule-1', keywords: ['formule 1', 'f1'] },
-  { sport: 'voetbal', keywords: ['voetbal', 'soccer'] },
-  { sport: 'tennis', keywords: ['tennis'] },
+  {
+    sport: 'voetbal',
+    keywords: [
+      'voetbal',
+      'soccer',
+      'eredivisie',
+      'keuken kampioen',
+      'premier league',
+      'la liga',
+      'serie a',
+      'bundesliga',
+      'ligue 1',
+      'champions league',
+      'europa league',
+      'conference league',
+      ...DUTCH_CLUB_KEYWORDS
+    ]
+  },
+  { sport: 'tennis', keywords: ['tennis', 'atp', 'wta', 'davis cup', 'billie jean king'] },
   { sport: 'basketbal', keywords: ['basketbal', 'basketball'] },
   { sport: 'american-football', keywords: ['american football', 'nfl'] },
   { sport: 'honkbal', keywords: ['honkbal', 'baseball'] },
   { sport: 'ijshockey', keywords: ['ijshockey', 'ice hockey'] },
-  { sport: 'golf', keywords: ['golf'] },
+  { sport: 'golf', keywords: ['golf', 'pga', 'lpga', 'european tour'] },
   { sport: 'vechtsport', keywords: ['ufc', 'mma', 'boksen', 'boxing', 'kickboksen'] },
   { sport: 'handbal', keywords: ['handbal', 'handball'] },
   { sport: 'volleybal', keywords: ['volleybal', 'volleyball'] },
@@ -1014,31 +1337,80 @@ const NOS_SPORT_KEYWORDS = [
   { sport: 'atletiek', keywords: ['atletiek', 'athletics'] },
   { sport: 'schaatsen', keywords: ['schaatsen', 'speed skating'] },
   { sport: 'rugby', keywords: ['rugby'] },
-  { sport: 'darts', keywords: ['darts'] }
+  { sport: 'darts', keywords: ['darts'] },
+  { sport: 'olympics', keywords: ['olympisch', 'olympic', 'olympische spelen'] },
+  { sport: 'paralympics', keywords: ['paralymp', 'paralympische spelen'] },
+  { sport: 'snooker', keywords: ['snooker'] },
+  { sport: 'zwemmen', keywords: ['zwemmen', 'swimming'] },
+  { sport: 'turnen', keywords: ['turnen', 'gymnastics'] },
+  { sport: 'badminton', keywords: ['badminton'] },
+  { sport: 'judo', keywords: ['judo'] },
+  { sport: 'roeien', keywords: ['roeien', 'rowing'] },
+  { sport: 'zeilen', keywords: ['zeilen', 'sailing'] },
+  {
+    sport: 'motorsport',
+    keywords: ['motogp', 'motorsport', 'nascar', 'indycar', 'rally', 'imsa', 'supercars', 'formula e']
+  },
+  { sport: 'cricket', keywords: ['cricket'] }
 ];
 
-function detectNosSportFromText(text) {
-  const normalized = normalizeAsciiLower(text);
-  const match = NOS_SPORT_KEYWORDS.find((entry) => entry.keywords.some((keyword) => normalized.includes(keyword)));
+const GENERIC_SPORT_FALLBACK_BLOCKLIST = new Set([
+  'sport',
+  'sports',
+  'nos-sport',
+  'livestream',
+  'live',
+  'wedstrijd',
+  'match',
+  'upcoming',
+  'others',
+  'espn',
+  'ziggo-sport',
+  'ziggo',
+  'npo',
+  'npo-start',
+  'nos',
+  'watch',
+  'vandaag'
+]);
+
+function detectSportFromCandidates(candidates) {
+  const normalized = normalizeAsciiLower(candidates.filter(Boolean).join(' '));
+  if (!normalized) {
+    return null;
+  }
+  const match = SPORT_KEYWORDS.find((entry) => entry.keywords.some((keyword) => normalized.includes(keyword)));
   return match?.sport || null;
 }
 
-function nosFallbackSportSlug(item, categoryLabels) {
-  const candidates = [
-    ...categoryLabels,
-    item?.title?.split(':')?.[0],
-    item?.title
-  ].filter(Boolean);
-
+function fallbackSportSlugFromCandidates(candidates) {
   for (const candidate of candidates) {
-    const slug = slugify(candidate);
-    if (!slug || slug === 'sport' || slug === 'nos-sport' || slug === 'livestream') {
+    const normalized = normalizeAsciiLower(candidate)
+      .replace(/\b(live|livestream|wedstrijd|match|sport|sports|espn|ziggo|npo|nos|watch|kanaal|channel)\b/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const slug = slugify(normalized || candidate);
+    if (!slug || GENERIC_SPORT_FALLBACK_BLOCKLIST.has(slug)) {
       continue;
     }
     return slug;
   }
 
-  return 'sport';
+  return null;
+}
+
+function inferSportFromCandidates(candidates, defaultSport = 'sport') {
+  const detected = detectSportFromCandidates(candidates);
+  if (detected) {
+    return detected;
+  }
+
+  const fallback = fallbackSportSlugFromCandidates(candidates);
+  if (fallback) {
+    return fallback;
+  }
+
+  return defaultSport;
 }
 
 function mapNosSport(item) {
@@ -1047,13 +1419,13 @@ function mapNosSport(item) {
     .map((category) => category?.label || category?.name)
     .filter(Boolean);
 
-  const haystack = `${item.title || ''} ${categoryLabels.join(' ')}`;
-  const detected = detectNosSportFromText(haystack);
-  if (detected) {
-    return detected;
-  }
-
-  return nosFallbackSportSlug(item, categoryLabels);
+  const candidates = [
+    ...categoryLabels,
+    item?.title?.split(':')?.[0],
+    item?.owner,
+    item?.title
+  ].filter(Boolean);
+  return inferSportFromCandidates(candidates, 'sport');
 }
 
 function parseNosNextData(rawHtml) {
@@ -1600,7 +1972,9 @@ const mergedEvents = dedupeEvents([
   ...manualEvents
 ]);
 
-const enrichedEvents = enrichEventsWithSchedules(mergedEvents, ziggoEpg.rows, espnSchedule.rows);
+const scheduleOnlyEvents = buildScheduleOnlyEvents(mergedEvents, ziggoEpg.rows, espnSchedule.rows);
+const mergedWithScheduleOnly = dedupeEvents([...mergedEvents, ...scheduleOnlyEvents]);
+const enrichedEvents = enrichEventsWithSchedules(mergedWithScheduleOnly, ziggoEpg.rows, espnSchedule.rows);
 const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
 const generatedAt = new Date().toISOString();
 const verifiedEvents = finalizeVerification(overriddenEvents, generatedAt).slice(0, MAX_EVENTS);
