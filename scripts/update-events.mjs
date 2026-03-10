@@ -90,6 +90,26 @@ const MAJOR_FREE_KEYWORDS = [
   'teamnl'
 ];
 
+const ZIGGO_FREE_SOCCER_KEYWORDS = [
+  'ajax',
+  'psv',
+  'feyenoord',
+  'az ',
+  'az alkmaar',
+  'fc twente',
+  'twente',
+  'utrecht',
+  'nederland',
+  'oranje',
+  'final',
+  'semi-final',
+  'halve finale',
+  'kwartfinale',
+  'quarterfinal',
+  'round of 16',
+  'achtste finale'
+];
+
 const soccerFeeds = [
   {
     slug: 'ned.1',
@@ -110,21 +130,24 @@ const soccerFeeds = [
     sport: 'voetbal',
     competition: 'UEFA Champions League',
     channels: CHANNEL_PRESETS.ziggo,
-    note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen.'
+    note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen; deel van de wedstrijden kan gratis op Ziggo Sport zijn.',
+    allowZiggoFreeHeuristic: true
   },
   {
     slug: 'uefa.europa',
     sport: 'voetbal',
     competition: 'UEFA Europa League',
     channels: CHANNEL_PRESETS.ziggo,
-    note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen.'
+    note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen; deel van de wedstrijden kan gratis op Ziggo Sport zijn.',
+    allowZiggoFreeHeuristic: true
   },
   {
     slug: 'uefa.europa.conf',
     sport: 'voetbal',
     competition: 'UEFA Conference League',
     channels: CHANNEL_PRESETS.ziggo,
-    note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen.'
+    note: 'Automatisch opgehaald. Nederlandse rechten kunnen wijzigen; deel van de wedstrijden kan gratis op Ziggo Sport zijn.',
+    allowZiggoFreeHeuristic: true
   },
   {
     slug: 'uefa.nations',
@@ -306,11 +329,39 @@ function shouldAddNosChannels(feed, title, competition) {
   return MAJOR_FREE_KEYWORDS.some((keyword) => haystack.includes(keyword));
 }
 
-function channelsForEvent(feed, title, competition) {
-  if (shouldAddNosChannels(feed, title, competition)) {
-    return mergeChannels(feed.channels, CHANNEL_PRESETS.npoNosFull);
+function shouldMarkZiggoSportFree(feed, title, competition) {
+  if (!feed.allowZiggoFreeHeuristic) {
+    return false;
   }
-  return feed.channels;
+
+  const haystack = `${title} ${competition}`.toLowerCase();
+  return ZIGGO_FREE_SOCCER_KEYWORDS.some((keyword) => haystack.includes(keyword));
+}
+
+function markZiggoSportFree(channels) {
+  return channels.map((channel) => {
+    if (channel.name !== 'Ziggo Sport') {
+      return channel;
+    }
+    return {
+      ...channel,
+      access: 'free'
+    };
+  });
+}
+
+function channelsForEvent(feed, title, competition) {
+  let channels = feed.channels;
+
+  if (shouldMarkZiggoSportFree(feed, title, competition)) {
+    channels = markZiggoSportFree(channels);
+  }
+
+  if (shouldAddNosChannels(feed, title, competition)) {
+    return mergeChannels(channels, CHANNEL_PRESETS.npoNosFull);
+  }
+
+  return channels;
 }
 
 async function fetchJson(url) {
