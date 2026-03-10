@@ -4,7 +4,8 @@ Nederlandstalige sportkijkgids voor `sportkijken.paulzuiderduin.com`.
 
 ## MVP
 
-- Selecteer sport(en): voetbal, formule 1, tennis
+- Selecteer sport(en): voetbal, formule 1, tennis, basketbal, honkbal, ijshockey, golf, vechtsport
+- Filter op aanbieders (bijvoorbeeld NOS/NPO, Ziggo, ESPN, Viaplay)
 - Bekijk per event: starttijd (NL), kanaal/stream en gratis of betaald
 - Filter op periode en toegangstype
 - Lokale voorkeuren opslaan in browser (`localStorage`)
@@ -33,7 +34,8 @@ npm run data:normalize
 ```
 
 - `data:update` haalt automatisch events op uit ESPN scoreboards (voetbal, formule 1, tennis),
-  past NL-kijkkanaalregels toe en schrijft alleen weg als eventdata echt veranderd is.
+  past NL-kijkkanaalregels toe (inclusief NOS/NPO gratis streams bij relevante events)
+  en schrijft alleen weg als eventdata echt veranderd is.
 - `data:normalize` valideert verplichte velden, sorteert events op datum en schrijft de dataset terug.
 
 ## Automatische updates

@@ -220,7 +220,13 @@ h3,
 
 .sport-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.55rem;
+}
+
+.provider-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 0.55rem;
 }
 
@@ -239,6 +245,11 @@ h3,
 .sport-chip.is-selected {
   border-color: color-mix(in srgb, var(--chip-accent) 70%, #0d1622);
   box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--chip-accent) 38%, #ffffff);
+}
+
+.provider-chip.is-selected {
+  border-color: rgba(12, 51, 94, 0.34);
+  background: linear-gradient(180deg, #ebf1fa, #f4f8ff);
 }
 
 .chip-actions {
@@ -458,6 +469,10 @@ h3,
   }
 
   .sport-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .provider-grid {
     grid-template-columns: 1fr;
   }
 

@@ -1,13 +1,20 @@
 import { useMemo, useState, useEffect } from 'react';
 import scheduleDataset from './data/events.nl.json';
 
-const STORAGE_KEY = 'sportkijken-preferences-v1';
+const STORAGE_KEY = 'sportkijken-preferences-v2';
 
-const SPORT_OPTIONS = [
-  { id: 'voetbal', label: 'Voetbal', accent: '#0a7b52' },
-  { id: 'formule-1', label: 'Formule 1', accent: '#c7351b' },
-  { id: 'tennis', label: 'Tennis', accent: '#2f67cf' }
-];
+const KNOWN_SPORT_META = {
+  voetbal: { label: 'Voetbal', accent: '#0a7b52' },
+  'formule-1': { label: 'Formule 1', accent: '#c7351b' },
+  tennis: { label: 'Tennis', accent: '#2f67cf' },
+  basketbal: { label: 'Basketbal', accent: '#7e3af2' },
+  honkbal: { label: 'Honkbal', accent: '#c7791f' },
+  ijshockey: { label: 'IJshockey', accent: '#0f6a8f' },
+  golf: { label: 'Golf', accent: '#2a8c44' },
+  vechtsport: { label: 'Vechtsport', accent: '#7f1d1d' }
+};
+
+const FALLBACK_ACCENTS = ['#0a7b52', '#2f67cf', '#c7351b', '#7e3af2', '#0f6a8f', '#7f1d1d', '#b45309'];
 
 const RANGE_OPTIONS = [
   { id: '7d', label: 'Komende 7 dagen' },
@@ -47,48 +54,98 @@ const DAY_NUMBER_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
   timeZone: 'Europe/Amsterdam'
 });
 
+const SOURCE_EVENTS = Array.isArray(scheduleDataset.events) ? scheduleDataset.events : [];
+
+function formatSportLabel(id) {
+  return id
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+function colorForSport(id) {
+  const hash = [...id].reduce((total, char) => total + char.charCodeAt(0), 0);
+  return FALLBACK_ACCENTS[hash % FALLBACK_ACCENTS.length];
+}
+
+const SPORT_OPTIONS = [...new Set(SOURCE_EVENTS.map((event) => event.sport))]
+  .sort((a, b) => {
+    const aLabel = KNOWN_SPORT_META[a]?.label || formatSportLabel(a);
+    const bLabel = KNOWN_SPORT_META[b]?.label || formatSportLabel(b);
+    return aLabel.localeCompare(bLabel, 'nl-NL');
+  })
+  .map((id) => ({
+    id,
+    label: KNOWN_SPORT_META[id]?.label || formatSportLabel(id),
+    accent: KNOWN_SPORT_META[id]?.accent || colorForSport(id)
+  }));
+
 const sportLookup = Object.fromEntries(SPORT_OPTIONS.map((sport) => [sport.id, sport]));
 
+const PROVIDER_OPTIONS = [...new Set(
+  SOURCE_EVENTS.flatMap((event) => (Array.isArray(event.channels) ? event.channels.map((channel) => channel.name) : []))
+)]
+  .filter(Boolean)
+  .sort((a, b) => a.localeCompare(b, 'nl-NL'));
+
+function sportMetaFor(id) {
+  return sportLookup[id] || {
+    id,
+    label: formatSportLabel(id),
+    accent: colorForSport(id)
+  };
+}
+
+function defaultPreferences() {
+  return {
+    selectedSports: SPORT_OPTIONS.map((sport) => sport.id),
+    selectedProviders: PROVIDER_OPTIONS,
+    accessFilter: 'all',
+    rangeFilter: '30d',
+    searchText: ''
+  };
+}
+
+function sanitizeSelection(values, allowed) {
+  const allowedSet = new Set(allowed);
+  return values.filter((value) => allowedSet.has(value));
+}
+
 function loadPreferences() {
+  const defaults = defaultPreferences();
+
   if (typeof window === 'undefined') {
-    return {
-      selectedSports: SPORT_OPTIONS.map((sport) => sport.id),
-      accessFilter: 'all',
-      rangeFilter: '30d',
-      searchText: ''
-    };
+    return defaults;
   }
 
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);
     if (!saved) {
-      return {
-        selectedSports: SPORT_OPTIONS.map((sport) => sport.id),
-        accessFilter: 'all',
-        rangeFilter: '30d',
-        searchText: ''
-      };
+      return defaults;
     }
+
     const parsed = JSON.parse(saved);
+    const selectedSports = Array.isArray(parsed.selectedSports)
+      ? sanitizeSelection(parsed.selectedSports, defaults.selectedSports)
+      : defaults.selectedSports;
+
+    const selectedProviders = Array.isArray(parsed.selectedProviders)
+      ? sanitizeSelection(parsed.selectedProviders, PROVIDER_OPTIONS)
+      : defaults.selectedProviders;
+
     return {
-      selectedSports: Array.isArray(parsed.selectedSports) && parsed.selectedSports.length
-        ? parsed.selectedSports
-        : SPORT_OPTIONS.map((sport) => sport.id),
+      selectedSports: selectedSports.length ? selectedSports : defaults.selectedSports,
+      selectedProviders,
       accessFilter: ACCESS_OPTIONS.some((option) => option.id === parsed.accessFilter)
         ? parsed.accessFilter
-        : 'all',
+        : defaults.accessFilter,
       rangeFilter: RANGE_OPTIONS.some((option) => option.id === parsed.rangeFilter)
         ? parsed.rangeFilter
-        : '30d',
-      searchText: typeof parsed.searchText === 'string' ? parsed.searchText : ''
+        : defaults.rangeFilter,
+      searchText: typeof parsed.searchText === 'string' ? parsed.searchText : defaults.searchText
     };
   } catch (error) {
-    return {
-      selectedSports: SPORT_OPTIONS.map((sport) => sport.id),
-      accessFilter: 'all',
-      rangeFilter: '30d',
-      searchText: ''
-    };
+    return defaults;
   }
 }
 
@@ -111,6 +168,13 @@ function hasAccess(event, accessFilter) {
   return event.channels.some((channel) => channel.access === accessFilter);
 }
 
+function hasProvider(event, selectedProviders) {
+  if (!selectedProviders.length) {
+    return false;
+  }
+  return event.channels.some((channel) => selectedProviders.includes(channel.name));
+}
+
 function getEventAccessLabel(event) {
   const hasFree = event.channels.some((channel) => channel.access === 'free');
   const hasPaid = event.channels.some((channel) => channel.access === 'paid');
@@ -128,7 +192,7 @@ function App() {
   const [preferences, setPreferences] = useState(loadPreferences);
 
   const events = useMemo(() => {
-    return [...scheduleDataset.events]
+    return [...SOURCE_EVENTS]
       .map((event) => ({
         ...event,
         startDate: new Date(event.start),
@@ -163,6 +227,10 @@ function App() {
         return false;
       }
 
+      if (!hasProvider(event, preferences.selectedProviders)) {
+        return false;
+      }
+
       if (event.startDate < threshold) {
         return false;
       }
@@ -179,7 +247,12 @@ function App() {
         return true;
       }
 
-      return [event.title, event.competition, event.location]
+      return [
+        event.title,
+        event.competition,
+        event.location,
+        ...(event.channels || []).map((channel) => channel.name)
+      ]
         .filter(Boolean)
         .join(' ')
         .toLowerCase()
@@ -234,6 +307,19 @@ function App() {
     });
   };
 
+  const toggleProvider = (provider) => {
+    setPreferences((current) => {
+      const selected = current.selectedProviders.includes(provider)
+        ? current.selectedProviders.filter((item) => item !== provider)
+        : [...current.selectedProviders, provider];
+
+      return {
+        ...current,
+        selectedProviders: selected
+      };
+    });
+  };
+
   const selectAllSports = () => {
     setPreferences((current) => ({
       ...current,
@@ -245,6 +331,20 @@ function App() {
     setPreferences((current) => ({
       ...current,
       selectedSports: []
+    }));
+  };
+
+  const selectAllProviders = () => {
+    setPreferences((current) => ({
+      ...current,
+      selectedProviders: PROVIDER_OPTIONS
+    }));
+  };
+
+  const clearProviders = () => {
+    setPreferences((current) => ({
+      ...current,
+      selectedProviders: []
     }));
   };
 
@@ -279,7 +379,7 @@ function App() {
       lines.push(`DTSTAMP:${nowStamp}`);
       lines.push(`DTSTART:${toIcsDate(event.startDate)}`);
       lines.push(`DTEND:${toIcsDate(event.endDate)}`);
-      lines.push(`SUMMARY:${escapeIcsValue(`${sportLookup[event.sport].label}: ${event.title}`)}`);
+      lines.push(`SUMMARY:${escapeIcsValue(`${sportMetaFor(event.sport).label}: ${event.title}`)}`);
       lines.push(`DESCRIPTION:${escapeIcsValue(descriptionLines.join('\n'))}`);
       lines.push(`LOCATION:${escapeIcsValue(event.location || 'Nederland')}`);
       lines.push('END:VEVENT');
@@ -307,13 +407,13 @@ function App() {
             <p className="kicker">Sportkijken Nederland</p>
             <h1>Wanneer en waar sport kijken, zonder eindeloos zoeken.</h1>
             <p className="intro">
-              Kies je sporten en krijg direct een overzicht voor Nederland: starttijd, zender/stream en of het gratis of betaald is.
+              Kies je sporten en aanbieders voor Nederland: starttijd, zender/stream en gratis of betaald in een overzicht.
             </p>
             <div className="hero-actions">
               <button type="button" className="primary" onClick={exportVisibleEventsAsIcs}>
                 Exporteer selectie als .ics
               </button>
-              <p className="beta-note">Voorbereid op jouw idee voor kalenderexport bij grote events.</p>
+              <p className="beta-note">Met live-updates per uur en aanbiederfilters inclusief NOS/NPO.</p>
             </div>
           </div>
           <aside className="summary-card">
@@ -336,7 +436,7 @@ function App() {
               <span>Volgende event</span>
               {counters.nextEvent ? (
                 <strong>
-                  {sportLookup[counters.nextEvent.sport].label} • {TIME_FORMATTER.format(counters.nextEvent.startDate)}
+                  {sportMetaFor(counters.nextEvent.sport).label} • {TIME_FORMATTER.format(counters.nextEvent.startDate)}
                 </strong>
               ) : (
                 <strong>Geen event in huidige filters</strong>
@@ -367,6 +467,29 @@ function App() {
             <div className="chip-actions">
               <button type="button" className="ghost" onClick={selectAllSports}>Alles</button>
               <button type="button" className="ghost" onClick={clearSports}>Geen</button>
+            </div>
+          </div>
+
+          <div className="filter-group">
+            <p className="filter-title">Aanbieders</p>
+            <div className="provider-grid">
+              {PROVIDER_OPTIONS.map((provider) => {
+                const selected = preferences.selectedProviders.includes(provider);
+                return (
+                  <button
+                    key={provider}
+                    type="button"
+                    className={`chip provider-chip ${selected ? 'is-selected' : ''}`}
+                    onClick={() => toggleProvider(provider)}
+                  >
+                    {provider}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="chip-actions">
+              <button type="button" className="ghost" onClick={selectAllProviders}>Alles</button>
+              <button type="button" className="ghost" onClick={clearProviders}>Geen</button>
             </div>
           </div>
 
@@ -410,18 +533,18 @@ function App() {
                 type="search"
                 value={preferences.searchText}
                 onChange={(event) => setPreferences((current) => ({ ...current, searchText: event.target.value }))}
-                placeholder="team, toernooi of locatie"
+                placeholder="team, toernooi, aanbieder of locatie"
               />
             </div>
           </div>
         </section>
 
         <section className="panel notice-panel">
-            <p>
-              {scheduleDataset.isDemo
+          <p>
+            {scheduleDataset.isDemo
               ? 'MVP-notitie: deze versie gebruikt een handmatige dataset. Rechten en tijden kunnen wijzigen.'
-              : 'Dataset wordt automatisch bijgewerkt (ongeveer elk uur).'}
-            </p>
+              : 'Dataset wordt automatisch bijgewerkt (ongeveer elk uur), inclusief aanbieders zoals NOS/NPO, Ziggo, ESPN en Viaplay.'}
+          </p>
           <p>Laatst bijgewerkt: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</p>
         </section>
 
@@ -429,7 +552,7 @@ function App() {
           {groupedEvents.length === 0 ? (
             <article className="panel empty-state">
               <h2>Geen events met deze filters</h2>
-              <p>Pas je sport-, periode- of toegangskeuze aan om resultaten te zien.</p>
+              <p>Pas je sport-, aanbieder-, periode- of toegangskeuze aan om resultaten te zien.</p>
             </article>
           ) : (
             groupedEvents.map((group) => (
@@ -440,44 +563,47 @@ function App() {
                 </header>
 
                 <div className="cards">
-                  {group.events.map((event) => (
-                    <div key={event.id} className="event-card">
-                      <div className="event-meta">
-                        <span
-                          className="sport-dot"
-                          style={{ background: sportLookup[event.sport].accent }}
-                          aria-hidden="true"
-                        />
-                        <p>{sportLookup[event.sport].label}</p>
-                        <span className="divider">•</span>
-                        <p>{event.competition}</p>
+                  {group.events.map((event) => {
+                    const sportMeta = sportMetaFor(event.sport);
+                    return (
+                      <div key={event.id} className="event-card">
+                        <div className="event-meta">
+                          <span
+                            className="sport-dot"
+                            style={{ background: sportMeta.accent }}
+                            aria-hidden="true"
+                          />
+                          <p>{sportMeta.label}</p>
+                          <span className="divider">•</span>
+                          <p>{event.competition}</p>
+                        </div>
+
+                        <h3>{event.title}</h3>
+
+                        <p className="event-time">
+                          {TIME_FORMATTER.format(event.startDate)} - {TIME_FORMATTER.format(event.endDate)} uur (NL)
+                        </p>
+
+                        <ul className="channel-list">
+                          {event.channels.map((channel) => (
+                            <li key={`${event.id}-${channel.name}-${channel.platform}`}>
+                              <span>{channel.name} ({channel.platform})</span>
+                              <span className={`access ${channel.access}`}>{channel.access === 'free' ? 'Gratis' : 'Betaald'}</span>
+                            </li>
+                          ))}
+                        </ul>
+
+                        <footer>
+                          <span className={`event-access ${getEventAccessLabel(event) === 'Gratis' ? 'free' : 'paid'}`}>
+                            {getEventAccessLabel(event)}
+                          </span>
+                          <span>{event.location || 'Nederland'}</span>
+                        </footer>
+
+                        {event.notes ? <p className="event-note">{event.notes}</p> : null}
                       </div>
-
-                      <h3>{event.title}</h3>
-
-                      <p className="event-time">
-                        {TIME_FORMATTER.format(event.startDate)} - {TIME_FORMATTER.format(event.endDate)} uur (NL)
-                      </p>
-
-                      <ul className="channel-list">
-                        {event.channels.map((channel) => (
-                          <li key={`${event.id}-${channel.name}`}>
-                            <span>{channel.name} ({channel.platform})</span>
-                            <span className={`access ${channel.access}`}>{channel.access === 'free' ? 'Gratis' : 'Betaald'}</span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      <footer>
-                        <span className={`event-access ${getEventAccessLabel(event) === 'Gratis' ? 'free' : 'paid'}`}>
-                          {getEventAccessLabel(event)}
-                        </span>
-                        <span>{event.location || 'Nederland'}</span>
-                      </footer>
-
-                      {event.notes ? <p className="event-note">{event.notes}</p> : null}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </article>
             ))
