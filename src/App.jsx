@@ -29,6 +29,12 @@ const ACCESS_OPTIONS = [
   { id: 'paid', label: 'Alleen betaald' }
 ];
 
+const MAJOR_FILTER_OPTIONS = [
+  { id: 'all', label: 'Alles' },
+  { id: 'major', label: 'Alleen grote events' },
+  { id: 'regular', label: 'Zonder grote events' }
+];
+
 const DATE_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
   weekday: 'long',
   day: '2-digit',
@@ -130,6 +136,7 @@ function defaultPreferences() {
     selectedSports: SPORT_OPTIONS.map((sport) => sport.id),
     selectedProviders: PROVIDER_OPTIONS,
     accessFilter: 'all',
+    majorFilter: 'all',
     rangeFilter: '30d',
     searchText: '',
     providerSearchText: '',
@@ -170,6 +177,9 @@ function loadPreferences() {
       accessFilter: ACCESS_OPTIONS.some((option) => option.id === parsed.accessFilter)
         ? parsed.accessFilter
         : defaults.accessFilter,
+      majorFilter: MAJOR_FILTER_OPTIONS.some((option) => option.id === parsed.majorFilter)
+        ? parsed.majorFilter
+        : defaults.majorFilter,
       rangeFilter: RANGE_OPTIONS.some((option) => option.id === parsed.rangeFilter)
         ? parsed.rangeFilter
         : defaults.rangeFilter,
@@ -275,6 +285,21 @@ function majorGroupForEvent(event) {
   return null;
 }
 
+function matchesMajorFilter(event, majorFilter) {
+  if (majorFilter === 'all') {
+    return true;
+  }
+
+  const isMajor = Boolean(majorGroupForEvent(event));
+  if (majorFilter === 'major') {
+    return isMajor;
+  }
+  if (majorFilter === 'regular') {
+    return !isMajor;
+  }
+  return true;
+}
+
 function App() {
   const [preferences, setPreferences] = useState(loadPreferences);
   const [providersExpanded, setProvidersExpanded] = useState(false);
@@ -328,6 +353,10 @@ function App() {
       }
 
       if (!hasAccess(event, preferences.accessFilter)) {
+        return false;
+      }
+
+      if (!matchesMajorFilter(event, preferences.majorFilter)) {
         return false;
       }
 
@@ -769,6 +798,22 @@ function App() {
               </div>
             </div>
 
+            <div className="filter-group inline-group">
+              <p className="filter-title">Grote events</p>
+              <div className="chips-inline">
+                {MAJOR_FILTER_OPTIONS.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`chip ${preferences.majorFilter === option.id ? 'is-selected' : ''}`}
+                    onClick={() => setPreferences((current) => ({ ...current, majorFilter: option.id }))}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="filter-group search-group">
               <label className="filter-title" htmlFor="search">Zoeken</label>
               <input
@@ -796,7 +841,7 @@ function App() {
           {groupedEvents.length === 0 ? (
             <article className="panel empty-state">
               <h2>Geen events met deze filters</h2>
-              <p>Pas je sport-, aanbieder-, periode- of toegangskeuze aan om resultaten te zien.</p>
+              <p>Pas je sport-, aanbieder-, periode-, toegang- of grote-events-filter aan om resultaten te zien.</p>
             </article>
           ) : (
             groupedEvents.map((group) => (

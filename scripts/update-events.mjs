@@ -997,26 +997,63 @@ function slugify(value) {
     .replace(/^-+|-+$/g, '');
 }
 
+const NOS_SPORT_KEYWORDS = [
+  { sport: 'formule-1', keywords: ['formule 1', 'f1'] },
+  { sport: 'voetbal', keywords: ['voetbal', 'soccer'] },
+  { sport: 'tennis', keywords: ['tennis'] },
+  { sport: 'basketbal', keywords: ['basketbal', 'basketball'] },
+  { sport: 'american-football', keywords: ['american football', 'nfl'] },
+  { sport: 'honkbal', keywords: ['honkbal', 'baseball'] },
+  { sport: 'ijshockey', keywords: ['ijshockey', 'ice hockey'] },
+  { sport: 'golf', keywords: ['golf'] },
+  { sport: 'vechtsport', keywords: ['ufc', 'mma', 'boksen', 'boxing', 'kickboksen'] },
+  { sport: 'handbal', keywords: ['handbal', 'handball'] },
+  { sport: 'volleybal', keywords: ['volleybal', 'volleyball'] },
+  { sport: 'hockey', keywords: ['hockey', 'veldhockey'] },
+  { sport: 'wielrennen', keywords: ['wielrennen', 'cycling'] },
+  { sport: 'atletiek', keywords: ['atletiek', 'athletics'] },
+  { sport: 'schaatsen', keywords: ['schaatsen', 'speed skating'] },
+  { sport: 'rugby', keywords: ['rugby'] },
+  { sport: 'darts', keywords: ['darts'] }
+];
+
+function detectNosSportFromText(text) {
+  const normalized = normalizeAsciiLower(text);
+  const match = NOS_SPORT_KEYWORDS.find((entry) => entry.keywords.some((keyword) => normalized.includes(keyword)));
+  return match?.sport || null;
+}
+
+function nosFallbackSportSlug(item, categoryLabels) {
+  const candidates = [
+    ...categoryLabels,
+    item?.title?.split(':')?.[0],
+    item?.title
+  ].filter(Boolean);
+
+  for (const candidate of candidates) {
+    const slug = slugify(candidate);
+    if (!slug || slug === 'sport' || slug === 'nos-sport' || slug === 'livestream') {
+      continue;
+    }
+    return slug;
+  }
+
+  return 'sport';
+}
+
 function mapNosSport(item) {
   const categories = Array.isArray(item.categories) ? item.categories : [];
   const categoryLabels = categories
     .map((category) => category?.label || category?.name)
     .filter(Boolean);
 
-  const haystack = `${item.title || ''} ${categoryLabels.join(' ')}`.toLowerCase();
+  const haystack = `${item.title || ''} ${categoryLabels.join(' ')}`;
+  const detected = detectNosSportFromText(haystack);
+  if (detected) {
+    return detected;
+  }
 
-  if (haystack.includes('formule 1') || haystack.includes('f1')) return 'formule-1';
-  if (haystack.includes('voetbal')) return 'voetbal';
-  if (haystack.includes('tennis')) return 'tennis';
-  if (haystack.includes('basketbal')) return 'basketbal';
-  if (haystack.includes('american football') || haystack.includes('nfl')) return 'american-football';
-  if (haystack.includes('honkbal') || haystack.includes('baseball')) return 'honkbal';
-  if (haystack.includes('ijshockey') || haystack.includes('ice hockey')) return 'ijshockey';
-  if (haystack.includes('golf')) return 'golf';
-  if (haystack.includes('ufc') || haystack.includes('mma') || haystack.includes('boksen')) return 'vechtsport';
-
-  const fallback = categoryLabels[0] || item.title || 'sport';
-  return slugify(fallback) || 'sport';
+  return nosFallbackSportSlug(item, categoryLabels);
 }
 
 function parseNosNextData(rawHtml) {
