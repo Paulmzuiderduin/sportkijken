@@ -149,8 +149,22 @@ function sanitizeSelection(values, allowed) {
   return values.filter((value) => allowedSet.has(value));
 }
 
+function searchTextFromUrl() {
+  if (typeof window === 'undefined') {
+    return '';
+  }
+
+  try {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get('q') || '').trim();
+  } catch (error) {
+    return '';
+  }
+}
+
 function loadPreferences() {
   const defaults = defaultPreferences();
+  const querySearchText = searchTextFromUrl();
 
   if (typeof window === 'undefined') {
     return defaults;
@@ -159,7 +173,10 @@ function loadPreferences() {
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);
     if (!saved) {
-      return defaults;
+      return {
+        ...defaults,
+        searchText: querySearchText || defaults.searchText
+      };
     }
 
     const parsed = JSON.parse(saved);
@@ -183,7 +200,7 @@ function loadPreferences() {
       rangeFilter: RANGE_OPTIONS.some((option) => option.id === parsed.rangeFilter)
         ? parsed.rangeFilter
         : defaults.rangeFilter,
-      searchText: typeof parsed.searchText === 'string' ? parsed.searchText : defaults.searchText,
+      searchText: querySearchText || (typeof parsed.searchText === 'string' ? parsed.searchText : defaults.searchText),
       providerSearchText:
         typeof parsed.providerSearchText === 'string' ? parsed.providerSearchText : defaults.providerSearchText,
       providerSelectedOnly:
@@ -204,6 +221,21 @@ function escapeIcsValue(value) {
 
 function toIcsDate(date) {
   return date.toISOString().replace(/[-:]/g, '').replace('.000', '');
+}
+
+function trackAnalyticsEvent(eventName, params = {}) {
+  if (typeof window === 'undefined' || !eventName) {
+    return;
+  }
+
+  if (typeof window.trackSportkijkenEvent === 'function') {
+    window.trackSportkijkenEvent(eventName, params);
+    return;
+  }
+
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', eventName, params);
+  }
 }
 
 function hasAccess(event, accessFilter) {
@@ -321,6 +353,10 @@ function App() {
       // Storage might be blocked; the app still functions without persistence.
     }
   }, [preferences]);
+
+  useEffect(() => {
+    trackAnalyticsEvent('sportkijken_view', { page: 'home' });
+  }, []);
 
   const filteredEvents = useMemo(() => {
     const now = new Date();
@@ -465,9 +501,15 @@ function App() {
 
   const toggleSport = (sportId) => {
     setPreferences((current) => {
-      const selected = current.selectedSports.includes(sportId)
-        ? current.selectedSports.filter((id) => id !== sportId)
-        : [...current.selectedSports, sportId];
+      const willBeSelected = !current.selectedSports.includes(sportId);
+      const selected = willBeSelected
+        ? [...current.selectedSports, sportId]
+        : current.selectedSports.filter((id) => id !== sportId);
+
+      trackAnalyticsEvent('filter_sport_toggle', {
+        sport: sportId,
+        selected: willBeSelected ? 'yes' : 'no'
+      });
 
       return {
         ...current,
@@ -478,9 +520,15 @@ function App() {
 
   const toggleProvider = (provider) => {
     setPreferences((current) => {
-      const selected = current.selectedProviders.includes(provider)
-        ? current.selectedProviders.filter((item) => item !== provider)
-        : [...current.selectedProviders, provider];
+      const willBeSelected = !current.selectedProviders.includes(provider);
+      const selected = willBeSelected
+        ? [...current.selectedProviders, provider]
+        : current.selectedProviders.filter((item) => item !== provider);
+
+      trackAnalyticsEvent('filter_provider_toggle', {
+        provider,
+        selected: willBeSelected ? 'yes' : 'no'
+      });
 
       return {
         ...current,
@@ -490,6 +538,7 @@ function App() {
   };
 
   const selectAllSports = () => {
+    trackAnalyticsEvent('filter_sport_bulk', { mode: 'all' });
     setPreferences((current) => ({
       ...current,
       selectedSports: SPORT_OPTIONS.map((sport) => sport.id)
@@ -497,6 +546,7 @@ function App() {
   };
 
   const clearSports = () => {
+    trackAnalyticsEvent('filter_sport_bulk', { mode: 'none' });
     setPreferences((current) => ({
       ...current,
       selectedSports: []
@@ -504,6 +554,7 @@ function App() {
   };
 
   const selectAllProviders = () => {
+    trackAnalyticsEvent('filter_provider_bulk', { mode: 'all' });
     setPreferences((current) => ({
       ...current,
       selectedProviders: PROVIDER_OPTIONS
@@ -511,16 +562,34 @@ function App() {
   };
 
   const clearProviders = () => {
+    trackAnalyticsEvent('filter_provider_bulk', { mode: 'none' });
     setPreferences((current) => ({
       ...current,
       selectedProviders: []
     }));
   };
 
+  const setRangeFilter = (rangeId) => {
+    trackAnalyticsEvent('filter_range_change', { range: rangeId });
+    setPreferences((current) => ({ ...current, rangeFilter: rangeId }));
+  };
+
+  const setAccessFilter = (accessId) => {
+    trackAnalyticsEvent('filter_access_change', { access: accessId });
+    setPreferences((current) => ({ ...current, accessFilter: accessId }));
+  };
+
+  const setMajorFilter = (majorId) => {
+    trackAnalyticsEvent('filter_major_change', { major: majorId });
+    setPreferences((current) => ({ ...current, majorFilter: majorId }));
+  };
+
   const exportVisibleEventsAsIcs = () => {
     if (!filteredEvents.length) {
       return;
     }
+
+    trackAnalyticsEvent('export_ics', { events: filteredEvents.length });
 
     const lines = [
       'BEGIN:VCALENDAR',
@@ -604,7 +673,19 @@ function App() {
             <li key={`${event.id}-${channel.name}-${channel.platform}`}>
               <div className="channel-main">
                 {channel.url ? (
-                  <a className="channel-link" href={channel.url} target="_blank" rel="noreferrer">
+                  <a
+                    className="channel-link"
+                    href={channel.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => {
+                      trackAnalyticsEvent('outbound_stream_click', {
+                        provider: channel.name,
+                        access: channel.access,
+                        sport: event.sport
+                      });
+                    }}
+                  >
                     {channel.name} ({channel.platform})
                   </a>
                 ) : (
@@ -712,6 +793,11 @@ function App() {
                   setProvidersExpanded(false);
                   setPreferences((current) => ({ ...current, providerSearchText: event.target.value }));
                 }}
+                onBlur={(event) => {
+                  const value = event.target.value.trim();
+                  if (!value) return;
+                  trackAnalyticsEvent('provider_search', { query_length: value.length });
+                }}
                 placeholder="Zoek aanbieder"
                 aria-label="Zoek aanbieder"
               />
@@ -719,6 +805,8 @@ function App() {
                 type="button"
                 className={`ghost compact ${preferences.providerSelectedOnly ? 'is-active' : ''}`}
                 onClick={() => {
+                  const nextSelectedOnly = !preferences.providerSelectedOnly;
+                  trackAnalyticsEvent('provider_view_mode', { mode: nextSelectedOnly ? 'selected_only' : 'all' });
                   setProvidersExpanded(false);
                   setPreferences((current) => ({
                     ...current,
@@ -750,14 +838,28 @@ function App() {
             {!visibleProviders.length ? <p className="provider-empty">Geen aanbieders gevonden.</p> : null}
             {hiddenProviderCount > 0 ? (
               <div className="chip-actions">
-                <button type="button" className="ghost compact" onClick={() => setProvidersExpanded(true)}>
+                <button
+                  type="button"
+                  className="ghost compact"
+                  onClick={() => {
+                    trackAnalyticsEvent('provider_list_expand', { hidden: hiddenProviderCount });
+                    setProvidersExpanded(true);
+                  }}
+                >
                   Toon nog {hiddenProviderCount}
                 </button>
               </div>
             ) : null}
             {!providerListIsConstrained && providersExpanded && providerOptionsForView.length > PROVIDER_VISIBLE_LIMIT ? (
               <div className="chip-actions">
-                <button type="button" className="ghost compact" onClick={() => setProvidersExpanded(false)}>
+                <button
+                  type="button"
+                  className="ghost compact"
+                  onClick={() => {
+                    trackAnalyticsEvent('provider_list_collapse', {});
+                    setProvidersExpanded(false);
+                  }}
+                >
                   Minder tonen
                 </button>
               </div>
@@ -777,7 +879,7 @@ function App() {
                     key={option.id}
                     type="button"
                     className={`chip ${preferences.rangeFilter === option.id ? 'is-selected' : ''}`}
-                    onClick={() => setPreferences((current) => ({ ...current, rangeFilter: option.id }))}
+                    onClick={() => setRangeFilter(option.id)}
                   >
                     {option.label}
                   </button>
@@ -793,7 +895,7 @@ function App() {
                     key={option.id}
                     type="button"
                     className={`chip ${preferences.accessFilter === option.id ? 'is-selected' : ''}`}
-                    onClick={() => setPreferences((current) => ({ ...current, accessFilter: option.id }))}
+                    onClick={() => setAccessFilter(option.id)}
                   >
                     {option.label}
                   </button>
@@ -809,7 +911,7 @@ function App() {
                     key={option.id}
                     type="button"
                     className={`chip ${preferences.majorFilter === option.id ? 'is-selected' : ''}`}
-                    onClick={() => setPreferences((current) => ({ ...current, majorFilter: option.id }))}
+                    onClick={() => setMajorFilter(option.id)}
                   >
                     {option.label}
                   </button>
@@ -824,6 +926,11 @@ function App() {
                 type="search"
                 value={preferences.searchText}
                 onChange={(event) => setPreferences((current) => ({ ...current, searchText: event.target.value }))}
+                onBlur={(event) => {
+                  const value = event.target.value.trim();
+                  if (!value) return;
+                  trackAnalyticsEvent('search_used', { query_length: value.length });
+                }}
                 placeholder="team, toernooi, aanbieder of locatie"
               />
             </div>
