@@ -568,22 +568,19 @@ function App() {
 
   return (
     <div className="page">
-      <div className="ambient ambient-top" />
-      <div className="ambient ambient-bottom" />
-
       <main className="shell">
         <section className="hero">
           <div>
             <p className="kicker">Sportkijken Nederland</p>
-            <h1>Wanneer en waar sport kijken, zonder eindeloos zoeken.</h1>
+            <h1>Sport kijken in Nederland: wanneer en waar.</h1>
             <p className="intro">
-              Kies je sporten en aanbieders voor Nederland: starttijd, zender/stream en gratis of betaald in een overzicht.
+              Kies sporten en aanbieders en krijg een compact overzicht met starttijd, zender/stream en gratis of betaald.
             </p>
             <div className="hero-actions">
               <button type="button" className="primary" onClick={exportVisibleEventsAsIcs}>
                 Exporteer selectie als .ics
               </button>
-              <p className="beta-note">Met live-updates per uur en aanbiederfilters, inclusief NOS-livestreams.</p>
+              <p className="beta-note">Updates elk uur vanuit o.a. NOS, Ziggo, ESPN en Viaplay.</p>
             </div>
           </div>
           <aside className="summary-card">
@@ -703,7 +700,7 @@ function App() {
                 type="search"
                 value={preferences.searchText}
                 onChange={(event) => setPreferences((current) => ({ ...current, searchText: event.target.value }))}
-                placeholder="team, toernooi, aanbieder of locatie"
+                placeholder="team, toernooi of aanbieder"
               />
             </div>
           </div>
