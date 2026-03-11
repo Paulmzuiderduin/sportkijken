@@ -721,15 +721,40 @@ h3,
   }
 
   .sport-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
   }
 
   .provider-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
   }
 
   .provider-tools {
     grid-template-columns: 1fr;
+  }
+
+  .filters-panel .chip {
+    padding: 0.46rem 0.64rem;
+    font-size: 0.78rem;
+  }
+
+  .filters-panel .chip-actions {
+    gap: 0.35rem;
+  }
+
+  .filters-panel .ghost.compact {
+    padding: 0.42rem 0.62rem;
+    font-size: 0.76rem;
+  }
+
+  .inline-group .chips-inline {
+    gap: 0.35rem;
+  }
+
+  .filter-title {
+    font-size: 0.82rem;
+    margin-bottom: 0.4rem;
   }
 
   .summary-grid strong {
@@ -742,5 +767,12 @@ h3,
 
   .notice-meta {
     gap: 0.35rem 0.55rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .sport-grid,
+  .provider-grid {
+    grid-template-columns: 1fr;
   }
 }
