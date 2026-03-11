@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/sync-runtime-dataset.mjs && vite build",
     "preview": "vite preview",
-    "data:update": "node scripts/update-events.mjs",
+    "data:update": "node scripts/update-events.mjs && node scripts/sync-runtime-dataset.mjs",
     "data:normalize": "node scripts/normalize-events.mjs"
   },
   "dependencies": {

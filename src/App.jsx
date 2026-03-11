@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import scheduleDataset from './data/events.nl.json';
 
 const STORAGE_KEY = 'sportkijken-preferences-v2';
@@ -67,11 +67,13 @@ const DAY_NUMBER_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
   timeZone: 'Europe/Amsterdam'
 });
 
-const SOURCE_EVENTS = Array.isArray(scheduleDataset.events) ? scheduleDataset.events : [];
+const FALLBACK_EVENTS = Array.isArray(scheduleDataset.events) ? scheduleDataset.events : [];
 const CONSENT_STORAGE_KEY = 'sportkijken-consent-v1';
 const CONTACT_EMAIL = 'info@paulzuiderduin.com';
 const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}`;
 const REFRESH_STATUS_URL = 'https://api.github.com/repos/Paulmzuiderduin/sportkijken/actions/workflows/update-data.yml/runs?per_page=1';
+const RUNTIME_DATASET_URL = '/events.nl.json';
+const RUNTIME_DATASET_POLL_MS = 5 * 60 * 1000;
 
 function formatSportLabel(id) {
   return id
@@ -85,19 +87,19 @@ function colorForSport(id) {
   return FALLBACK_ACCENTS[hash % FALLBACK_ACCENTS.length];
 }
 
-const SPORT_OPTIONS = [...new Set([...Object.keys(KNOWN_SPORT_META), ...SOURCE_EVENTS.map((event) => event.sport)])]
-  .sort((a, b) => {
-    const aLabel = KNOWN_SPORT_META[a]?.label || formatSportLabel(a);
-    const bLabel = KNOWN_SPORT_META[b]?.label || formatSportLabel(b);
-    return aLabel.localeCompare(bLabel, 'nl-NL');
-  })
-  .map((id) => ({
-    id,
-    label: KNOWN_SPORT_META[id]?.label || formatSportLabel(id),
-    accent: KNOWN_SPORT_META[id]?.accent || colorForSport(id)
-  }));
-
-const sportLookup = Object.fromEntries(SPORT_OPTIONS.map((sport) => [sport.id, sport]));
+function buildSportOptions(events) {
+  return [...new Set([...Object.keys(KNOWN_SPORT_META), ...events.map((event) => event.sport)])]
+    .sort((a, b) => {
+      const aLabel = KNOWN_SPORT_META[a]?.label || formatSportLabel(a);
+      const bLabel = KNOWN_SPORT_META[b]?.label || formatSportLabel(b);
+      return aLabel.localeCompare(bLabel, 'nl-NL');
+    })
+    .map((id) => ({
+      id,
+      label: KNOWN_SPORT_META[id]?.label || formatSportLabel(id),
+      accent: KNOWN_SPORT_META[id]?.accent || colorForSport(id)
+    }));
+}
 
 const PREFERRED_PROVIDERS = [
   'NOS.nl Live',
@@ -124,16 +126,21 @@ const PREFERRED_PROVIDERS = [
   'UFC Fight Pass'
 ];
 
-const PROVIDER_OPTIONS = [...new Set([
-  ...PREFERRED_PROVIDERS,
-  ...SOURCE_EVENTS.flatMap((event) => (Array.isArray(event.channels) ? event.channels.map((channel) => channel.name) : []))
-])]
-  .filter(Boolean)
-  .sort((a, b) => a.localeCompare(b, 'nl-NL'));
+function buildProviderOptions(events) {
+  return [...new Set([
+    ...PREFERRED_PROVIDERS,
+    ...events.flatMap((event) => (Array.isArray(event.channels) ? event.channels.map((channel) => channel.name) : []))
+  ])]
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b, 'nl-NL'));
+}
+
+const FALLBACK_SPORT_OPTIONS = buildSportOptions(FALLBACK_EVENTS);
+const FALLBACK_PROVIDER_OPTIONS = buildProviderOptions(FALLBACK_EVENTS);
 
 const PROVIDER_VISIBLE_LIMIT = 24;
 
-function sportMetaFor(id) {
+function sportMetaFor(id, sportLookup) {
   return sportLookup[id] || {
     id,
     label: formatSportLabel(id),
@@ -141,10 +148,10 @@ function sportMetaFor(id) {
   };
 }
 
-function defaultPreferences() {
+function defaultPreferences(sportOptions = FALLBACK_SPORT_OPTIONS, providerOptions = FALLBACK_PROVIDER_OPTIONS) {
   return {
-    selectedSports: SPORT_OPTIONS.map((sport) => sport.id),
-    selectedProviders: PROVIDER_OPTIONS,
+    selectedSports: sportOptions.map((sport) => sport.id),
+    selectedProviders: providerOptions,
     accessFilter: 'all',
     contentTypeFilter: 'all',
     majorFilter: 'all',
@@ -160,6 +167,29 @@ function sanitizeSelection(values, allowed) {
   return values.filter((value) => allowedSet.has(value));
 }
 
+function areSameStringArrays(a, b) {
+  if (a.length !== b.length) {
+    return false;
+  }
+  for (let index = 0; index < a.length; index += 1) {
+    if (a[index] !== b[index]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function normalizeRuntimeDataset(candidate) {
+  if (!candidate || typeof candidate !== 'object' || !Array.isArray(candidate.events)) {
+    return null;
+  }
+
+  return {
+    ...candidate,
+    events: candidate.events
+  };
+}
+
 function searchTextFromUrl() {
   if (typeof window === 'undefined') {
     return '';
@@ -173,8 +203,8 @@ function searchTextFromUrl() {
   }
 }
 
-function loadPreferences() {
-  const defaults = defaultPreferences();
+function loadPreferences(sportOptions = FALLBACK_SPORT_OPTIONS, providerOptions = FALLBACK_PROVIDER_OPTIONS) {
+  const defaults = defaultPreferences(sportOptions, providerOptions);
   const querySearchText = searchTextFromUrl();
 
   if (typeof window === 'undefined') {
@@ -196,7 +226,7 @@ function loadPreferences() {
       : defaults.selectedSports;
 
     const selectedProviders = Array.isArray(parsed.selectedProviders)
-      ? sanitizeSelection(parsed.selectedProviders, PROVIDER_OPTIONS)
+      ? sanitizeSelection(parsed.selectedProviders, providerOptions)
       : defaults.selectedProviders;
 
     return {
@@ -392,21 +422,140 @@ function matchesMajorFilter(event, majorFilter) {
 }
 
 function App() {
-  const [preferences, setPreferences] = useState(loadPreferences);
+  const [dataset, setDataset] = useState(() => scheduleDataset);
+  const [preferences, setPreferences] = useState(() => loadPreferences(FALLBACK_SPORT_OPTIONS, FALLBACK_PROVIDER_OPTIONS));
   const [providersExpanded, setProvidersExpanded] = useState(false);
   const [consentState, setConsentState] = useState(loadConsentState);
   const [emailCopied, setEmailCopied] = useState(false);
   const [lastRefreshCheckAt, setLastRefreshCheckAt] = useState(null);
+  const previousOptionsRef = useRef({
+    sports: FALLBACK_SPORT_OPTIONS.map((sport) => sport.id),
+    providers: FALLBACK_PROVIDER_OPTIONS
+  });
+
+  const sourceEvents = useMemo(
+    () => (Array.isArray(dataset.events) ? dataset.events : []),
+    [dataset.events]
+  );
+
+  const sportOptions = useMemo(() => buildSportOptions(sourceEvents), [sourceEvents]);
+  const providerOptions = useMemo(() => buildProviderOptions(sourceEvents), [sourceEvents]);
+  const sportLookup = useMemo(
+    () => Object.fromEntries(sportOptions.map((sport) => [sport.id, sport])),
+    [sportOptions]
+  );
 
   const events = useMemo(() => {
-    return [...SOURCE_EVENTS]
+    return [...sourceEvents]
       .map((event) => ({
         ...event,
+        channels: Array.isArray(event.channels) ? event.channels : [],
+        durationMinutes: Number.isFinite(event.durationMinutes) && event.durationMinutes > 0 ? event.durationMinutes : 120,
         startDate: new Date(event.start),
-        endDate: new Date(new Date(event.start).getTime() + event.durationMinutes * 60000)
+        endDate: new Date(new Date(event.start).getTime() + (Number.isFinite(event.durationMinutes) && event.durationMinutes > 0 ? event.durationMinutes : 120) * 60000)
       }))
+      .filter((event) => Number.isFinite(event.startDate.getTime()) && Number.isFinite(event.endDate.getTime()))
       .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+  }, [sourceEvents]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    const fetchRuntimeDataset = async () => {
+      try {
+        const response = await fetch(`${RUNTIME_DATASET_URL}?t=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = normalizeRuntimeDataset(await response.json());
+        if (!payload || cancelled) {
+          return;
+        }
+
+        setDataset((current) => {
+          const currentGeneratedAt = current?.generatedAt || '';
+          const nextGeneratedAt = payload.generatedAt || '';
+          const currentCount = Array.isArray(current?.events) ? current.events.length : 0;
+          const nextCount = payload.events.length;
+          if (currentGeneratedAt === nextGeneratedAt && currentCount === nextCount) {
+            return current;
+          }
+
+          trackAnalyticsEvent('runtime_dataset_refresh', {
+            from_generated_at: currentGeneratedAt || 'unknown',
+            to_generated_at: nextGeneratedAt || 'unknown',
+            events: nextCount
+          });
+
+          return payload;
+        });
+      } catch (error) {
+        // Ignore runtime fetch errors and keep current dataset state.
+      }
+    };
+
+    fetchRuntimeDataset();
+    const intervalId = window.setInterval(fetchRuntimeDataset, RUNTIME_DATASET_POLL_MS);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchRuntimeDataset();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
   }, []);
+
+  useEffect(() => {
+    const nextSportIds = sportOptions.map((sport) => sport.id);
+    const nextProviders = providerOptions;
+    const previousSportIds = previousOptionsRef.current.sports;
+    const previousProviders = previousOptionsRef.current.providers;
+
+    setPreferences((current) => {
+      const currentSportSet = new Set(current.selectedSports);
+      const currentProviderSet = new Set(current.selectedProviders);
+      const hadAllPreviousSports = previousSportIds.length > 0 && previousSportIds.every((id) => currentSportSet.has(id));
+      const hadAllPreviousProviders = previousProviders.length > 0 && previousProviders.every((provider) => currentProviderSet.has(provider));
+
+      let selectedSports = sanitizeSelection(current.selectedSports, nextSportIds);
+      let selectedProviders = sanitizeSelection(current.selectedProviders, nextProviders);
+
+      if (hadAllPreviousSports) {
+        selectedSports = nextSportIds;
+      }
+      if (hadAllPreviousProviders) {
+        selectedProviders = nextProviders;
+      }
+
+      if (
+        areSameStringArrays(current.selectedSports, selectedSports)
+        && areSameStringArrays(current.selectedProviders, selectedProviders)
+      ) {
+        return current;
+      }
+
+      return {
+        ...current,
+        selectedSports,
+        selectedProviders
+      };
+    });
+
+    previousOptionsRef.current = {
+      sports: nextSportIds,
+      providers: nextProviders
+    };
+  }, [providerOptions, sportOptions]);
 
   useEffect(() => {
     try {
@@ -473,10 +622,10 @@ function App() {
   }, []);
 
   const datasetStatus = useMemo(() => {
-    const referenceAt = lastRefreshCheckAt || scheduleDataset.generatedAt || 0;
+    const referenceAt = lastRefreshCheckAt || dataset.generatedAt || 0;
     const referenceDate = new Date(referenceAt);
     const referenceMs = referenceDate.getTime();
-    const generatedAt = new Date(scheduleDataset.generatedAt || 0);
+    const generatedAt = new Date(dataset.generatedAt || 0);
     const generatedMs = generatedAt.getTime();
     if (!Number.isFinite(referenceMs) || referenceMs <= 0) {
       return {
@@ -514,7 +663,7 @@ function App() {
       level: 'ok',
       message: `Bronnen ${ageMinutes} minuten geleden gecontroleerd.`
     };
-  }, [lastRefreshCheckAt]);
+  }, [dataset.generatedAt, lastRefreshCheckAt]);
 
   const filteredEvents = useMemo(() => {
     const now = new Date();
@@ -642,7 +791,7 @@ function App() {
   const providerOptionsForView = useMemo(() => {
     const query = preferences.providerSearchText.trim().toLowerCase();
     const selectedSet = new Set(preferences.selectedProviders);
-    const filtered = PROVIDER_OPTIONS.filter((provider) => !query || provider.toLowerCase().includes(query));
+    const filtered = providerOptions.filter((provider) => !query || provider.toLowerCase().includes(query));
     const visible = preferences.providerSelectedOnly
       ? filtered.filter((provider) => selectedSet.has(provider))
       : filtered;
@@ -655,7 +804,7 @@ function App() {
       }
       return a.localeCompare(b, 'nl-NL');
     });
-  }, [preferences.providerSearchText, preferences.providerSelectedOnly, preferences.selectedProviders]);
+  }, [preferences.providerSearchText, preferences.providerSelectedOnly, preferences.selectedProviders, providerOptions]);
 
   const providerListIsConstrained = preferences.providerSearchText.trim() !== '' || preferences.providerSelectedOnly;
   const visibleProviders = !providerListIsConstrained && !providersExpanded
@@ -705,7 +854,7 @@ function App() {
     trackAnalyticsEvent('filter_sport_bulk', { mode: 'all' });
     setPreferences((current) => ({
       ...current,
-      selectedSports: SPORT_OPTIONS.map((sport) => sport.id)
+      selectedSports: sportOptions.map((sport) => sport.id)
     }));
   };
 
@@ -721,7 +870,7 @@ function App() {
     trackAnalyticsEvent('filter_provider_bulk', { mode: 'all' });
     setPreferences((current) => ({
       ...current,
-      selectedProviders: PROVIDER_OPTIONS
+      selectedProviders: providerOptions
     }));
   };
 
@@ -827,7 +976,7 @@ function App() {
       lines.push(`DTSTAMP:${nowStamp}`);
       lines.push(`DTSTART:${toIcsDate(event.startDate)}`);
       lines.push(`DTEND:${toIcsDate(event.endDate)}`);
-      lines.push(`SUMMARY:${escapeIcsValue(`${sportMetaFor(event.sport).label}: ${event.title}`)}`);
+      lines.push(`SUMMARY:${escapeIcsValue(`${sportMetaFor(event.sport, sportLookup).label}: ${event.title}`)}`);
       lines.push(`DESCRIPTION:${escapeIcsValue(descriptionLines.join('\n'))}`);
       lines.push(`LOCATION:${escapeIcsValue(event.location || 'Nederland')}`);
       lines.push('END:VEVENT');
@@ -845,7 +994,7 @@ function App() {
   };
 
   const renderEventCard = (event) => {
-    const sportMeta = sportMetaFor(event.sport);
+    const sportMeta = sportMetaFor(event.sport, sportLookup);
     const confidence = confidenceMeta(event);
     const contentMeta = contentTypeMeta(event);
 
@@ -970,7 +1119,7 @@ function App() {
               <span>Volgende event</span>
               {counters.nextEvent ? (
                 <strong>
-                  {sportMetaFor(counters.nextEvent.sport).label} • {TIME_FORMATTER.format(counters.nextEvent.startDate)}
+                  {sportMetaFor(counters.nextEvent.sport, sportLookup).label} • {TIME_FORMATTER.format(counters.nextEvent.startDate)}
                 </strong>
               ) : (
                 <strong>Geen event in huidige filters</strong>
@@ -1015,7 +1164,7 @@ function App() {
           <div className="filter-group">
             <p className="filter-title">Sporten</p>
             <div className="sport-grid">
-              {SPORT_OPTIONS.map((sport) => {
+              {sportOptions.map((sport) => {
                 const selected = preferences.selectedSports.includes(sport.id);
                 return (
                   <button
@@ -1217,15 +1366,15 @@ function App() {
           <div className="notice-meta">
             <span className="dataset-label">Dataset</span>
             <span>
-              {scheduleDataset.isDemo
+              {dataset.isDemo
                 ? 'Handmatige demo-dataset.'
                 : 'Automatisch ververst (~3 uur) via NOS, Ziggo, ESPN en Viaplay.'}
             </span>
             <span>
-              Laatst gecontroleerd: {new Date(lastRefreshCheckAt || scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
+              Laatst gecontroleerd: {new Date(lastRefreshCheckAt || dataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
             </span>
             <span>
-              Laatste datasetwijziging: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
+              Laatste datasetwijziging: {new Date(dataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
             </span>
             <span className={`dataset-status ${datasetStatus.level}`}>{datasetStatus.message}</span>
           </div>
