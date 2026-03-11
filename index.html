@@ -156,14 +156,26 @@
         window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
         window.trackSportkijkenEvent = function (eventName, params) {
           if (!eventName || consentState !== 'granted' || typeof window.gtag !== 'function') return;
+          ensureAnalyticsScript();
           window.gtag('event', eventName, params || {});
         };
+
+        function sendInitialPageView() {
+          if (window.__gaInitialPageViewSent || consentState !== 'granted' || typeof window.gtag !== 'function') return;
+          window.__gaInitialPageViewSent = true;
+          window.gtag('event', 'page_view', {
+            page_title: document.title || 'Sportkijken',
+            page_location: window.location.href,
+            page_path: window.location.pathname + window.location.search
+          });
+        }
 
         function configureAnalytics() {
           if (window.__gaConfigured || consentState !== 'granted') return;
           window.__gaConfigured = true;
           window.gtag('js', new Date());
           window.gtag('config', MEASUREMENT_ID, { anonymize_ip: true });
+          sendInitialPageView();
         }
 
         function ensureAnalyticsScript() {
@@ -205,6 +217,7 @@
             ensureAnalyticsScript();
             if (window.__gaScriptReady) {
               configureAnalytics();
+              sendInitialPageView();
             }
           }
 

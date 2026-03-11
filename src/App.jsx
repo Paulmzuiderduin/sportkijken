@@ -672,8 +672,12 @@ function App() {
   }, [preferences]);
 
   useEffect(() => {
+    if (consentState !== 'granted') {
+      return;
+    }
+
     trackAnalyticsEvent('sportkijken_view', { page: 'home' });
-  }, []);
+  }, [consentState]);
 
   useEffect(() => {
     const seo = buildSeoMeta(preferences.searchText);
