@@ -17,6 +17,9 @@ const DATE_RANGE = `${RANGE_START}-${RANGE_END}`;
 const REQUEST_TIMEOUT_MS = 15000;
 const MAX_EVENTS = Number(process.env.MAX_EVENTS || 380);
 const NOS_SPORT_URL = 'https://nos.nl/sport';
+const NOS_LIVESTREAM_LIMIT = 120;
+const NOS_VIDEO_BROADCAST_LIMIT = 48;
+const NOS_BROADCAST_LOOKBACK_DAYS = 5;
 const ZIGGO_EPG_BASE_URL = 'https://www.ziggosport.nl/cache/site/ZiggosportNL/json/epg';
 const ESPN_SCHEDULE_BASE_URL = 'https://www.espn.nl/watch/speelkalender/_/type/upcoming';
 const ZIGGO_EPG_LOOKAHEAD_DAYS = 30;
@@ -226,6 +229,33 @@ const SCHEDULE_ONLY_EVENT_KEYWORDS = [
   'race',
   'etappe',
   'stage'
+];
+
+const BROADCAST_RECAP_KEYWORDS = [
+  'samenvatting',
+  'hoogtepunten',
+  'highlights',
+  'recap',
+  'terugblik'
+];
+
+const BROADCAST_GENERAL_KEYWORDS = [
+  'sportjournaal',
+  'studio sport',
+  'nabeschouwing',
+  'voorbeschouwing'
+];
+
+const NOS_VIDEO_PATH_KEYWORDS = [
+  'samenvatting',
+  'hoogtepunten',
+  'sportjournaal',
+  'studio-sport',
+  'paralympische-spelen',
+  'olympische-spelen',
+  'eredivisie',
+  'f1',
+  'formule-1'
 ];
 
 const soccerFeeds = [
@@ -451,6 +481,26 @@ function normalizeAsciiLower(value) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
+}
+
+function detectContentTypeFromText(title, context = '') {
+  const text = normalizeAsciiLower(`${title || ''} ${context || ''}`);
+  if (BROADCAST_RECAP_KEYWORDS.some((keyword) => text.includes(keyword))) {
+    return { contentType: 'broadcast', contentSubType: 'recap' };
+  }
+  if (BROADCAST_GENERAL_KEYWORDS.some((keyword) => text.includes(keyword))) {
+    return { contentType: 'broadcast', contentSubType: 'general' };
+  }
+  return { contentType: 'match' };
+}
+
+function isGenericGamesBroadcastTitle(title) {
+  const normalized = normalizeAsciiLower(title);
+  const isGamesRelated = normalized.includes('paralymp') || normalized.includes('olymp');
+  if (!isGamesRelated) {
+    return false;
+  }
+  return !normalized.includes(':');
 }
 
 function normalizeTitleForMatch(value) {
@@ -1125,7 +1175,8 @@ function parseEspnScheduleOnlyEvent(row) {
     channels,
     notes: 'Automatisch toegevoegd vanuit ESPN TV-gids (schedule-only).',
     sourceType: 'espn-schedule',
-    sourceRefs: [createSourceRef('ESPN TV-gids', row.sourceUrl, 'espn-schedule')].filter(Boolean)
+    sourceRefs: [createSourceRef('ESPN TV-gids', row.sourceUrl, 'espn-schedule')].filter(Boolean),
+    contentType: 'match'
   };
 }
 
@@ -1167,7 +1218,8 @@ function parseZiggoScheduleOnlyEvent(row) {
       ? 'Automatisch toegevoegd vanuit Ziggo Sport EPG (live-indicatie aanwezig).'
       : 'Automatisch toegevoegd vanuit Ziggo Sport EPG (schedule-only).',
     sourceType: 'ziggo',
-    sourceRefs: [createSourceRef('Ziggo Sport programmagids', row.sourceUrl, 'ziggo')].filter(Boolean)
+    sourceRefs: [createSourceRef('Ziggo Sport programmagids', row.sourceUrl, 'ziggo')].filter(Boolean),
+    contentType: 'match'
   };
 }
 
@@ -1465,6 +1517,10 @@ function parseNosLivestreamEvent(item, fallbackUrl) {
   const title = item.title || 'NOS Sport livestream';
   const competition = title.includes(':') ? title.split(':')[0].trim() : 'NOS Sport';
   const url = item.url || fallbackUrl;
+  let contentMeta = detectContentTypeFromText(title, competition);
+  if (contentMeta.contentType === 'match' && isGenericGamesBroadcastTitle(title)) {
+    contentMeta = { contentType: 'broadcast', contentSubType: 'general' };
+  }
 
   return {
     id: `nos-livestream-${item.id}`,
@@ -1480,7 +1536,86 @@ function parseNosLivestreamEvent(item, fallbackUrl) {
     ],
     notes: 'Automatisch opgehaald van NOS sport-livestreams.',
     sourceType: 'nos',
-    sourceRefs: [createSourceRef('NOS livestream', url, 'nos')].filter(Boolean)
+    sourceRefs: [createSourceRef('NOS livestream', url, 'nos')].filter(Boolean),
+    contentType: contentMeta.contentType,
+    ...(contentMeta.contentSubType ? { contentSubType: contentMeta.contentSubType } : {})
+  };
+}
+
+function parseNosVideoBroadcastEvent(item, fallbackUrl) {
+  if (!item || item.type !== 'video') {
+    return null;
+  }
+
+  const categories = Array.isArray(item.categories) ? item.categories : [];
+  const collections = Array.isArray(item.collections) ? item.collections : [];
+  const categoryLabels = categories
+    .map((category) => category?.label || category?.name)
+    .filter(Boolean);
+  const collectionLabels = collections
+    .map((collection) => collection?.label || collection?.title)
+    .filter(Boolean);
+
+  const isSportOwner = normalizeAsciiLower(item.owner) === 'sport';
+  const hasSportCategory = categories.some((category) => category?.mainCategory === 'sport');
+  if (!isSportOwner && !hasSportCategory) {
+    return null;
+  }
+
+  const title = item.title || 'NOS Sport video';
+  const description = item.description || '';
+  const contentMeta = detectContentTypeFromText(title, description);
+  const combinedText = normalizeAsciiLower(
+    `${title} ${description} ${categoryLabels.join(' ')} ${collectionLabels.join(' ')}`
+  );
+  const isLikelyBroadcast = contentMeta.contentType === 'broadcast'
+    || combinedText.includes('paralymp')
+    || combinedText.includes('olymp');
+  if (!isLikelyBroadcast) {
+    return null;
+  }
+
+  const start = tryIso(item.publishedAt || item.modifiedAt);
+  if (!start) {
+    return null;
+  }
+
+  const earliestAllowed = new Date(windowStart.getTime() - NOS_BROADCAST_LOOKBACK_DAYS * 24 * 60 * 60 * 1000);
+  const startDate = new Date(start);
+  if (startDate < earliestAllowed || startDate > windowEnd) {
+    return null;
+  }
+
+  const durationSeconds = Number(item.video?.durationInSeconds || item.asset?.durationInSeconds || 0);
+  const durationMinutes = durationSeconds > 0
+    ? Math.max(8, Math.ceil(durationSeconds / 60))
+    : 35;
+  const sport = inferSportFromCandidates(
+    [...categoryLabels, ...collectionLabels, title, description, item.owner],
+    'sport'
+  );
+  const competition = collectionLabels[0]
+    || categoryLabels[0]
+    || (title.includes(':') ? title.split(':')[0].trim() : 'NOS Sport');
+  const url = item.url || fallbackUrl;
+
+  return {
+    id: `nos-video-${item.id}`,
+    sport,
+    title,
+    competition,
+    start,
+    durationMinutes,
+    location: 'Online (NOS/NPO)',
+    channels: [
+      { name: 'NOS.nl Video', platform: 'stream', access: 'free', url },
+      { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/' }
+    ],
+    notes: 'Automatisch toegevoegd: NOS sport-uitzending of samenvatting (on demand).',
+    sourceType: 'nos',
+    sourceRefs: [createSourceRef('NOS video', url, 'nos')].filter(Boolean),
+    contentType: 'broadcast',
+    contentSubType: contentMeta.contentSubType || 'general'
   };
 }
 
@@ -1500,7 +1635,8 @@ async function fetchNosSportLivestreams() {
     };
   }
 
-  const livestreamPaths = [...new Set(sportHtml.match(/\/livestream\/[0-9][^"' <]*/g) || [])].slice(0, 24);
+  const livestreamPaths = [...new Set(sportHtml.match(/\/livestream\/[0-9][^"' <]*/g) || [])]
+    .slice(0, NOS_LIVESTREAM_LIMIT);
 
   for (const path of livestreamPaths) {
     const url = path.startsWith('http') ? path : `https://nos.nl${path}`;
@@ -1516,6 +1652,30 @@ async function fetchNosSportLivestreams() {
       }
     } catch (error) {
       errors.push(`NOS livestream ${path}: ${error.message}`);
+    }
+  }
+
+  const videoPaths = [...new Set(sportHtml.match(/\/video\/[0-9][^"' <]*/g) || [])]
+    .filter((path) => {
+      const normalized = normalizeAsciiLower(path);
+      return NOS_VIDEO_PATH_KEYWORDS.some((keyword) => normalized.includes(keyword));
+    })
+    .slice(0, NOS_VIDEO_BROADCAST_LIMIT);
+
+  for (const path of videoPaths) {
+    const url = path.startsWith('http') ? path : `https://nos.nl${path}`;
+    sources.push(url);
+
+    try {
+      const html = await fetchText(url);
+      const nextData = parseNosNextData(html);
+      const item = nextData?.props?.pageProps?.data;
+      const parsed = parseNosVideoBroadcastEvent(item, url);
+      if (parsed) {
+        events.push(parsed);
+      }
+    } catch (error) {
+      errors.push(`NOS video ${path}: ${error.message}`);
     }
   }
 
@@ -1552,7 +1712,8 @@ function parseTeamEvent(event, feed, idPrefix, sourceUrl) {
     channels,
     notes: feed.note,
     sourceType: 'espn',
-    sourceRefs: [createSourceRef('ESPN scoreboard', sourceUrl, 'espn')].filter(Boolean)
+    sourceRefs: [createSourceRef('ESPN scoreboard', sourceUrl, 'espn')].filter(Boolean),
+    contentType: 'match'
   };
 }
 
@@ -1592,7 +1753,8 @@ function parseF1Event(event, feed, _idPrefix, sourceUrl) {
     channels,
     notes: feed.note,
     sourceType: 'espn',
-    sourceRefs: [createSourceRef('ESPN scoreboard', sourceUrl, 'espn')].filter(Boolean)
+    sourceRefs: [createSourceRef('ESPN scoreboard', sourceUrl, 'espn')].filter(Boolean),
+    contentType: 'match'
   };
 }
 
@@ -1638,7 +1800,8 @@ function parseNamedEvent(event, feed, _idPrefix, sourceUrl) {
     channels,
     notes: feed.note,
     sourceType: 'espn',
-    sourceRefs: [createSourceRef('ESPN scoreboard', sourceUrl, 'espn')].filter(Boolean)
+    sourceRefs: [createSourceRef('ESPN scoreboard', sourceUrl, 'espn')].filter(Boolean),
+    contentType: 'match'
   };
 }
 
@@ -1681,6 +1844,7 @@ function normalizeManualEvents(events) {
     .map((event) => ({
       ...event,
       sourceType: event.sourceType || 'manual',
+      contentType: event.contentType || 'match',
       sourceRefs: mergeSourceRefs(
         event.sourceRefs || [],
         [createSourceRef('Handmatige invoer', 'src/data/major-events.nl.json', 'manual')]
@@ -1738,6 +1902,12 @@ function applyOverrideToEvent(event, rule) {
   }
   if (set.sourceType) {
     next.sourceType = set.sourceType;
+  }
+  if (set.contentType) {
+    next.contentType = set.contentType;
+  }
+  if (set.contentSubType) {
+    next.contentSubType = set.contentSubType;
   }
   if (set.sourceRefs) {
     next.sourceRefs = mergeSourceRefs(next.sourceRefs || [], set.sourceRefs);

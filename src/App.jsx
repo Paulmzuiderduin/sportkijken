@@ -35,6 +35,12 @@ const MAJOR_FILTER_OPTIONS = [
   { id: 'regular', label: 'Zonder grote events' }
 ];
 
+const CONTENT_TYPE_OPTIONS = [
+  { id: 'all', label: 'Alles' },
+  { id: 'match', label: 'Wedstrijden' },
+  { id: 'broadcast', label: 'Uitzendingen / recap' }
+];
+
 const DATE_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
   weekday: 'long',
   day: '2-digit',
@@ -139,6 +145,7 @@ function defaultPreferences() {
     selectedSports: SPORT_OPTIONS.map((sport) => sport.id),
     selectedProviders: PROVIDER_OPTIONS,
     accessFilter: 'all',
+    contentTypeFilter: 'all',
     majorFilter: 'all',
     rangeFilter: '30d',
     searchText: '',
@@ -197,6 +204,9 @@ function loadPreferences() {
       accessFilter: ACCESS_OPTIONS.some((option) => option.id === parsed.accessFilter)
         ? parsed.accessFilter
         : defaults.accessFilter,
+      contentTypeFilter: CONTENT_TYPE_OPTIONS.some((option) => option.id === parsed.contentTypeFilter)
+        ? parsed.contentTypeFilter
+        : defaults.contentTypeFilter,
       majorFilter: MAJOR_FILTER_OPTIONS.some((option) => option.id === parsed.majorFilter)
         ? parsed.majorFilter
         : defaults.majorFilter,
@@ -272,6 +282,17 @@ function hasAccess(event, accessFilter) {
   return event.channels.some((channel) => channel.access === accessFilter);
 }
 
+function eventContentType(event) {
+  return event.contentType === 'broadcast' ? 'broadcast' : 'match';
+}
+
+function matchesContentTypeFilter(event, contentTypeFilter) {
+  if (contentTypeFilter === 'all') {
+    return true;
+  }
+  return eventContentType(event) === contentTypeFilter;
+}
+
 function hasProvider(event, selectedProviders) {
   if (!selectedProviders.length) {
     return false;
@@ -301,6 +322,16 @@ function confidenceMeta(event) {
     return { label: 'Waarschijnlijk', className: 'likely' };
   }
   return { label: 'Onbevestigd', className: 'unverified' };
+}
+
+function contentTypeMeta(event) {
+  if (eventContentType(event) === 'broadcast') {
+    if (event.contentSubType === 'recap') {
+      return { label: 'Recap', className: 'recap' };
+    }
+    return { label: 'Uitzending', className: 'broadcast' };
+  }
+  return { label: 'Wedstrijd', className: 'match' };
 }
 
 const MAJOR_GROUP_ORDER = [
@@ -437,7 +468,8 @@ function App() {
 
   const filteredEvents = useMemo(() => {
     const now = new Date();
-    const threshold = new Date(now.getTime() - 3 * 60 * 60 * 1000);
+    const matchThreshold = new Date(now.getTime() - 3 * 60 * 60 * 1000);
+    const broadcastThreshold = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
 
     let rangeMax = null;
     if (preferences.rangeFilter === '7d') {
@@ -457,7 +489,8 @@ function App() {
         return false;
       }
 
-      if (event.startDate < threshold) {
+      const eventThreshold = eventContentType(event) === 'broadcast' ? broadcastThreshold : matchThreshold;
+      if (event.startDate < eventThreshold) {
         return false;
       }
 
@@ -466,6 +499,10 @@ function App() {
       }
 
       if (!hasAccess(event, preferences.accessFilter)) {
+        return false;
+      }
+
+      if (!matchesContentTypeFilter(event, preferences.contentTypeFilter)) {
         return false;
       }
 
@@ -656,6 +693,11 @@ function App() {
     setPreferences((current) => ({ ...current, accessFilter: accessId }));
   };
 
+  const setContentTypeFilter = (contentTypeId) => {
+    trackAnalyticsEvent('filter_content_type_change', { content_type: contentTypeId });
+    setPreferences((current) => ({ ...current, contentTypeFilter: contentTypeId }));
+  };
+
   const setMajorFilter = (majorId) => {
     trackAnalyticsEvent('filter_major_change', { major: majorId });
     setPreferences((current) => ({ ...current, majorFilter: majorId }));
@@ -749,6 +791,7 @@ function App() {
   const renderEventCard = (event) => {
     const sportMeta = sportMetaFor(event.sport);
     const confidence = confidenceMeta(event);
+    const contentMeta = contentTypeMeta(event);
 
     return (
       <div key={event.id} className="event-card">
@@ -771,6 +814,9 @@ function App() {
 
         <p className={`verification-badge ${confidence.className}`}>
           {confidence.label}
+        </p>
+        <p className={`content-type-badge ${contentMeta.className}`}>
+          {contentMeta.label}
         </p>
 
         <ul className="channel-list">
@@ -1044,6 +1090,23 @@ function App() {
             </div>
 
             <div className="filter-group inline-group">
+              <p className="filter-title">Type</p>
+              <div className="chips-inline">
+                {CONTENT_TYPE_OPTIONS.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`chip ${preferences.contentTypeFilter === option.id ? 'is-selected' : ''}`}
+                    onClick={() => setContentTypeFilter(option.id)}
+                    aria-pressed={preferences.contentTypeFilter === option.id}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="filter-group inline-group">
               <p className="filter-title">Grote events</p>
               <div className="chips-inline">
                 {MAJOR_FILTER_OPTIONS.map((option) => (
@@ -1124,7 +1187,7 @@ function App() {
           {groupedEvents.length === 0 ? (
             <article className="panel empty-state">
               <h2>Geen events met deze filters</h2>
-              <p>Pas je sport-, aanbieder-, periode-, toegang- of grote-events-filter aan om resultaten te zien.</p>
+              <p>Pas je sport-, aanbieder-, periode-, toegang-, type- of grote-events-filter aan om resultaten te zien.</p>
             </article>
           ) : (
             groupedEvents.map((group) => (

@@ -33,6 +33,14 @@ export function normalizeEvent(event) {
     throw new Error(`Invalid sourceRefs for event ${event.id}`);
   }
 
+  if (event.contentType && !['match', 'broadcast'].includes(event.contentType)) {
+    throw new Error(`Invalid contentType for event ${event.id}: ${event.contentType}`);
+  }
+
+  if (event.contentSubType && !['general', 'recap'].includes(event.contentSubType)) {
+    throw new Error(`Invalid contentSubType for event ${event.id}: ${event.contentSubType}`);
+  }
+
   if (event.sourceRefs) {
     event.sourceRefs.forEach((ref) => {
       if (!ref || typeof ref !== 'object') {
@@ -66,6 +74,8 @@ export function normalizeEvent(event) {
     ...event,
     sport: String(event.sport).toLowerCase(),
     ...(event.sourceType ? { sourceType: event.sourceType.trim() } : {}),
+    ...(event.contentType ? { contentType: event.contentType } : {}),
+    ...(event.contentSubType ? { contentSubType: event.contentSubType } : {}),
     ...(event.sourceRefs
       ? {
           sourceRefs: event.sourceRefs
