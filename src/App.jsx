@@ -897,7 +897,7 @@ function App() {
               <button type="button" className="ghost contact-cta" onClick={copyContactEmail}>
                 {emailCopied ? 'E-mailadres gekopieerd' : 'Kopieer e-mailadres'}
               </button>
-              <p className="beta-note">Met live-updates per uur en aanbiederfilters, inclusief NOS-livestreams.</p>
+              <p className="beta-note">Met live-updates elke ~3 uur en aanbiederfilters, inclusief NOS-livestreams.</p>
             </div>
           </div>
           <aside className="summary-card">
@@ -1164,13 +1164,16 @@ function App() {
         </section>
 
         <section className="panel notice-panel">
-          <p>
-            {scheduleDataset.isDemo
-              ? 'MVP-notitie: deze versie gebruikt een handmatige dataset. Rechten en tijden kunnen wijzigen.'
-              : 'Dataset wordt automatisch bijgewerkt (ongeveer elk uur) vanuit meerdere bronnen, inclusief NOS, Ziggo, ESPN en Viaplay.'}
-          </p>
-          <p>Laatst bijgewerkt: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</p>
-          <p className={`dataset-status ${datasetStatus.level}`}>{datasetStatus.message}</p>
+          <div className="notice-meta">
+            <span className="dataset-label">Dataset</span>
+            <span>
+              {scheduleDataset.isDemo
+                ? 'Handmatige demo-dataset.'
+                : 'Automatisch ververst (~3 uur) via NOS, Ziggo, ESPN en Viaplay.'}
+            </span>
+            <span>Laatst bijgewerkt: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</span>
+            <span className={`dataset-status ${datasetStatus.level}`}>{datasetStatus.message}</span>
+          </div>
           <div className="notice-actions">
             <span>Privacy:</span>
             <button type="button" className="ghost compact" onClick={() => setConsent('granted')}>
@@ -1179,29 +1182,6 @@ function App() {
             <button type="button" className="ghost compact" onClick={() => setConsent('denied')}>
               Analytics uit
             </button>
-          </div>
-        </section>
-
-        <section className="panel seo-landing" aria-label="SEO landingsinformatie">
-          <h2>Waar kan ik sport kijken in Nederland?</h2>
-          <p>
-            Zoek je op “waar kan ik voetbal kijken”, “waar kan ik Formule 1 kijken” of “waar kan ik tennis kijken”?
-            Sportkijken geeft per event een praktisch overzicht met Nederlandse starttijd, aanbieder en of kijken gratis of betaald is.
-          </p>
-          <p>
-            Je kunt snel filteren op sporten zoals voetbal, Formule 1, tennis, golf, basketbal, honkbal en ijshockey.
-            Daarnaast zie je grote events zoals Olympische Spelen, Paralympics, wereldbekers en nationale kampioenschappen gegroepeerd.
-          </p>
-          <p>
-            Ook voor vragen als “welke zender zendt vanavond voetbal uit?”, “waar kan ik Champions League kijken?” en
-            “welke livestream is gratis in Nederland?” is dit overzicht gemaakt. We combineren data uit meerdere bronnen,
-            waaronder NOS, Ziggo Sport, ESPN en Viaplay.
-          </p>
-          <div className="seo-links">
-            <a href="/?q=waar%20kan%20ik%20voetbal%20kijken">Waar kan ik voetbal kijken?</a>
-            <a href="/?q=waar%20kan%20ik%20formule%201%20kijken">Waar kan ik Formule 1 kijken?</a>
-            <a href="/?q=waar%20kan%20ik%20tennis%20kijken">Waar kan ik tennis kijken?</a>
-            <a href="/?q=champions%20league%20kijken">Waar kan ik Champions League kijken?</a>
           </div>
         </section>
 
@@ -1239,6 +1219,29 @@ function App() {
               </article>
             ))
           )}
+        </section>
+
+        <section className="panel seo-landing" aria-label="SEO landingsinformatie">
+          <h2>Waar kan ik sport kijken in Nederland?</h2>
+          <p>
+            Zoek je op “waar kan ik voetbal kijken”, “waar kan ik Formule 1 kijken” of “waar kan ik tennis kijken”?
+            Sportkijken geeft per event een praktisch overzicht met Nederlandse starttijd, aanbieder en of kijken gratis of betaald is.
+          </p>
+          <p>
+            Je kunt snel filteren op sporten zoals voetbal, Formule 1, tennis, golf, basketbal, honkbal en ijshockey.
+            Daarnaast zie je grote events zoals Olympische Spelen, Paralympics, wereldbekers en nationale kampioenschappen gegroepeerd.
+          </p>
+          <p>
+            Ook voor vragen als “welke zender zendt vanavond voetbal uit?”, “waar kan ik Champions League kijken?” en
+            “welke livestream is gratis in Nederland?” is dit overzicht gemaakt. We combineren data uit meerdere bronnen,
+            waaronder NOS, Ziggo Sport, ESPN en Viaplay.
+          </p>
+          <div className="seo-links">
+            <a href="/?q=waar%20kan%20ik%20voetbal%20kijken">Waar kan ik voetbal kijken?</a>
+            <a href="/?q=waar%20kan%20ik%20formule%201%20kijken">Waar kan ik Formule 1 kijken?</a>
+            <a href="/?q=waar%20kan%20ik%20tennis%20kijken">Waar kan ik tennis kijken?</a>
+            <a href="/?q=champions%20league%20kijken">Waar kan ik Champions League kijken?</a>
+          </div>
         </section>
       </main>
     </div>
