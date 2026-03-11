@@ -71,6 +71,7 @@ const SOURCE_EVENTS = Array.isArray(scheduleDataset.events) ? scheduleDataset.ev
 const CONSENT_STORAGE_KEY = 'sportkijken-consent-v1';
 const CONTACT_EMAIL = 'info@paulzuiderduin.com';
 const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}`;
+const REFRESH_STATUS_URL = 'https://api.github.com/repos/Paulmzuiderduin/sportkijken/actions/workflows/update-data.yml/runs?per_page=1';
 
 function formatSportLabel(id) {
   return id
@@ -395,6 +396,7 @@ function App() {
   const [providersExpanded, setProvidersExpanded] = useState(false);
   const [consentState, setConsentState] = useState(loadConsentState);
   const [emailCopied, setEmailCopied] = useState(false);
+  const [lastRefreshCheckAt, setLastRefreshCheckAt] = useState(null);
 
   const events = useMemo(() => {
     return [...SOURCE_EVENTS]
@@ -423,6 +425,40 @@ function App() {
       return undefined;
     }
 
+    let cancelled = false;
+
+    const fetchRefreshStatus = async () => {
+      try {
+        const response = await fetch(REFRESH_STATUS_URL, { cache: 'no-store' });
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = await response.json();
+        const latestRun = Array.isArray(payload?.workflow_runs) ? payload.workflow_runs[0] : null;
+        const checkedAt = latestRun?.updated_at || latestRun?.run_started_at || null;
+
+        if (!cancelled && checkedAt) {
+          setLastRefreshCheckAt(checkedAt);
+        }
+      } catch (error) {
+        // Ignore network issues and keep the dataset fallback timestamp.
+      }
+    };
+
+    fetchRefreshStatus();
+    const intervalId = window.setInterval(fetchRefreshStatus, 15 * 60 * 1000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
     const syncConsent = (event) => {
       const detailState = event?.detail?.state;
       if (detailState === 'granted' || detailState === 'denied' || detailState === 'unknown') {
@@ -437,34 +473,48 @@ function App() {
   }, []);
 
   const datasetStatus = useMemo(() => {
+    const referenceAt = lastRefreshCheckAt || scheduleDataset.generatedAt || 0;
+    const referenceDate = new Date(referenceAt);
+    const referenceMs = referenceDate.getTime();
     const generatedAt = new Date(scheduleDataset.generatedAt || 0);
     const generatedMs = generatedAt.getTime();
-    if (!Number.isFinite(generatedMs) || generatedMs <= 0) {
+    if (!Number.isFinite(referenceMs) || referenceMs <= 0) {
       return {
         level: 'warning',
         message: 'Kon geen geldige update-tijd bepalen.'
       };
     }
 
-    const ageMinutes = Math.max(0, Math.round((Date.now() - generatedMs) / 60000));
-    if (ageMinutes > 180) {
+    const ageMinutes = Math.max(0, Math.round((Date.now() - referenceMs) / 60000));
+    if (ageMinutes > 240) {
       return {
         level: 'warning',
-        message: `Data is ${Math.round(ageMinutes / 60)} uur oud. Controleer zenderinformatie extra goed.`
+        message: `Bronnen zijn ${Math.round(ageMinutes / 60)} uur geleden gecontroleerd. Controleer zenderinformatie extra goed.`
       };
     }
-    if (ageMinutes > 90) {
+    if (ageMinutes > 120) {
       return {
         level: 'notice',
-        message: `Data is ${ageMinutes} minuten oud. Nieuwe wijzigingen kunnen nog binnenkomen.`
+        message: `Bronnen zijn ${ageMinutes} minuten geleden gecontroleerd.`
+      };
+    }
+
+    const datasetAgeMinutes = Number.isFinite(generatedMs) && generatedMs > 0
+      ? Math.max(0, Math.round((Date.now() - generatedMs) / 60000))
+      : null;
+
+    if (datasetAgeMinutes !== null && lastRefreshCheckAt && datasetAgeMinutes > 180) {
+      return {
+        level: 'ok',
+        message: `Bronnen recent gecontroleerd; geen nieuwe datasetwijziging in ${Math.round(datasetAgeMinutes / 60)} uur.`
       };
     }
 
     return {
       level: 'ok',
-      message: `Data is ${ageMinutes} minuten oud.`
+      message: `Bronnen ${ageMinutes} minuten geleden gecontroleerd.`
     };
-  }, []);
+  }, [lastRefreshCheckAt]);
 
   const filteredEvents = useMemo(() => {
     const now = new Date();
@@ -1171,7 +1221,12 @@ function App() {
                 ? 'Handmatige demo-dataset.'
                 : 'Automatisch ververst (~3 uur) via NOS, Ziggo, ESPN en Viaplay.'}
             </span>
-            <span>Laatst bijgewerkt: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}</span>
+            <span>
+              Laatst gecontroleerd: {new Date(lastRefreshCheckAt || scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
+            </span>
+            <span>
+              Laatste datasetwijziging: {new Date(scheduleDataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
+            </span>
             <span className={`dataset-status ${datasetStatus.level}`}>{datasetStatus.message}</span>
           </div>
           <div className="notice-actions">
