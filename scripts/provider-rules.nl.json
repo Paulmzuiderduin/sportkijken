@@ -1,0 +1,79 @@
+{
+  "dutchClubKeywords": [
+    "ajax",
+    "psv",
+    "feyenoord",
+    "az alkmaar",
+    "az ",
+    "fc twente",
+    "twente",
+    "fc utrecht",
+    "utrecht",
+    "go ahead eagles",
+    "nec",
+    "vitesse",
+    "willem ii"
+  ],
+  "ziggo": {
+    "freeChannelNames": [
+      "ziggo sport",
+      "ziggo sport kanaal 14",
+      "ziggo sport 14"
+    ],
+    "streamChannelIndicators": [
+      "ziggo go",
+      "ott"
+    ],
+    "tvUrl": "https://www.ziggosport.nl/programmagids/",
+    "streamUrl": "https://www.ziggogo.tv/nl/home",
+    "freeConditions": "Gratis voor Ziggo-klanten met geschikt tv-pakket.",
+    "paidConditions": "Kanaal vereist aanvullend Ziggo Sport-pakket of inloggen via Ziggo GO."
+  },
+  "espn": {
+    "freeChannelNames": [
+      "espn",
+      "espn 1"
+    ],
+    "streamChannelNames": [
+      "espn watch",
+      "espn+",
+      "espn plus"
+    ],
+    "watchUrl": "https://www.espn.nl/watch/",
+    "scheduleUrl": "https://www.espn.nl/watch/schedule",
+    "freeConditions": "Gratis voor KPN-klanten met geschikt tv-pakket.",
+    "paidTvConditions": "Alleen met ESPN Compleet of geschikt tv-pakket.",
+    "paidStreamConditions": "Streaming via ESPN Watch met geschikt abonnement."
+  },
+  "competitionOverrides": [
+    {
+      "id": "uefa-dutch-club-ziggo-go-free",
+      "when": {
+        "all": [
+          "uefa"
+        ],
+        "any": [
+          "ajax",
+          "psv",
+          "feyenoord",
+          "az",
+          "twente",
+          "utrecht",
+          "go ahead",
+          "nec",
+          "vitesse",
+          "willem ii"
+        ]
+      },
+      "targetName": "ziggo go",
+      "set": {
+        "name": "Ziggo GO",
+        "platform": "stream",
+        "access": "free",
+        "url": "https://www.ziggogo.tv/nl/home",
+        "conditions": "Europese wedstrijden van Nederlandse clubs zijn vrij te volgen via ziggogo.tv."
+      },
+      "upsert": true
+    }
+  ]
+}
