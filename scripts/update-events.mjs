@@ -18,8 +18,6 @@ const REQUEST_TIMEOUT_MS = 15000;
 const MAX_EVENTS = Number(process.env.MAX_EVENTS || 700);
 const NOS_SPORT_URL = 'https://nos.nl/sport';
 const NOS_LIVESTREAM_LIMIT = 120;
-const NOS_VIDEO_BROADCAST_LIMIT = 48;
-const NOS_BROADCAST_LOOKBACK_DAYS = 5;
 const ZIGGO_EPG_BASE_URL = 'https://www.ziggosport.nl/cache/site/ZiggosportNL/json/epg';
 const ESPN_SCHEDULE_BASE_URL = 'https://www.espn.nl/watch/speelkalender/_/type/upcoming';
 const ZIGGO_EPG_LOOKAHEAD_DAYS = 30;
@@ -247,18 +245,6 @@ const BROADCAST_GENERAL_KEYWORDS = [
   'studio sport',
   'nabeschouwing',
   'voorbeschouwing'
-];
-
-const NOS_VIDEO_PATH_KEYWORDS = [
-  'samenvatting',
-  'hoogtepunten',
-  'sportjournaal',
-  'studio-sport',
-  'paralympische-spelen',
-  'olympische-spelen',
-  'eredivisie',
-  'f1',
-  'formule-1'
 ];
 
 const soccerFeeds = [
@@ -1545,83 +1531,6 @@ function parseNosLivestreamEvent(item, fallbackUrl) {
   };
 }
 
-function parseNosVideoBroadcastEvent(item, fallbackUrl) {
-  if (!item || item.type !== 'video') {
-    return null;
-  }
-
-  const categories = Array.isArray(item.categories) ? item.categories : [];
-  const collections = Array.isArray(item.collections) ? item.collections : [];
-  const categoryLabels = categories
-    .map((category) => category?.label || category?.name)
-    .filter(Boolean);
-  const collectionLabels = collections
-    .map((collection) => collection?.label || collection?.title)
-    .filter(Boolean);
-
-  const isSportOwner = normalizeAsciiLower(item.owner) === 'sport';
-  const hasSportCategory = categories.some((category) => category?.mainCategory === 'sport');
-  if (!isSportOwner && !hasSportCategory) {
-    return null;
-  }
-
-  const title = item.title || 'NOS Sport video';
-  const description = item.description || '';
-  const contentMeta = detectContentTypeFromText(title, description);
-  const combinedText = normalizeAsciiLower(
-    `${title} ${description} ${categoryLabels.join(' ')} ${collectionLabels.join(' ')}`
-  );
-  const isLikelyBroadcast = contentMeta.contentType === 'broadcast'
-    || combinedText.includes('paralymp')
-    || combinedText.includes('olymp');
-  if (!isLikelyBroadcast) {
-    return null;
-  }
-
-  const start = tryIso(item.publishedAt || item.modifiedAt);
-  if (!start) {
-    return null;
-  }
-
-  const earliestAllowed = new Date(windowStart.getTime() - NOS_BROADCAST_LOOKBACK_DAYS * 24 * 60 * 60 * 1000);
-  const startDate = new Date(start);
-  if (startDate < earliestAllowed || startDate > windowEnd) {
-    return null;
-  }
-
-  const durationSeconds = Number(item.video?.durationInSeconds || item.asset?.durationInSeconds || 0);
-  const durationMinutes = durationSeconds > 0
-    ? Math.max(8, Math.ceil(durationSeconds / 60))
-    : 35;
-  const sport = inferSportFromCandidates(
-    [...categoryLabels, ...collectionLabels, title, description, item.owner],
-    'sport'
-  );
-  const competition = collectionLabels[0]
-    || categoryLabels[0]
-    || (title.includes(':') ? title.split(':')[0].trim() : 'NOS Sport');
-  const url = item.url || fallbackUrl;
-
-  return {
-    id: `nos-video-${item.id}`,
-    sport,
-    title,
-    competition,
-    start,
-    durationMinutes,
-    location: 'Online (NOS/NPO)',
-    channels: [
-      { name: 'NOS.nl Video', platform: 'stream', access: 'free', url },
-      { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/' }
-    ],
-    notes: 'Automatisch toegevoegd: NOS sport-uitzending of samenvatting (on demand).',
-    sourceType: 'nos',
-    sourceRefs: [createSourceRef('NOS video', url, 'nos')].filter(Boolean),
-    contentType: 'broadcast',
-    contentSubType: contentMeta.contentSubType || 'general'
-  };
-}
-
 async function fetchNosSportLivestreams() {
   const sources = [NOS_SPORT_URL];
   const errors = [];
@@ -1655,30 +1564,6 @@ async function fetchNosSportLivestreams() {
       }
     } catch (error) {
       errors.push(`NOS livestream ${path}: ${error.message}`);
-    }
-  }
-
-  const videoPaths = [...new Set(sportHtml.match(/\/video\/[0-9][^"' <]*/g) || [])]
-    .filter((path) => {
-      const normalized = normalizeAsciiLower(path);
-      return NOS_VIDEO_PATH_KEYWORDS.some((keyword) => normalized.includes(keyword));
-    })
-    .slice(0, NOS_VIDEO_BROADCAST_LIMIT);
-
-  for (const path of videoPaths) {
-    const url = path.startsWith('http') ? path : `https://nos.nl${path}`;
-    sources.push(url);
-
-    try {
-      const html = await fetchText(url);
-      const nextData = parseNosNextData(html);
-      const item = nextData?.props?.pageProps?.data;
-      const parsed = parseNosVideoBroadcastEvent(item, url);
-      if (parsed) {
-        events.push(parsed);
-      }
-    } catch (error) {
-      errors.push(`NOS video ${path}: ${error.message}`);
     }
   }
 
