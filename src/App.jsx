@@ -707,8 +707,14 @@ function App() {
     if (typeof window === 'undefined') {
       return;
     }
+
+    setConsentState(nextState);
     if (typeof window.setSportkijkenConsent === 'function') {
-      window.setSportkijkenConsent(nextState);
+      try {
+        window.setSportkijkenConsent(nextState);
+      } catch (error) {
+        // Fall back to local storage when the global setter fails.
+      }
       return;
     }
 
@@ -929,10 +935,26 @@ function App() {
               We gebruiken optionele analytics (GA4) alleen met jouw toestemming.
             </p>
             <div className="consent-actions">
-              <button type="button" className="primary" onClick={() => setConsent('granted')}>
+              <button
+                type="button"
+                className="primary"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setConsent('granted');
+                }}
+              >
                 Toestaan
               </button>
-              <button type="button" className="ghost" onClick={() => setConsent('denied')}>
+              <button
+                type="button"
+                className="ghost"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setConsent('denied');
+                }}
+              >
                 Niet toestaan
               </button>
             </div>
