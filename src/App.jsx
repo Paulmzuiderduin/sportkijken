@@ -63,6 +63,8 @@ const DAY_NUMBER_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
 
 const SOURCE_EVENTS = Array.isArray(scheduleDataset.events) ? scheduleDataset.events : [];
 const CONSENT_STORAGE_KEY = 'sportkijken-consent-v1';
+const CONTACT_EMAIL = 'info@paulzuiderduin.com';
+const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}`;
 
 function formatSportLabel(id) {
   return id
@@ -361,6 +363,7 @@ function App() {
   const [preferences, setPreferences] = useState(loadPreferences);
   const [providersExpanded, setProvidersExpanded] = useState(false);
   const [consentState, setConsentState] = useState(loadConsentState);
+  const [emailCopied, setEmailCopied] = useState(false);
 
   const events = useMemo(() => {
     return [...SOURCE_EVENTS]
@@ -675,6 +678,17 @@ function App() {
     setConsentState(nextState);
   };
 
+  const copyContactEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(CONTACT_EMAIL);
+      setEmailCopied(true);
+      window.setTimeout(() => setEmailCopied(false), 2000);
+      trackAnalyticsEvent('contact_email_copy', {});
+    } catch (error) {
+      setEmailCopied(false);
+    }
+  };
+
   const exportVisibleEventsAsIcs = () => {
     if (!filteredEvents.length) {
       return;
@@ -820,9 +834,17 @@ function App() {
               <a className="ghost contact-cta" href="https://ko-fi.com/Y8Y41QY1SE" target="_blank" rel="noreferrer">
                 Support op Ko-fi
               </a>
-              <a className="ghost contact-cta" href="mailto:info@paulzuiderduin.com">
-                Contact: info@paulzuiderduin.com
+              <a
+                className="ghost contact-cta"
+                href={GMAIL_COMPOSE_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Contact: {CONTACT_EMAIL}
               </a>
+              <button type="button" className="ghost contact-cta" onClick={copyContactEmail}>
+                {emailCopied ? 'E-mailadres gekopieerd' : 'Kopieer e-mailadres'}
+              </button>
               <p className="beta-note">Met live-updates per uur en aanbiederfilters, inclusief NOS-livestreams.</p>
             </div>
           </div>
