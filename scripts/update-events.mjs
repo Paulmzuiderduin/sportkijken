@@ -1708,6 +1708,39 @@ function parseNosNextData(rawHtml) {
   return safeParseJson(match[1]);
 }
 
+function cleanNosParticipantLabel(value) {
+  return String(value || '')
+    .replace(/\s+/g, ' ')
+    .replace(/^[\s.,;:!?'"()\-–—]+|[\s.,;:!?'"()\-–—]+$/g, '')
+    .trim();
+}
+
+function extractNosLivestreamMatchTitle(title) {
+  const text = String(title || '').trim();
+  if (!text) {
+    return null;
+  }
+
+  const betweenMatch = text.match(/\btussen\s+(.+?)\s+(?:en|tegen)\s+(.+?)(?:\s*(?:\(|,|$))/i);
+  if (!betweenMatch) {
+    return null;
+  }
+
+  const homeLike = cleanNosParticipantLabel(betweenMatch[1]);
+  const awayLike = cleanNosParticipantLabel(betweenMatch[2]);
+  if (!homeLike || !awayLike) {
+    return null;
+  }
+
+  const homeWords = homeLike.split(' ').filter(Boolean).length;
+  const awayWords = awayLike.split(' ').filter(Boolean).length;
+  if (homeWords > 6 || awayWords > 6) {
+    return null;
+  }
+
+  return `${homeLike} - ${awayLike}`;
+}
+
 function parseNosLivestreamEvent(item, fallbackUrl) {
   if (!item || item.type !== 'livestream') {
     return null;
@@ -1734,8 +1767,9 @@ function parseNosLivestreamEvent(item, fallbackUrl) {
     }
   }
 
-  const title = item.title || 'NOS Sport livestream';
-  const competition = title.includes(':') ? title.split(':')[0].trim() : 'NOS Sport';
+  const rawTitle = item.title || 'NOS Sport livestream';
+  const title = extractNosLivestreamMatchTitle(rawTitle) || rawTitle;
+  const competition = rawTitle.includes(':') ? rawTitle.split(':')[0].trim() : 'NOS Sport';
   const url = item.url || fallbackUrl;
   let contentMeta = detectContentTypeFromText(title, competition);
   if (contentMeta.contentType === 'match' && isGenericGamesBroadcastTitle(title)) {
