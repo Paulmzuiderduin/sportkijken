@@ -521,6 +521,44 @@ h3,
   font-weight: 600;
 }
 
+.notice-actions .analytics-runtime {
+  font-weight: 700;
+}
+
+.analytics-runtime.on {
+  color: #0b6f49;
+}
+
+.analytics-runtime.off {
+  color: #8a3b25;
+}
+
+.analytics-runtime.notice {
+  color: #2a5f9b;
+}
+
+.analytics-runtime.warning {
+  color: #8a3b25;
+}
+
+@media (prefers-color-scheme: dark) {
+  .analytics-runtime.on {
+    color: #59d9a8;
+  }
+
+  .analytics-runtime.off {
+    color: #ffb8a8;
+  }
+
+  .analytics-runtime.notice {
+    color: #9dc7ff;
+  }
+
+  .analytics-runtime.warning {
+    color: #ffb8a8;
+  }
+}
+
 .seo-landing {
   display: grid;
   gap: 0.7rem;

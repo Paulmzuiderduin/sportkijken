@@ -75,6 +75,15 @@ const EMPTY_DATASET = {
 };
 const FALLBACK_EVENTS = [];
 const CONSENT_STORAGE_KEY = 'sportkijken-consent-v1';
+const DEFAULT_ANALYTICS_RUNTIME = {
+  consent: 'unknown',
+  scriptRequested: false,
+  scriptReady: false,
+  configured: false,
+  lastError: null,
+  lastEventName: null,
+  lastEventAt: null
+};
 const CONTACT_EMAIL = 'info@paulzuiderduin.com';
 const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}`;
 const REFRESH_STATUS_URL = 'https://api.github.com/repos/Paulmzuiderduin/sportkijken/actions/workflows/update-data.yml/runs?per_page=1';
@@ -385,6 +394,24 @@ function loadConsentState() {
   return 'unknown';
 }
 
+function loadAnalyticsRuntime() {
+  if (typeof window === 'undefined') {
+    return DEFAULT_ANALYTICS_RUNTIME;
+  }
+
+  if (typeof window.getSportkijkenAnalyticsRuntime === 'function') {
+    const value = window.getSportkijkenAnalyticsRuntime();
+    if (value && typeof value === 'object') {
+      return {
+        ...DEFAULT_ANALYTICS_RUNTIME,
+        ...value
+      };
+    }
+  }
+
+  return DEFAULT_ANALYTICS_RUNTIME;
+}
+
 function escapeIcsValue(value) {
   return String(value)
     .replace(/\\/g, '\\\\')
@@ -532,6 +559,7 @@ function App() {
   const [preferences, setPreferences] = useState(() => loadPreferences(FALLBACK_SPORT_OPTIONS, FALLBACK_PROVIDER_OPTIONS));
   const [providersExpanded, setProvidersExpanded] = useState(false);
   const [consentState, setConsentState] = useState(loadConsentState);
+  const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
   const [lastRefreshCheckAt, setLastRefreshCheckAt] = useState(null);
   const previousOptionsRef = useRef({
@@ -746,6 +774,24 @@ function App() {
 
     window.addEventListener('sportkijken-consent-changed', syncConsent);
     return () => window.removeEventListener('sportkijken-consent-changed', syncConsent);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    const syncAnalyticsRuntime = (event) => {
+      const detail = event?.detail;
+      if (detail && typeof detail === 'object') {
+        setAnalyticsRuntime((current) => ({ ...current, ...detail }));
+        return;
+      }
+      setAnalyticsRuntime(loadAnalyticsRuntime());
+    };
+
+    window.addEventListener('sportkijken-analytics-runtime-changed', syncAnalyticsRuntime);
+    return () => window.removeEventListener('sportkijken-analytics-runtime-changed', syncAnalyticsRuntime);
   }, []);
 
   const datasetStatus = useMemo(() => {
@@ -1043,12 +1089,17 @@ function App() {
 
     setConsentState(nextState);
     if (typeof window.setSportkijkenConsent === 'function') {
+      let appliedViaGlobal = false;
       try {
         window.setSportkijkenConsent(nextState);
+        appliedViaGlobal = true;
       } catch (error) {
         // Fall back to local storage when the global setter fails.
       }
-      return;
+      if (appliedViaGlobal) {
+        setAnalyticsRuntime(loadAnalyticsRuntime());
+        return;
+      }
     }
 
     try {
@@ -1057,7 +1108,31 @@ function App() {
       // Ignore localStorage issues.
     }
     setConsentState(nextState);
+    setAnalyticsRuntime((current) => ({
+      ...current,
+      consent: nextState
+    }));
   };
+
+  const analyticsStatus = useMemo(() => {
+    if (consentState !== 'granted') {
+      return { level: 'off', message: 'Analytics is disabled.' };
+    }
+
+    if (analyticsRuntime.lastError === 'script_load_failed') {
+      return { level: 'warning', message: 'Analytics blocked by browser/privacy settings.' };
+    }
+
+    if (analyticsRuntime.configured || analyticsRuntime.scriptReady) {
+      return { level: 'on', message: 'Analytics active.' };
+    }
+
+    if (analyticsRuntime.scriptRequested) {
+      return { level: 'notice', message: 'Connecting analytics...' };
+    }
+
+    return { level: 'notice', message: 'Waiting for analytics startup...' };
+  }, [analyticsRuntime, consentState]);
 
   const copyContactEmail = async () => {
     try {
@@ -1514,12 +1589,23 @@ function App() {
           </div>
           <div className="notice-actions">
             <span>Privacy:</span>
-            <button type="button" className="ghost compact" onClick={() => setConsent('granted')}>
+            <button
+              type="button"
+              className={`ghost compact ${consentState === 'granted' ? 'is-active' : ''}`}
+              onClick={() => setConsent('granted')}
+              aria-pressed={consentState === 'granted'}
+            >
               Analytics aan
             </button>
-            <button type="button" className="ghost compact" onClick={() => setConsent('denied')}>
+            <button
+              type="button"
+              className={`ghost compact ${consentState === 'denied' ? 'is-active' : ''}`}
+              onClick={() => setConsent('denied')}
+              aria-pressed={consentState === 'denied'}
+            >
               Analytics uit
             </button>
+            <span className={`analytics-runtime ${analyticsStatus.level}`}>{analyticsStatus.message}</span>
           </div>
         </section>
 

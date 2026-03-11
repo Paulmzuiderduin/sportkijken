@@ -129,6 +129,27 @@
         var CONSENT_KEY = 'sportkijken-consent-v1';
         var MEASUREMENT_ID = 'G-KGLTSPFH64';
         var consentState = 'unknown';
+        var analyticsRuntime = {
+          consent: consentState,
+          scriptRequested: false,
+          scriptReady: false,
+          configured: false,
+          lastError: null,
+          lastEventName: null,
+          lastEventAt: null
+        };
+
+        function emitAnalyticsRuntimeChange() {
+          window.__sportkijkenAnalyticsRuntime = Object.assign({}, analyticsRuntime);
+          window.dispatchEvent(new CustomEvent('sportkijken-analytics-runtime-changed', {
+            detail: window.__sportkijkenAnalyticsRuntime
+          }));
+        }
+
+        function updateAnalyticsRuntime(patch) {
+          analyticsRuntime = Object.assign({}, analyticsRuntime, patch || {});
+          emitAnalyticsRuntimeChange();
+        }
 
         function readStoredConsent() {
           try {
@@ -157,12 +178,20 @@
         window.trackSportkijkenEvent = function (eventName, params) {
           if (!eventName || consentState !== 'granted' || typeof window.gtag !== 'function') return;
           ensureAnalyticsScript();
+          updateAnalyticsRuntime({
+            lastEventName: eventName,
+            lastEventAt: new Date().toISOString()
+          });
           window.gtag('event', eventName, params || {});
         };
 
         function sendInitialPageView() {
           if (window.__gaInitialPageViewSent || consentState !== 'granted' || typeof window.gtag !== 'function') return;
           window.__gaInitialPageViewSent = true;
+          updateAnalyticsRuntime({
+            lastEventName: 'page_view',
+            lastEventAt: new Date().toISOString()
+          });
           window.gtag('event', 'page_view', {
             page_title: document.title || 'Sportkijken',
             page_location: window.location.href,
@@ -175,20 +204,30 @@
           window.__gaConfigured = true;
           window.gtag('js', new Date());
           window.gtag('config', MEASUREMENT_ID, { anonymize_ip: true });
+          updateAnalyticsRuntime({
+            configured: true,
+            lastError: null
+          });
           sendInitialPageView();
         }
 
         function ensureAnalyticsScript() {
           if (window.__gaScriptRequested) return;
           window.__gaScriptRequested = true;
+          updateAnalyticsRuntime({
+            scriptRequested: true,
+            lastError: null
+          });
 
           var existingScript = document.querySelector('script[data-ga-measurement-id="' + MEASUREMENT_ID + '"]');
           if (existingScript) {
             if (window.__gaScriptReady) {
+              updateAnalyticsRuntime({ scriptReady: true });
               configureAnalytics();
             } else {
               existingScript.addEventListener('load', function () {
                 window.__gaScriptReady = true;
+                updateAnalyticsRuntime({ scriptReady: true, lastError: null });
                 configureAnalytics();
               }, { once: true });
             }
@@ -201,10 +240,19 @@
           script.dataset.gaMeasurementId = MEASUREMENT_ID;
           script.onload = function () {
             window.__gaScriptReady = true;
+            updateAnalyticsRuntime({ scriptReady: true, lastError: null });
             configureAnalytics();
           };
           script.onerror = function () {
             window.__gaConfigured = false;
+            window.__gaScriptReady = false;
+            window.__gaScriptRequested = false;
+            updateAnalyticsRuntime({
+              configured: false,
+              scriptReady: false,
+              scriptRequested: false,
+              lastError: 'script_load_failed'
+            });
           };
           document.head.appendChild(script);
         }
@@ -212,6 +260,10 @@
         function applyConsent(nextState) {
           consentState = nextState === 'granted' ? 'granted' : 'denied';
           writeStoredConsent(consentState);
+          updateAnalyticsRuntime({
+            consent: consentState,
+            lastError: consentState === 'granted' ? analyticsRuntime.lastError : null
+          });
 
           if (consentState === 'granted') {
             ensureAnalyticsScript();
@@ -228,6 +280,9 @@
         window.getSportkijkenConsent = function () {
           return consentState;
         };
+        window.getSportkijkenAnalyticsRuntime = function () {
+          return Object.assign({}, analyticsRuntime);
+        };
 
         var storedConsent = readStoredConsent();
         if (storedConsent === 'granted' || storedConsent === 'denied') {
@@ -237,6 +292,8 @@
         if (consentState === 'granted') {
           ensureAnalyticsScript();
         }
+
+        emitAnalyticsRuntimeChange();
       })();
     </script>
   </head>
