@@ -673,6 +673,157 @@ function markZiggoGoFreeForDutchClubs(channels) {
   });
 }
 
+function canonicalizeZiggoChannelName(channelName) {
+  const compact = String(channelName || '').trim().replace(/\s+/g, ' ');
+  const normalized = normalizeAsciiLower(compact);
+  if (!normalized) {
+    return '';
+  }
+
+  if (normalized === 'ziggo sport' || normalized === 'ziggo sport kanaal 14' || normalized === 'ziggo sport 14') {
+    return normalized === 'ziggo sport' ? 'Ziggo Sport' : 'Ziggo Sport Kanaal 14';
+  }
+
+  const numbered = normalized.match(/^ziggo sport(?: kanaal)? ([0-9]{1,2})$/);
+  if (numbered) {
+    const channelNumber = Number(numbered[1]);
+    if (channelNumber === 14) {
+      return 'Ziggo Sport Kanaal 14';
+    }
+    if (channelNumber >= 2 && channelNumber <= 14) {
+      return `Ziggo Sport ${channelNumber}`;
+    }
+  }
+
+  const ott = compact.match(/^ott\s*([0-9]+)(.*)$/i);
+  if (ott) {
+    const suffix = String(ott[2] || '').trim();
+    return suffix ? `OTT${ott[1]} ${suffix}` : `OTT${ott[1]}`;
+  }
+
+  return compact;
+}
+
+function canonicalizeEspnChannelName(channelName) {
+  const compact = String(channelName || '').trim().replace(/\s+/g, ' ');
+  const normalized = normalizeAsciiLower(compact);
+  if (!normalized.includes('espn')) {
+    return compact;
+  }
+
+  if (normalized === 'espn watch') {
+    return 'ESPN Watch';
+  }
+
+  if (normalized === 'espn+' || normalized === 'espn plus') {
+    return 'ESPN+';
+  }
+
+  if (normalized === 'espn' || normalized === 'espn 1' || normalized === 'espn1') {
+    return 'ESPN';
+  }
+
+  const numbered = normalized.match(/^espn\s*([2-9])$/);
+  if (numbered) {
+    return `ESPN ${numbered[1]}`;
+  }
+
+  if (normalized.includes('espn extra')) {
+    return 'ESPN Extra';
+  }
+
+  if (normalized === 'espnews') {
+    return 'ESPNews';
+  }
+
+  if (normalized === 'espn deportes') {
+    return 'ESPN Deportes';
+  }
+
+  return compact;
+}
+
+function isDutchClubEuropeanEvent(event) {
+  const haystack = normalizeAsciiLower(`${event.title || ''} ${event.competition || ''} ${event.notes || ''}`);
+  const isUefaCompetition = ['uefa', 'champions league', 'europa league', 'conference league']
+    .some((keyword) => haystack.includes(keyword));
+  if (!isUefaCompetition) {
+    return false;
+  }
+
+  return DUTCH_CLUB_KEYWORDS.some((keyword) => haystack.includes(keyword));
+}
+
+function applyProviderAccessBusinessRules(event) {
+  let channels = (event.channels || []).map((channel) => {
+    const originalName = String(channel.name || '').trim();
+    const normalizedName = normalizeAsciiLower(originalName);
+
+    if (normalizedName.includes('ziggo') || normalizedName.startsWith('ott')) {
+      const canonicalName = canonicalizeZiggoChannelName(originalName);
+      const normalizedCanonical = normalizeAsciiLower(canonicalName);
+      const isOtt = normalizedCanonical.startsWith('ott') || normalizedCanonical.includes('ziggo go');
+      const isFree = normalizedCanonical === 'ziggo sport' || normalizedCanonical === 'ziggo sport kanaal 14';
+
+      return {
+        ...channel,
+        name: canonicalName,
+        platform: isOtt ? 'stream' : 'tv',
+        access: isFree ? 'free' : 'paid',
+        url: isOtt ? 'https://www.ziggogo.tv/nl/home' : 'https://www.ziggosport.nl/programmagids/',
+        conditions: isFree
+          ? 'Gratis voor Ziggo-klanten met geschikt tv-pakket.'
+          : 'Kanaal vereist aanvullend Ziggo Sport-pakket of inloggen via Ziggo GO.'
+      };
+    }
+
+    if (normalizedName.includes('espn')) {
+      const canonicalName = canonicalizeEspnChannelName(originalName);
+      const normalizedCanonical = normalizeAsciiLower(canonicalName);
+      const isStream = normalizedCanonical === 'espn watch' || normalizedCanonical === 'espn+';
+      const isFree = normalizedCanonical === 'espn' || normalizedCanonical === 'espn 1';
+
+      return {
+        ...channel,
+        name: canonicalName,
+        platform: isStream ? 'stream' : 'tv',
+        access: isFree ? 'free' : 'paid',
+        url: channel.url || (isStream ? 'https://www.espn.nl/watch/' : 'https://www.espn.nl/watch/schedule'),
+        conditions: isFree
+          ? 'Gratis voor KPN-klanten met geschikt tv-pakket.'
+          : isStream
+            ? 'Streaming via ESPN Watch met geschikt abonnement.'
+          : 'Alleen met ESPN Compleet of geschikt tv-pakket.'
+      };
+    }
+
+    return channel;
+  });
+
+  if (isDutchClubEuropeanEvent(event)) {
+    const hasZiggoContext = channels.some((channel) => {
+      const normalized = normalizeAsciiLower(channel.name);
+      return normalized.includes('ziggo') || normalized.startsWith('ott');
+    });
+
+    if (hasZiggoContext) {
+      channels = channels.filter((channel) => normalizeAsciiLower(channel.name) !== 'ziggo go');
+      channels.push({
+        name: 'Ziggo GO',
+        platform: 'stream',
+        access: 'free',
+        url: 'https://www.ziggogo.tv/nl/home',
+        conditions: 'Europese wedstrijden van Nederlandse clubs zijn vrij te volgen via ziggogo.tv.'
+      });
+    }
+  }
+
+  return {
+    ...event,
+    channels: mergeChannels(channels)
+  };
+}
+
 function channelsForEvent(feed, title, competition) {
   let channels = feed.channels;
 
@@ -688,7 +839,7 @@ function channelsForEvent(feed, title, competition) {
 }
 
 function ziggoChannelFromName(channelName) {
-  const name = String(channelName || '').trim();
+  const name = canonicalizeZiggoChannelName(channelName);
   if (!name) {
     return null;
   }
@@ -709,21 +860,24 @@ function ziggoChannelFromName(channelName) {
 }
 
 function espnChannelFromName(channelName, watchUrl) {
-  const normalized = normalizeAsciiLower(channelName);
+  const name = canonicalizeEspnChannelName(channelName);
+  const normalized = normalizeAsciiLower(name);
   if (!normalized.includes('espn')) {
     return null;
   }
 
-  const name = String(channelName || '').trim().replace(/\s+/g, ' ');
-  const isFree = normalizeAsciiLower(name) === 'espn';
+  const isStream = normalized === 'espn watch' || normalized === 'espn+';
+  const isFree = normalized === 'espn' || normalized === 'espn 1';
 
   return {
     name,
-    platform: 'tv',
+    platform: isStream ? 'stream' : 'tv',
     access: isFree ? 'free' : 'paid',
-    url: watchUrl || 'https://www.espn.nl/watch/schedule',
+    url: watchUrl || (isStream ? 'https://www.espn.nl/watch/' : 'https://www.espn.nl/watch/schedule'),
     conditions: isFree
       ? 'Gratis voor KPN-klanten met geschikt tv-pakket.'
+      : isStream
+        ? 'Streaming via ESPN Watch met geschikt abonnement.'
       : 'Alleen met ESPN Compleet of geschikt tv-pakket.'
   };
 }
@@ -1015,7 +1169,7 @@ function enrichEventChannels(event, ziggoRows, espnRows) {
 }
 
 function enrichEventsWithSchedules(events, ziggoRows, espnRows) {
-  return events.map((event) => enrichEventChannels(event, ziggoRows, espnRows));
+  return events.map((event) => applyProviderAccessBusinessRules(enrichEventChannels(event, ziggoRows, espnRows)));
 }
 
 function competitionFromCandidates(candidates, fallback = 'Sport') {
