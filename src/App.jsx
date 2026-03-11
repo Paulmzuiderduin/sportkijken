@@ -1,5 +1,4 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
-import scheduleDataset from './data/events.nl.json';
 
 const STORAGE_KEY = 'sportkijken-preferences-v2';
 
@@ -67,7 +66,14 @@ const DAY_NUMBER_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
   timeZone: 'Europe/Amsterdam'
 });
 
-const FALLBACK_EVENTS = Array.isArray(scheduleDataset.events) ? scheduleDataset.events : [];
+const EMPTY_DATASET = {
+  generatedAt: null,
+  region: 'NL',
+  isDemo: false,
+  sources: [],
+  events: []
+};
+const FALLBACK_EVENTS = [];
 const CONSENT_STORAGE_KEY = 'sportkijken-consent-v1';
 const CONTACT_EMAIL = 'info@paulzuiderduin.com';
 const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}`;
@@ -188,6 +194,14 @@ function normalizeRuntimeDataset(candidate) {
     ...candidate,
     events: candidate.events
   };
+}
+
+function formatDatasetDateTime(value) {
+  const date = new Date(value || 0);
+  if (!Number.isFinite(date.getTime()) || date.getTime() <= 0) {
+    return 'Nog niet beschikbaar';
+  }
+  return date.toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' });
 }
 
 function searchTextFromUrl() {
@@ -422,7 +436,7 @@ function matchesMajorFilter(event, majorFilter) {
 }
 
 function App() {
-  const [dataset, setDataset] = useState(() => scheduleDataset);
+  const [dataset, setDataset] = useState(() => EMPTY_DATASET);
   const [preferences, setPreferences] = useState(() => loadPreferences(FALLBACK_SPORT_OPTIONS, FALLBACK_PROVIDER_OPTIONS));
   const [providersExpanded, setProvidersExpanded] = useState(false);
   const [consentState, setConsentState] = useState(loadConsentState);
@@ -622,6 +636,13 @@ function App() {
   }, []);
 
   const datasetStatus = useMemo(() => {
+    if (!lastRefreshCheckAt && !dataset.generatedAt) {
+      return {
+        level: 'notice',
+        message: 'Dataset wordt geladen...'
+      };
+    }
+
     const referenceAt = lastRefreshCheckAt || dataset.generatedAt || 0;
     const referenceDate = new Date(referenceAt);
     const referenceMs = referenceDate.getTime();
@@ -1371,10 +1392,10 @@ function App() {
                 : 'Automatisch ververst (~3 uur) via NOS, Ziggo, ESPN en Viaplay.'}
             </span>
             <span>
-              Laatst gecontroleerd: {new Date(lastRefreshCheckAt || dataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
+              Laatst gecontroleerd: {formatDatasetDateTime(lastRefreshCheckAt || dataset.generatedAt)}
             </span>
             <span>
-              Laatste datasetwijziging: {new Date(dataset.generatedAt).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' })}
+              Laatste datasetwijziging: {formatDatasetDateTime(dataset.generatedAt)}
             </span>
             <span className={`dataset-status ${datasetStatus.level}`}>{datasetStatus.message}</span>
           </div>
