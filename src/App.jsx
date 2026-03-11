@@ -80,6 +80,9 @@ const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encod
 const REFRESH_STATUS_URL = 'https://api.github.com/repos/Paulmzuiderduin/sportkijken/actions/workflows/update-data.yml/runs?per_page=1';
 const RUNTIME_DATASET_URL = '/events.nl.json';
 const RUNTIME_DATASET_POLL_MS = 5 * 60 * 1000;
+const SEO_BASE_URL = 'https://sportkijken.paulzuiderduin.com/';
+const SEO_BASE_TITLE = 'Waar Kan Ik Sport Kijken? | Sportkijken Nederland';
+const SEO_BASE_DESCRIPTION = 'Waar kan ik voetbal, Formule 1, tennis en andere sport kijken? Sportkijken geeft per wedstrijd een NL-overzicht met zender/stream, tijd en gratis of betaald.';
 
 function formatSportLabel(id) {
   return id
@@ -214,6 +217,95 @@ function searchTextFromUrl() {
     return (params.get('q') || '').trim();
   } catch (error) {
     return '';
+  }
+}
+
+function setOrCreateMetaTag(selector, attributes, content) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  let tag = document.head.querySelector(selector);
+  if (!tag) {
+    tag = document.createElement('meta');
+    Object.entries(attributes).forEach(([key, value]) => tag.setAttribute(key, value));
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute('content', content);
+}
+
+function setCanonicalHref(href) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  let tag = document.head.querySelector('link[rel="canonical"]');
+  if (!tag) {
+    tag = document.createElement('link');
+    tag.setAttribute('rel', 'canonical');
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute('href', href);
+}
+
+function toReadableSeoQuery(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\u00c0-\u024f\s-]/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 80);
+}
+
+function capitalizeFirst(value) {
+  if (!value) {
+    return value;
+  }
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function buildSeoMeta(query) {
+  const normalizedQuery = toReadableSeoQuery(query);
+  if (!normalizedQuery) {
+    return {
+      title: SEO_BASE_TITLE,
+      description: SEO_BASE_DESCRIPTION,
+      url: SEO_BASE_URL
+    };
+  }
+
+  const question = normalizedQuery.startsWith('waar kan ik')
+    ? normalizedQuery
+    : `waar kan ik ${normalizedQuery} kijken`;
+
+  const intentLabel = question
+    .replace(/^waar kan ik\s+/i, '')
+    .replace(/\s+kijken$/i, '')
+    .trim();
+
+  const descriptionIntent = intentLabel || normalizedQuery;
+
+  return {
+    title: `${capitalizeFirst(question)}? | Sportkijken`,
+    description: `Bekijk direct waar je ${descriptionIntent} in Nederland kunt kijken: zender/stream, starttijd en gratis of betaald.`,
+    url: `${SEO_BASE_URL}?q=${encodeURIComponent(normalizedQuery)}`
+  };
+}
+
+function canonicalUrlFromLocation() {
+  if (typeof window === 'undefined') {
+    return SEO_BASE_URL;
+  }
+
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const normalizedQuery = toReadableSeoQuery(params.get('q') || '');
+    if (!normalizedQuery) {
+      return SEO_BASE_URL;
+    }
+    return `${SEO_BASE_URL}?q=${encodeURIComponent(normalizedQuery)}`;
+  } catch (error) {
+    return SEO_BASE_URL;
   }
 }
 
@@ -582,6 +674,23 @@ function App() {
   useEffect(() => {
     trackAnalyticsEvent('sportkijken_view', { page: 'home' });
   }, []);
+
+  useEffect(() => {
+    const seo = buildSeoMeta(preferences.searchText);
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    document.title = seo.title;
+    setOrCreateMetaTag('meta[name="description"]', { name: 'description' }, seo.description);
+    setOrCreateMetaTag('meta[property="og:title"]', { property: 'og:title' }, seo.title);
+    setOrCreateMetaTag('meta[property="og:description"]', { property: 'og:description' }, seo.description);
+    const canonicalUrl = canonicalUrlFromLocation();
+    setOrCreateMetaTag('meta[property="og:url"]', { property: 'og:url' }, canonicalUrl);
+    setOrCreateMetaTag('meta[name="twitter:title"]', { name: 'twitter:title' }, seo.title);
+    setOrCreateMetaTag('meta[name="twitter:description"]', { name: 'twitter:description' }, seo.description);
+    setCanonicalHref(canonicalUrl);
+  }, [preferences.searchText]);
 
   useEffect(() => {
     if (typeof window === 'undefined') {

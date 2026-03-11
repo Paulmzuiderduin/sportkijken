@@ -2,7 +2,56 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sportkijken.paulzuiderduin.com/</loc>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20voetbal%20kijken</loc>
+    <lastmod>2026-03-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20formule%201%20kijken</loc>
+    <lastmod>2026-03-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20tennis%20kijken</loc>
+    <lastmod>2026-03-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20eredivisie%20kijken</loc>
+    <lastmod>2026-03-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20premier%20league%20kijken</loc>
+    <lastmod>2026-03-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20champions%20league%20kijken</loc>
+    <lastmod>2026-03-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://sportkijken.paulzuiderduin.com/?q=nos%20livestream%20sport</loc>
+    <lastmod>2026-03-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://sportkijken.paulzuiderduin.com/?q=ziggo%20sport%20gratis%20kijken</loc>
+    <lastmod>2026-03-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.75</priority>
   </url>
 </urlset>

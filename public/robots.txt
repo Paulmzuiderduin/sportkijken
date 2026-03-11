@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Host: sportkijken.paulzuiderduin.com
 
 Sitemap: https://sportkijken.paulzuiderduin.com/sitemap.xml
