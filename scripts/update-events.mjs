@@ -199,6 +199,9 @@ const SCHEDULE_ONLY_SKIP_KEYWORDS = [
   'tekengeld',
   'classic match',
   'on the range',
+  'ahora o nunca',
+  'rich eisen show',
+  'the rich eisen show',
   'adios rafa',
   'film',
   'documentaire'
