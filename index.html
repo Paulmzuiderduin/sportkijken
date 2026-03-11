@@ -177,30 +177,6 @@
           document.head.appendChild(script);
         }
 
-        function ensureKoFiWidget() {
-          if (window.__kofiScriptRequested) return;
-          window.__kofiScriptRequested = true;
-
-          function drawKoFiWidget() {
-            if (!window.kofiwidget2 || consentState !== 'granted' || window.__kofiWidgetDrawn) return;
-            window.__kofiWidgetDrawn = true;
-            window.kofiwidget2.init('Support me on Ko-fi', '#72a4f2', 'Y8Y41QY1SE');
-            window.kofiwidget2.draw();
-          }
-
-          var script = document.createElement('script');
-          script.src = 'https://storage.ko-fi.com/cdn/widget/Widget_2.js';
-          script.async = true;
-          script.onload = function () {
-            if (document.readyState === 'loading') {
-              document.addEventListener('DOMContentLoaded', drawKoFiWidget, { once: true });
-              return;
-            }
-            drawKoFiWidget();
-          };
-          (document.body || document.head).appendChild(script);
-        }
-
         function applyConsent(nextState) {
           consentState = nextState === 'granted' ? 'granted' : 'denied';
           writeStoredConsent(consentState);
@@ -210,7 +186,6 @@
             if (window.__gaScriptReady) {
               configureAnalytics();
             }
-            ensureKoFiWidget();
           }
 
           emitConsentChange();
@@ -228,7 +203,6 @@
 
         if (consentState === 'granted') {
           ensureAnalyticsScript();
-          ensureKoFiWidget();
         }
       })();
     </script>

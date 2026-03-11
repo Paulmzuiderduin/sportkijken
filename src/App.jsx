@@ -858,7 +858,7 @@ function App() {
         {consentState === 'unknown' ? (
           <section className="panel consent-banner" role="region" aria-label="Privacy-instellingen">
             <p>
-              We gebruiken optionele analytics (GA4) en de Ko-fi widget alleen met jouw toestemming.
+              We gebruiken optionele analytics (GA4) alleen met jouw toestemming.
             </p>
             <div className="consent-actions">
               <button type="button" className="primary" onClick={() => setConsent('granted')}>
