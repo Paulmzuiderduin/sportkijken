@@ -648,13 +648,14 @@ h3,
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 0.72rem;
-  align-items: start;
 }
 
 .event-card {
   padding: 0.9rem;
   display: grid;
   gap: 0.68rem;
+  height: 100%;
+  align-content: start;
   animation: fade-slide 0.45s ease;
 }
 
