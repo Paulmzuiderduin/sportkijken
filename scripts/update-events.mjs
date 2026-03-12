@@ -1858,6 +1858,82 @@ function extractHboMaxScheduleRows(nextData, sourceUrl) {
   return rows;
 }
 
+function isHboMaxGolfRow(row) {
+  return normalizeAsciiLower(row?.sportLabel).includes('golf');
+}
+
+function scoreHboMaxPrimaryGolfRow(row) {
+  const title = String(row?.title || '');
+  const league = String(row?.league || '');
+  const summary = String(row?.summary || '');
+  const normalizedTitle = normalizeAsciiLower(title);
+  const normalizedLeague = normalizeAsciiLower(league);
+  const normalizedSummary = normalizeAsciiLower(summary);
+  const slashCount = (title.match(/\//g) || []).length;
+  const durationMinutes = durationFromStartEnd(row?.start, row?.end, 120);
+
+  let score = 0;
+
+  if (/(\bdag\s*\d+\b|\bround\s*\d+\b|\bron(de)?\s*\d+\b)/i.test(title)) {
+    score += 180;
+  }
+  if (slashCount === 0) {
+    score += 100;
+  }
+  if (slashCount >= 2) {
+    score -= 140;
+  }
+  if (normalizedLeague && normalizedTitle.includes(normalizedLeague)) {
+    score += 70;
+  }
+  if (normalizedSummary.includes('liveverslag') || normalizedSummary.includes('live coverage')) {
+    score += 35;
+  }
+  if (normalizedTitle.includes('main feed') || normalizedTitle.includes('hoofdkanaal')) {
+    score += 80;
+  }
+  if (normalizedTitle.includes('multiview') || normalizedTitle.includes('marquee group') || normalizedTitle.includes('featured group')) {
+    score -= 120;
+  }
+
+  score += Math.min(40, Math.round(durationMinutes / 30));
+  return score;
+}
+
+function collapseHboMaxParallelGolfRows(rows) {
+  const passthrough = [];
+  const golfGroups = new Map();
+
+  rows.forEach((row) => {
+    if (!isHboMaxGolfRow(row)) {
+      passthrough.push(row);
+      return;
+    }
+
+    const dayKey = formatDateForApi(new Date(row.start));
+    const groupKey = `${normalizeAsciiLower(row.league || row.summary || 'golf')}|${dayKey}`;
+    const existing = golfGroups.get(groupKey);
+    if (existing) {
+      existing.push(row);
+    } else {
+      golfGroups.set(groupKey, [row]);
+    }
+  });
+
+  golfGroups.forEach((groupRows) => {
+    const sorted = [...groupRows].sort((a, b) => {
+      const scoreDelta = scoreHboMaxPrimaryGolfRow(b) - scoreHboMaxPrimaryGolfRow(a);
+      if (scoreDelta !== 0) {
+        return scoreDelta;
+      }
+      return new Date(a.start).getTime() - new Date(b.start).getTime();
+    });
+    passthrough.push(sorted[0]);
+  });
+
+  return passthrough.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+}
+
 function cleanNosParticipantLabel(value) {
   return String(value || '')
     .replace(/\s+/g, ' ')
@@ -1993,7 +2069,8 @@ async function fetchHboMaxScheduleRows() {
   try {
     const html = await fetchText(HBO_MAX_SPORTS_URL);
     const nextData = parseHboMaxNextData(html);
-    rows.push(...extractHboMaxScheduleRows(nextData, HBO_MAX_SPORTS_URL));
+    const extractedRows = extractHboMaxScheduleRows(nextData, HBO_MAX_SPORTS_URL);
+    rows.push(...collapseHboMaxParallelGolfRows(extractedRows));
   } catch (error) {
     errors.push(`HBO Max sportagenda: ${error.message}`);
   }
