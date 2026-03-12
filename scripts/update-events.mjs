@@ -1986,7 +1986,7 @@ const SPORT_KEYWORDS = [
   { sport: 'atletiek', keywords: ['atletiek', 'athletics'] },
   { sport: 'schaatsen', keywords: ['schaatsen', 'speed skating'] },
   { sport: 'rugby', keywords: ['rugby'] },
-  { sport: 'darts', keywords: ['darts'] },
+  { sport: 'darts', keywords: ['premier league darts', 'pdc darts', 'darts'] },
   { sport: 'olympics', keywords: ['olympisch', 'olympic', 'olympische spelen'] },
   { sport: 'paralympics', keywords: ['paralymp', 'paralympische spelen'] },
   { sport: 'snooker', keywords: ['snooker'] },
@@ -2073,8 +2073,26 @@ function detectSportFromCandidates(candidates) {
   if (!normalized) {
     return null;
   }
-  const match = SPORT_KEYWORDS.find((entry) => entry.keywords.some((keyword) => normalized.includes(keyword)));
-  return match?.sport || null;
+
+  let bestMatch = null;
+  SPORT_KEYWORDS.forEach((entry, entryIndex) => {
+    entry.keywords.forEach((keyword) => {
+      if (!keyword || !normalized.includes(keyword)) {
+        return;
+      }
+
+      const score = keyword.length;
+      if (!bestMatch || score > bestMatch.score || (score === bestMatch.score && entryIndex < bestMatch.entryIndex)) {
+        bestMatch = {
+          sport: entry.sport,
+          score,
+          entryIndex
+        };
+      }
+    });
+  });
+
+  return bestMatch?.sport || null;
 }
 
 function fallbackSportSlugFromCandidates(candidates) {
