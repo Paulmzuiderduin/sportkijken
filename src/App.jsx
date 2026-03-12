@@ -561,6 +561,21 @@ const MAJOR_GROUP_ORDER = [
   'Nationale Kampioenschappen'
 ];
 
+const NATIONAL_CHAMPIONSHIP_PATTERNS = [
+  /\bnationaal(?:\s+of)?\s+kampioenschap(?:pen)?\b/,
+  /\bnationale\s+kampioenschap(?:pen)?\b/,
+  /\bnederlands?\s+kampioenschap(?:pen)?\b/,
+  /\bnederlandse\s+kampioenschap(?:pen)?\b/,
+  /\bnational championship(?:s)?\b/,
+  /\bkampioenschap(?:pen)?\s+van\s+nederland\b/,
+  /\bdutch championships?\b/,
+  /\bnk\s+(?:allround|afstanden|sprint|indoor|outdoor|atletiek|wielrennen|veldrijden|tijdrit|judo|turnen|zwemmen|schaatsen|tafeltennis|badminton|hockey|volleybal|handbal|boksen|roeien|zeilen|triatlon|marathon)\b/
+];
+
+function isNationalChampionshipEvent(haystack) {
+  return NATIONAL_CHAMPIONSHIP_PATTERNS.some((pattern) => pattern.test(haystack));
+}
+
 function majorGroupForEvent(event) {
   const haystack = `${event.title || ''} ${event.competition || ''} ${event.notes || ''}`.toLowerCase();
 
@@ -583,11 +598,7 @@ function majorGroupForEvent(event) {
   }
 
   if (
-    haystack.includes('nationaal kampioenschap')
-    || haystack.includes('national championship')
-    || haystack.includes('nederlands kampioenschap')
-    || haystack.includes(' nk')
-    || haystack.startsWith('nk ')
+    isNationalChampionshipEvent(haystack)
   ) {
     return 'Nationale Kampioenschappen';
   }
