@@ -450,6 +450,30 @@ function parseLatestRefreshCheckAt(payload) {
   return normalizeIsoDateTime(targetedRun?.updated_at || targetedRun?.run_started_at || targetedRun?.created_at);
 }
 
+function isReloadNavigation() {
+  if (typeof window === 'undefined' || typeof performance === 'undefined') {
+    return false;
+  }
+
+  const navigationEntry = typeof performance.getEntriesByType === 'function'
+    ? performance.getEntriesByType('navigation')?.[0]
+    : null;
+
+  if (navigationEntry && typeof navigationEntry.type === 'string') {
+    return navigationEntry.type === 'reload';
+  }
+
+  // Fallback for older navigation timing implementations.
+  return Boolean(performance.navigation && performance.navigation.type === 1);
+}
+
+function scrollToPageTop() {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+}
+
 function loadAnalyticsRuntime() {
   if (typeof window === 'undefined') {
     return DEFAULT_ANALYTICS_RUNTIME;
@@ -629,6 +653,7 @@ function App() {
   const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
   const [lastRefreshCheckAt, setLastRefreshCheckAt] = useState(loadLastRefreshCheckAt);
+  const shouldForceTopOnLoadRef = useRef(false);
   const previousOptionsRef = useRef({
     sports: FALLBACK_SPORT_OPTIONS.map((sport) => sport.id),
     providers: FALLBACK_PROVIDER_OPTIONS
@@ -658,6 +683,44 @@ function App() {
       .filter((event) => Number.isFinite(event.startDate.getTime()) && Number.isFinite(event.endDate.getTime()))
       .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
   }, [sourceEvents]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    if (!isReloadNavigation()) {
+      return undefined;
+    }
+
+    shouldForceTopOnLoadRef.current = true;
+
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    scrollToPageTop();
+    const timeoutA = window.setTimeout(scrollToPageTop, 120);
+    const timeoutB = window.setTimeout(scrollToPageTop, 450);
+
+    return () => {
+      window.clearTimeout(timeoutA);
+      window.clearTimeout(timeoutB);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!shouldForceTopOnLoadRef.current) {
+      return;
+    }
+
+    if (!dataset.generatedAt) {
+      return;
+    }
+
+    scrollToPageTop();
+    shouldForceTopOnLoadRef.current = false;
+  }, [dataset.generatedAt]);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
