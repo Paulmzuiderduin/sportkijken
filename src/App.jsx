@@ -1467,8 +1467,6 @@ function App() {
             Report incorrect listing
           </a>
         </footer>
-
-        {event.notes ? <p className="event-note">{event.notes}</p> : null}
       </div>
     );
   };

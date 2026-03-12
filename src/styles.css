@@ -45,7 +45,6 @@
   --day-number-bg: #ffffff;
   --channel-divider: rgba(15, 28, 42, 0.1);
   --channel-condition: #63758a;
-  --event-note: #6b7686;
   --link: #134c8b;
 }
 
@@ -95,7 +94,6 @@
     --day-number-bg: #101a25;
     --channel-divider: rgba(176, 197, 221, 0.2);
     --channel-condition: #a8b9cf;
-    --event-note: #9dafc5;
     --link: #93c5ff;
   }
 }
@@ -771,12 +769,6 @@ h3,
 
 .report-link:hover {
   text-decoration: underline;
-}
-
-.event-note {
-  margin: 0;
-  font-size: 0.79rem;
-  color: var(--event-note);
 }
 
 .empty-state {
