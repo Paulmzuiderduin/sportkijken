@@ -148,6 +148,10 @@ const PREFERRED_PROVIDERS = [
   'UFC Fight Pass'
 ];
 
+const PROVIDER_ALIAS_GROUPS = [
+  ['HBO Max', 'Discovery+', 'Eurosport']
+];
+
 function buildProviderOptions(events) {
   return [...new Set([
     ...PREFERRED_PROVIDERS,
@@ -182,6 +186,26 @@ function defaultPreferences(sportOptions = FALLBACK_SPORT_OPTIONS, providerOptio
     providerSearchText: '',
     providerSelectedOnly: false
   };
+}
+
+function normalizeProviderName(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function expandedProviderSelection(selectedProviders) {
+  const selected = new Set(selectedProviders.map((provider) => normalizeProviderName(provider)).filter(Boolean));
+  if (!selected.size) {
+    return selected;
+  }
+
+  PROVIDER_ALIAS_GROUPS.forEach((group) => {
+    const normalizedGroup = group.map((provider) => normalizeProviderName(provider));
+    if (normalizedGroup.some((provider) => selected.has(provider))) {
+      normalizedGroup.forEach((provider) => selected.add(provider));
+    }
+  });
+
+  return selected;
 }
 
 function sanitizeSelection(values, allowed) {
@@ -541,7 +565,8 @@ function hasProvider(event, selectedProviders) {
   if (!selectedProviders.length) {
     return false;
   }
-  return event.channels.some((channel) => selectedProviders.includes(channel.name));
+  const selected = expandedProviderSelection(selectedProviders);
+  return event.channels.some((channel) => selected.has(normalizeProviderName(channel.name)));
 }
 
 function getEventAccessLabel(event) {
