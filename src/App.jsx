@@ -153,12 +153,24 @@ const PROVIDER_ALIAS_GROUPS = [
 ];
 
 function buildProviderOptions(events) {
-  return [...new Set([
-    ...PREFERRED_PROVIDERS,
-    ...events.flatMap((event) => (Array.isArray(event.channels) ? event.channels.map((channel) => channel.name) : []))
-  ])]
-    .filter(Boolean)
-    .sort((a, b) => a.localeCompare(b, 'nl-NL'));
+  const fromEvents = [...new Set(
+    events
+      .flatMap((event) => (Array.isArray(event.channels) ? event.channels.map((channel) => channel.name) : []))
+      .filter(Boolean)
+  )];
+
+  // Keep fallback providers only before runtime data is loaded.
+  const providers = fromEvents.length ? fromEvents : [...PREFERRED_PROVIDERS];
+  const preferredRank = new Map(PREFERRED_PROVIDERS.map((provider, index) => [provider, index]));
+
+  return providers.sort((a, b) => {
+    const rankA = preferredRank.has(a) ? preferredRank.get(a) : Number.MAX_SAFE_INTEGER;
+    const rankB = preferredRank.has(b) ? preferredRank.get(b) : Number.MAX_SAFE_INTEGER;
+    if (rankA !== rankB) {
+      return rankA - rankB;
+    }
+    return a.localeCompare(b, 'nl-NL');
+  });
 }
 
 const FALLBACK_SPORT_OPTIONS = buildSportOptions(FALLBACK_EVENTS);

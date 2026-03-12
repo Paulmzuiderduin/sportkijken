@@ -18,6 +18,7 @@ const DATE_RANGE = `${RANGE_START}-${RANGE_END}`;
 const REQUEST_TIMEOUT_MS = 15000;
 const MAX_EVENTS = Number(process.env.MAX_EVENTS || 700);
 const NOS_SPORT_URL = 'https://nos.nl/sport';
+const HBO_MAX_SPORTS_URL = 'https://www.hbomax.com/nl/nl/sports';
 const NOS_LIVESTREAM_LIMIT = 120;
 const ZIGGO_EPG_BASE_URL = 'https://www.ziggosport.nl/cache/site/ZiggosportNL/json/epg';
 const ESPN_SCHEDULE_BASE_URL = 'https://www.espn.nl/watch/speelkalender/_/type/upcoming';
@@ -58,7 +59,11 @@ const CHANNEL_PRESETS = {
   ],
   eurosport: [
     { name: 'Eurosport', platform: 'tv', access: 'paid', url: 'https://www.eurosport.nl/' },
-    { name: 'HBO Max', platform: 'stream', access: 'paid', url: 'https://www.max.com/nl/' }
+    { name: 'HBO Max', platform: 'stream', access: 'paid', url: 'https://www.hbomax.com/nl/nl/sports' }
+  ],
+  hboMax: [
+    { name: 'HBO Max', platform: 'stream', access: 'paid', url: 'https://www.hbomax.com/nl/nl/sports' },
+    { name: 'Eurosport', platform: 'tv', access: 'paid', url: 'https://www.eurosport.nl/' }
   ],
   nos: [
     { name: 'NOS.nl Live', platform: 'stream', access: 'free', url: 'https://nos.nl/live' },
@@ -1443,7 +1448,52 @@ function parseZiggoScheduleOnlyEvent(row) {
   };
 }
 
-function buildScheduleOnlyEvents(existingEvents, ziggoRows, espnRows) {
+function parseHboMaxScheduleOnlyEvent(row) {
+  if (scheduleOnlyShouldSkip(row.title)) {
+    return null;
+  }
+
+  const sport = inferSportFromCandidates(
+    [row.sportLabel, row.league, row.title, row.summary],
+    null
+  );
+  if (!sport) {
+    return null;
+  }
+
+  const competition = competitionFromCandidates(
+    [row.league, row.sportLabel, row.title.split('|')[0], 'HBO Max'],
+    'HBO Max'
+  );
+
+  const channels = mergeChannels([
+    {
+      ...CHANNEL_PRESETS.hboMax[0],
+      url: row.eventUrl || CHANNEL_PRESETS.hboMax[0].url
+    },
+    CHANNEL_PRESETS.hboMax[1]
+  ]);
+
+  return {
+    id: createScheduleOnlyId('hbo-max', row),
+    sport,
+    title: row.title,
+    competition,
+    start: row.start,
+    durationMinutes: durationFromStartEnd(row.start, row.end, 150),
+    location: 'Online',
+    channels,
+    notes: 'Automatisch toegevoegd vanuit HBO Max sportagenda.',
+    sourceType: 'hbo-max',
+    sourceRefs: [
+      createSourceRef('HBO Max sportagenda', row.sourceUrl, 'hbo-max'),
+      row.eventUrl ? createSourceRef('HBO Max event', row.eventUrl, 'hbo-max') : null
+    ].filter(Boolean),
+    contentType: 'match'
+  };
+}
+
+function buildScheduleOnlyEvents(existingEvents, ziggoRows, espnRows, hboMaxRows) {
   const scheduleOnlyEvents = [];
   const combinedExisting = [...existingEvents];
 
@@ -1466,6 +1516,12 @@ function buildScheduleOnlyEvents(existingEvents, ziggoRows, espnRows) {
 
   ziggoRows
     .map((row) => parseZiggoScheduleOnlyEvent(row))
+    .filter(Boolean)
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
+    .forEach(addIfUnique);
+
+  hboMaxRows
+    .map((row) => parseHboMaxScheduleOnlyEvent(row))
     .filter(Boolean)
     .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
     .forEach(addIfUnique);
@@ -1708,6 +1764,87 @@ function parseNosNextData(rawHtml) {
   return safeParseJson(match[1]);
 }
 
+function parseHboMaxNextData(rawHtml) {
+  const match = rawHtml.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/);
+  if (!match) {
+    return null;
+  }
+  return safeParseJson(match[1]);
+}
+
+function hboText(value) {
+  if (!value) {
+    return '';
+  }
+  if (typeof value === 'string') {
+    return value.trim();
+  }
+  if (typeof value === 'object') {
+    return String(value.full || value.short || value.title || '').trim();
+  }
+  return String(value).trim();
+}
+
+function extractHboMaxScheduleRows(nextData, sourceUrl) {
+  const mappedData = nextData?.props?.pageProps?.mappedData;
+  if (!mappedData || typeof mappedData !== 'object') {
+    return [];
+  }
+
+  const rows = [];
+  const seen = new Set();
+  const containers = Object.values(mappedData).filter((entry) => Array.isArray(entry?.items));
+
+  containers.forEach((container) => {
+    (container.items || []).forEach((item) => {
+      const start = tryIso(item?.scheduleDates?.startDate || item?.offeringDates?.startDate);
+      if (!start || !isWithinWindow(start)) {
+        return;
+      }
+
+      const status = normalizeAsciiLower(item?.status);
+      if (status && status !== 'published') {
+        return;
+      }
+
+      const eventStatus = normalizeAsciiLower(item?.eventStatus);
+      if (eventStatus === 'ended') {
+        return;
+      }
+
+      const title = hboText(item?.title) || hboText(item?.titleDefault);
+      if (!title) {
+        return;
+      }
+
+      const relativeUrl = String(item?.url || '').trim();
+      const eventUrl = relativeUrl
+        ? new URL(relativeUrl, 'https://www.hbomax.com').toString()
+        : sourceUrl;
+
+      const key = `${title}|${start}|${eventUrl}`;
+      if (seen.has(key)) {
+        return;
+      }
+      seen.add(key);
+
+      rows.push({
+        title,
+        sportLabel: hboText(item?.sport),
+        league: hboText(item?.league),
+        summary: hboText(item?.summary),
+        start,
+        startMs: new Date(start).getTime(),
+        end: tryIso(item?.scheduleDates?.endDate || item?.offeringDates?.endDate),
+        sourceUrl,
+        eventUrl
+      });
+    });
+  });
+
+  return rows;
+}
+
 function cleanNosParticipantLabel(value) {
   return String(value || '')
     .replace(/\s+/g, ' ')
@@ -1833,6 +1970,22 @@ async function fetchNosSportLivestreams() {
   }
 
   return { events, sources, errors };
+}
+
+async function fetchHboMaxScheduleRows() {
+  const sources = [HBO_MAX_SPORTS_URL];
+  const errors = [];
+  const rows = [];
+
+  try {
+    const html = await fetchText(HBO_MAX_SPORTS_URL);
+    const nextData = parseHboMaxNextData(html);
+    rows.push(...extractHboMaxScheduleRows(nextData, HBO_MAX_SPORTS_URL));
+  } catch (error) {
+    errors.push(`HBO Max sportagenda: ${error.message}`);
+  }
+
+  return { rows, sources, errors };
 }
 
 function parseTeamEvent(event, feed, idPrefix, sourceUrl) {
@@ -2095,6 +2248,7 @@ function sourcePriorityForEvent(event) {
   const baseByType = {
     manual: 100,
     nos: 92,
+    'hbo-max': 90,
     ziggo: 89,
     mixed: 85,
     'espn-schedule': 82,
@@ -2170,6 +2324,15 @@ function inferVerification(event, generatedAt) {
     return {
       confidence: 'likely',
       reason: 'Kanaalindeling gekoppeld via Ziggo Sport programmagids.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  if (sourceTypes.has('hbo-max')) {
+    return {
+      confidence: 'likely',
+      reason: 'Direct toegevoegd vanuit HBO Max sportagenda.',
       lastVerified: generatedAt,
       priority: sourcePriorityForEvent(event)
     };
@@ -2267,6 +2430,7 @@ const namedSports = await fetchByFeeds(
 );
 
 const nosSportLivestreams = await fetchNosSportLivestreams();
+const hboMaxSchedule = await fetchHboMaxScheduleRows();
 const ziggoEpg = await fetchZiggoEpgRows();
 const espnSchedule = await fetchEspnScheduleRows();
 
@@ -2277,6 +2441,7 @@ const fetchErrors = [
   ...teamSports.errors,
   ...namedSports.errors,
   ...nosSportLivestreams.errors,
+  ...hboMaxSchedule.errors,
   ...ziggoEpg.errors,
   ...espnSchedule.errors
 ];
@@ -2295,7 +2460,7 @@ const mergedEvents = dedupeEvents([
   ...manualEvents
 ]);
 
-const scheduleOnlyEvents = buildScheduleOnlyEvents(mergedEvents, ziggoEpg.rows, espnSchedule.rows);
+const scheduleOnlyEvents = buildScheduleOnlyEvents(mergedEvents, ziggoEpg.rows, espnSchedule.rows, hboMaxSchedule.rows);
 const mergedWithScheduleOnly = dedupeEvents([...mergedEvents, ...scheduleOnlyEvents]);
 const enrichedEvents = enrichEventsWithSchedules(mergedWithScheduleOnly, ziggoEpg.rows, espnSchedule.rows);
 const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
@@ -2322,6 +2487,7 @@ const nextDataset = normalizeDataset({
     ...teamSports.sources,
     ...namedSports.sources,
     ...nosSportLivestreams.sources,
+    ...hboMaxSchedule.sources,
     ...ziggoEpg.sources,
     ...espnSchedule.sources,
     'manual:src/data/major-events.nl.json',
