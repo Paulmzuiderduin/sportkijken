@@ -128,6 +128,7 @@
       (function () {
         var CONSENT_KEY = 'sportkijken-consent-v1';
         var MEASUREMENT_ID = 'G-KGLTSPFH64';
+        var GA_SCRIPT_TIMEOUT_MS = 10000;
         var consentState = 'unknown';
         var analyticsRuntime = {
           consent: consentState,
@@ -149,6 +150,27 @@
         function updateAnalyticsRuntime(patch) {
           analyticsRuntime = Object.assign({}, analyticsRuntime, patch || {});
           emitAnalyticsRuntimeChange();
+        }
+
+        function clearAnalyticsScriptTimeout() {
+          if (!window.__gaScriptTimeoutId) return;
+          window.clearTimeout(window.__gaScriptTimeoutId);
+          window.__gaScriptTimeoutId = null;
+        }
+
+        function startAnalyticsScriptTimeout() {
+          clearAnalyticsScriptTimeout();
+          window.__gaScriptTimeoutId = window.setTimeout(function () {
+            if (window.__gaScriptReady) return;
+            window.__gaConfigured = false;
+            window.__gaScriptRequested = false;
+            updateAnalyticsRuntime({
+              configured: false,
+              scriptReady: false,
+              scriptRequested: false,
+              lastError: 'script_load_timeout'
+            });
+          }, GA_SCRIPT_TIMEOUT_MS);
         }
 
         function readStoredConsent() {
@@ -225,10 +247,24 @@
               updateAnalyticsRuntime({ scriptReady: true });
               configureAnalytics();
             } else {
+              startAnalyticsScriptTimeout();
               existingScript.addEventListener('load', function () {
+                clearAnalyticsScriptTimeout();
                 window.__gaScriptReady = true;
                 updateAnalyticsRuntime({ scriptReady: true, lastError: null });
                 configureAnalytics();
+              }, { once: true });
+              existingScript.addEventListener('error', function () {
+                clearAnalyticsScriptTimeout();
+                window.__gaConfigured = false;
+                window.__gaScriptReady = false;
+                window.__gaScriptRequested = false;
+                updateAnalyticsRuntime({
+                  configured: false,
+                  scriptReady: false,
+                  scriptRequested: false,
+                  lastError: 'script_load_failed'
+                });
               }, { once: true });
             }
             return;
@@ -238,12 +274,15 @@
           script.async = true;
           script.src = 'https://www.googletagmanager.com/gtag/js?id=' + MEASUREMENT_ID;
           script.dataset.gaMeasurementId = MEASUREMENT_ID;
+          startAnalyticsScriptTimeout();
           script.onload = function () {
+            clearAnalyticsScriptTimeout();
             window.__gaScriptReady = true;
             updateAnalyticsRuntime({ scriptReady: true, lastError: null });
             configureAnalytics();
           };
           script.onerror = function () {
+            clearAnalyticsScriptTimeout();
             window.__gaConfigured = false;
             window.__gaScriptReady = false;
             window.__gaScriptRequested = false;

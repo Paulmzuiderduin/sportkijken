@@ -1198,7 +1198,7 @@ function App() {
       return { level: 'off', message: 'Analytics is disabled.' };
     }
 
-    if (analyticsRuntime.lastError === 'script_load_failed') {
+    if (analyticsRuntime.lastError === 'script_load_failed' || analyticsRuntime.lastError === 'script_load_timeout') {
       return { level: 'warning', message: 'Analytics blocked by browser/privacy settings.' };
     }
 
