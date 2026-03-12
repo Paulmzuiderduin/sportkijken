@@ -1470,7 +1470,10 @@ function scheduleOnlyLikelyDuplicate(candidate, existingEvents) {
 
 function createScheduleOnlyId(prefix, row) {
   const title = slugify(row.title).slice(0, 72) || 'event';
-  const startKey = formatDateForApi(new Date(row.start));
+  const startDate = new Date(row.start);
+  const startKey = Number.isFinite(startDate.getTime())
+    ? `${formatDateForApi(startDate)}-${String(startDate.getUTCHours()).padStart(2, '0')}${String(startDate.getUTCMinutes()).padStart(2, '0')}`
+    : slugify(String(row.start || '')).slice(0, 16) || 'unknown';
   return `${prefix}-${startKey}-${title}`;
 }
 

@@ -85,7 +85,9 @@ const REFRESH_STATUS_URLS = [
   'https://api.github.com/repos/Paulmzuiderduin/sportkijken/actions/runs?per_page=20'
 ];
 const REFRESH_STATUS_STORAGE_KEY = 'sportkijken-last-refresh-check-at-v1';
+const DATASET_CACHE_STORAGE_KEY = 'sportkijken-runtime-dataset-v1';
 const RUNTIME_DATASET_URL = '/events.nl.json';
+const RUNTIME_DATASET_META_URL = '/events.meta.json';
 const RUNTIME_DATASET_POLL_MS = 5 * 60 * 1000;
 const SEO_BASE_URL = 'https://sportkijken.paulzuiderduin.com/';
 const SEO_BASE_TITLE = 'Waar Kan Ik Sport Kijken? | Sportkijken Nederland';
@@ -239,6 +241,55 @@ function normalizeRuntimeDataset(candidate) {
     ...candidate,
     events: candidate.events
   };
+}
+
+function normalizeRuntimeDatasetMeta(candidate) {
+  if (!candidate || typeof candidate !== 'object') {
+    return null;
+  }
+
+  const generatedAt = normalizeIsoDateTime(candidate.generatedAt);
+  const eventCountValue = Number(candidate.eventCount);
+  const eventCount = Number.isFinite(eventCountValue) && eventCountValue >= 0
+    ? Math.round(eventCountValue)
+    : null;
+
+  if (!generatedAt && eventCount === null) {
+    return null;
+  }
+
+  return {
+    generatedAt,
+    eventCount
+  };
+}
+
+function loadCachedDataset() {
+  if (typeof window === 'undefined') {
+    return EMPTY_DATASET;
+  }
+
+  try {
+    const cached = window.localStorage.getItem(DATASET_CACHE_STORAGE_KEY);
+    if (!cached) {
+      return EMPTY_DATASET;
+    }
+    return normalizeRuntimeDataset(JSON.parse(cached)) || EMPTY_DATASET;
+  } catch (error) {
+    return EMPTY_DATASET;
+  }
+}
+
+function persistCachedDataset(dataset) {
+  if (typeof window === 'undefined' || !dataset) {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(DATASET_CACHE_STORAGE_KEY, JSON.stringify(dataset));
+  } catch (error) {
+    // Ignore storage limit errors.
+  }
 }
 
 function formatDatasetDateTime(value) {
@@ -694,7 +745,7 @@ function matchesMajorFilter(event, majorFilter) {
 }
 
 function App() {
-  const [dataset, setDataset] = useState(() => EMPTY_DATASET);
+  const [dataset, setDataset] = useState(loadCachedDataset);
   const [preferences, setPreferences] = useState(() => loadPreferences(FALLBACK_SPORT_OPTIONS, FALLBACK_PROVIDER_OPTIONS));
   const [providersExpanded, setProvidersExpanded] = useState(false);
   const [consentState, setConsentState] = useState(loadConsentState);
@@ -702,6 +753,7 @@ function App() {
   const [emailCopied, setEmailCopied] = useState(false);
   const [lastRefreshCheckAt, setLastRefreshCheckAt] = useState(loadLastRefreshCheckAt);
   const shouldForceTopOnLoadRef = useRef(false);
+  const datasetSnapshotRef = useRef(dataset);
   const previousOptionsRef = useRef({
     sports: FALLBACK_SPORT_OPTIONS.map((sport) => sport.id),
     providers: FALLBACK_PROVIDER_OPTIONS
@@ -771,22 +823,54 @@ function App() {
   }, [dataset.generatedAt]);
 
   useEffect(() => {
+    datasetSnapshotRef.current = dataset;
+  }, [dataset]);
+
+  useEffect(() => {
     if (typeof window === 'undefined') {
       return undefined;
     }
 
     let cancelled = false;
 
+    const ensureBundledFallbackDataset = async () => {
+      const current = datasetSnapshotRef.current || EMPTY_DATASET;
+      const hasCurrentEvents = Array.isArray(current.events) && current.events.length > 0;
+      if (hasCurrentEvents) {
+        return false;
+      }
+
+      try {
+        const module = await import('./data/events.nl.json');
+        const payload = normalizeRuntimeDataset(module?.default);
+        if (!payload || cancelled) {
+          return false;
+        }
+
+        setDataset((existing) => {
+          const existingCount = Array.isArray(existing?.events) ? existing.events.length : 0;
+          if (existingCount > 0) {
+            return existing;
+          }
+          persistCachedDataset(payload);
+          return payload;
+        });
+        return true;
+      } catch (error) {
+        return false;
+      }
+    };
+
     const fetchRuntimeDataset = async () => {
       try {
-        const response = await fetch(`${RUNTIME_DATASET_URL}?t=${Date.now()}`, { cache: 'no-store' });
+        const response = await fetch(RUNTIME_DATASET_URL, { cache: 'no-cache' });
         if (!response.ok) {
-          return;
+          return false;
         }
 
         const payload = normalizeRuntimeDataset(await response.json());
         if (!payload || cancelled) {
-          return;
+          return false;
         }
 
         setDataset((current) => {
@@ -804,18 +888,71 @@ function App() {
             events: nextCount
           });
 
+          persistCachedDataset(payload);
           return payload;
         });
+        return true;
       } catch (error) {
-        // Ignore runtime fetch errors and keep current dataset state.
+        return false;
       }
     };
 
-    fetchRuntimeDataset();
-    const intervalId = window.setInterval(fetchRuntimeDataset, RUNTIME_DATASET_POLL_MS);
+    const fetchRuntimeDatasetMeta = async () => {
+      try {
+        const response = await fetch(`${RUNTIME_DATASET_META_URL}?t=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) {
+          return null;
+        }
+        return normalizeRuntimeDatasetMeta(await response.json());
+      } catch (error) {
+        return null;
+      }
+    };
+
+    const refreshDataset = async (forceFull = false) => {
+      if (forceFull) {
+        const updated = await fetchRuntimeDataset();
+        if (!updated) {
+          await ensureBundledFallbackDataset();
+        }
+        return;
+      }
+
+      const current = datasetSnapshotRef.current || EMPTY_DATASET;
+      const currentGeneratedAt = normalizeIsoDateTime(current.generatedAt);
+      const currentCount = Array.isArray(current.events) ? current.events.length : 0;
+
+      const meta = await fetchRuntimeDatasetMeta();
+      if (!meta) {
+        if (!currentCount) {
+          const updated = await fetchRuntimeDataset();
+          if (!updated) {
+            await ensureBundledFallbackDataset();
+          }
+        }
+        return;
+      }
+
+      const generatedChanged = Boolean(meta.generatedAt && meta.generatedAt !== currentGeneratedAt);
+      const countChanged = Number.isFinite(meta.eventCount) && meta.eventCount !== currentCount;
+
+      if (generatedChanged || countChanged || (!currentGeneratedAt && !currentCount)) {
+        const updated = await fetchRuntimeDataset();
+        if (!updated) {
+          await ensureBundledFallbackDataset();
+        }
+      }
+    };
+
+    const hasCachedEvents = Array.isArray(datasetSnapshotRef.current?.events) && datasetSnapshotRef.current.events.length > 0;
+    refreshDataset(!hasCachedEvents);
+
+    const intervalId = window.setInterval(() => {
+      refreshDataset(false);
+    }, RUNTIME_DATASET_POLL_MS);
     const onVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        fetchRuntimeDataset();
+        refreshDataset(false);
       }
     };
     document.addEventListener('visibilitychange', onVisibilityChange);
