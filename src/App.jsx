@@ -152,6 +152,16 @@ const PROVIDER_ALIAS_GROUPS = [
   ['HBO Max', 'Discovery+', 'Eurosport']
 ];
 
+const DIRECT_PROVIDER_SOURCE_TYPES = new Set([
+  'manual',
+  'nos',
+  'npo-guide',
+  'ziggo',
+  'espn-schedule',
+  'viaplay',
+  'hbo-max'
+]);
+
 function buildProviderOptions(events) {
   const fromEvents = [...new Set(
     events
@@ -617,6 +627,26 @@ function confidenceMeta(event) {
     return { label: 'Waarschijnlijk', className: 'likely' };
   }
   return { label: 'Onbevestigd', className: 'unverified' };
+}
+
+function reliabilityMeta(event) {
+  const sourceTypes = new Set([
+    event.sourceType,
+    ...(Array.isArray(event.sourceRefs) ? event.sourceRefs.map((ref) => ref?.type) : [])
+  ].filter(Boolean));
+
+  const hasDirectProviderSource = [...sourceTypes].some((type) => DIRECT_PROVIDER_SOURCE_TYPES.has(type));
+  if (hasDirectProviderSource) {
+    return {
+      label: 'Verified (direct provider)',
+      className: 'direct'
+    };
+  }
+
+  return {
+    label: 'Inferred',
+    className: 'inferred'
+  };
 }
 
 function contentTypeMeta(event) {
@@ -1409,6 +1439,7 @@ function App() {
   const renderEventCard = (event) => {
     const sportMeta = sportMetaFor(event.sport, sportLookup);
     const confidence = confidenceMeta(event);
+    const reliability = reliabilityMeta(event);
     const contentMeta = contentTypeMeta(event);
 
     return (
@@ -1432,6 +1463,9 @@ function App() {
 
         <p className={`verification-badge ${confidence.className}`}>
           {confidence.label}
+        </p>
+        <p className={`reliability-badge ${reliability.className}`}>
+          {reliability.label}
         </p>
         <p className={`content-type-badge ${contentMeta.className}`}>
           {contentMeta.label}

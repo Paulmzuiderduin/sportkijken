@@ -29,6 +29,30 @@ const ZIGGO_EPG_LOOKAHEAD_DAYS = 30;
 const ESPN_SCHEDULE_LOOKAHEAD_DAYS = 28;
 const NPO_GUIDE_LOOKAHEAD_DAYS = 7;
 const VERIFY_LEVELS = ['confirmed', 'likely', 'unverified'];
+const QUALITY_GATES_ENABLED = process.env.SKIP_QUALITY_GATES !== '1';
+const QA_MIN_TOTAL_EVENTS = Number(process.env.QA_MIN_TOTAL_EVENTS || 450);
+const QA_MIN_ROWS_BY_SOURCE = {
+  nos: 1,
+  ziggo: 15,
+  'espn-schedule': 12,
+  viaplay: 5,
+  'npo-guide': 5
+};
+const QA_DROP_TRACKED_SOURCES = ['nos', 'ziggo', 'espn-schedule', 'viaplay', 'npo-guide'];
+const QA_TITLE_BLOCKLIST_PATTERNS = [
+  /\bthe rich eisen show\b/i,
+  /\bahora o nunca\b/i,
+  /\bsportscenter\b/i,
+  /\bnederland in beweging\b/i,
+  /\bzappsport\b/i,
+  /\bzappelin\b/i,
+  /\bdierendokter in het wild\b/i,
+  /\bdans mee met\b/i,
+  /^\s*bernard\s*$/i,
+  /^\s*sneeuwpret\s*$/i,
+  /^\s*tip de muis\s*$/i,
+  /^\s*angelina ballerina\s*$/i
+];
 
 const CHANNEL_PRESETS = {
   espn: [
@@ -2970,8 +2994,129 @@ function finalizeVerification(events, generatedAt) {
   }));
 }
 
+function eventSourceTypes(event) {
+  return new Set([
+    event.sourceType,
+    ...((event.sourceRefs || []).map((ref) => ref?.type))
+  ].filter(Boolean));
+}
+
+function eventHasSourceType(event, sourceType) {
+  return eventSourceTypes(event).has(sourceType);
+}
+
+function countEventsBySourceType(events, sourceType) {
+  return events.filter((event) => eventHasSourceType(event, sourceType)).length;
+}
+
+function formatQaEvent(event) {
+  return `${event.id} | ${event.start} | ${event.title}`;
+}
+
+function runQualityGates({
+  events,
+  previousEvents,
+  providerHealth
+}) {
+  const errors = [];
+  const warnings = [];
+
+  if (!Array.isArray(events) || !events.length) {
+    errors.push('Geen events beschikbaar na samenvoegen van bronnen.');
+    return { errors, warnings };
+  }
+
+  if (events.length < QA_MIN_TOTAL_EVENTS) {
+    errors.push(`Te weinig events na ingestie (${events.length} < ${QA_MIN_TOTAL_EVENTS}).`);
+  }
+
+  const blockedTitleEvents = events
+    .filter((event) => QA_TITLE_BLOCKLIST_PATTERNS.some((pattern) => pattern.test(String(event.title || ''))))
+    .slice(0, 12);
+  if (blockedTitleEvents.length) {
+    errors.push(
+      `Niet-sport titels gedetecteerd: ${blockedTitleEvents.map((event) => formatQaEvent(event)).join(' || ')}`
+    );
+  }
+
+  const noisyMatches = events
+    .filter((event) => (event.contentType || 'match') === 'match' && scheduleOnlyShouldSkip(event.title))
+    .slice(0, 12);
+  if (noisyMatches.length) {
+    errors.push(
+      `Pre-show/recap ruis als wedstrijd gedetecteerd: ${noisyMatches.map((event) => formatQaEvent(event)).join(' || ')}`
+    );
+  }
+
+  const duplicateMap = new Map();
+  const duplicateExamples = [];
+  events.forEach((event) => {
+    const providerKey = [...new Set((event.channels || [])
+      .map((channel) => normalizeAsciiLower(channel?.name))
+      .filter(Boolean))]
+      .sort()
+      .join('|') || 'no-provider';
+    const key = [
+      normalizeAsciiLower(event.sport || ''),
+      normalizeAsciiLower(event.competition || ''),
+      normalizedTitleKey(event.title),
+      event.start,
+      providerKey
+    ].join('|');
+    if (duplicateMap.has(key)) {
+      duplicateExamples.push([duplicateMap.get(key), event]);
+    } else {
+      duplicateMap.set(key, event);
+    }
+  });
+
+  if (duplicateExamples.length) {
+    const sample = duplicateExamples
+      .slice(0, 8)
+      .map(([first, second]) => `${formatQaEvent(first)} <=> ${formatQaEvent(second)}`);
+    errors.push(`Dubbele eventcards (zelfde titel+tijd+provider): ${sample.join(' || ')}`);
+  }
+
+  Object.entries(QA_MIN_ROWS_BY_SOURCE).forEach(([sourceType, minRows]) => {
+    const health = providerHealth[sourceType] || { rows: 0, errors: [] };
+    const errorCount = Array.isArray(health.errors) ? health.errors.length : 0;
+    if (errorCount === 0 && Number(health.rows || 0) < minRows) {
+      errors.push(`Bron ${sourceType} levert te weinig rijen (${health.rows} < ${minRows}) zonder fetch-fouten.`);
+    }
+    if (errorCount > 0 && Number(health.rows || 0) === 0) {
+      errors.push(`Bron ${sourceType} volledig uitgevallen (0 rijen met ${errorCount} fetch-fouten).`);
+    }
+  });
+
+  if (Array.isArray(previousEvents) && previousEvents.length) {
+    QA_DROP_TRACKED_SOURCES.forEach((sourceType) => {
+      const previousCount = countEventsBySourceType(previousEvents, sourceType);
+      if (previousCount < 8) {
+        return;
+      }
+
+      const currentCount = countEventsBySourceType(events, sourceType);
+      const threshold = Math.max(1, Math.floor(previousCount * 0.4));
+      const health = providerHealth[sourceType] || { errors: [] };
+      const hasSourceErrors = Array.isArray(health.errors) && health.errors.length > 0;
+      if (!hasSourceErrors && currentCount < threshold) {
+        errors.push(
+          `Kwaliteitsval voor ${sourceType}: ${currentCount} events (vorige dataset: ${previousCount}, drempel: ${threshold}).`
+        );
+      } else if (hasSourceErrors && currentCount < threshold) {
+        warnings.push(
+          `Mogelijke daling voor ${sourceType} met fetch-fouten: ${currentCount} events (vorige: ${previousCount}).`
+        );
+      }
+    });
+  }
+
+  return { errors, warnings };
+}
+
 const previousRaw = await readFile(datasetPath, 'utf8').catch(() => null);
 const previous = previousRaw ? safeParseJson(previousRaw) : null;
+const previousEvents = previous && Array.isArray(previous.events) ? previous.events : null;
 const manualRaw = await readFile(majorEventsPath, 'utf8').catch(() => '[]');
 const manualParsed = safeParseJson(manualRaw);
 const manualEvents = normalizeManualEvents(manualParsed);
@@ -3039,6 +3184,15 @@ const fetchErrors = [
   ...espnSchedule.errors
 ];
 
+const providerHealth = {
+  nos: { rows: nosSportLivestreams.events.length, errors: nosSportLivestreams.errors },
+  'npo-guide': { rows: npoGuide.rows.length, errors: npoGuide.errors },
+  ziggo: { rows: ziggoEpg.rows.length, errors: ziggoEpg.errors },
+  'espn-schedule': { rows: espnSchedule.rows.length, errors: espnSchedule.errors },
+  viaplay: { rows: viaplaySchedule.rows.length, errors: viaplaySchedule.errors },
+  'hbo-max': { rows: hboMaxSchedule.rows.length, errors: hboMaxSchedule.errors }
+};
+
 if (fetchErrors.length) {
   console.warn(`Partial fetch issues: ${fetchErrors.join(' | ')}`);
 }
@@ -3071,6 +3225,25 @@ const enrichedEvents = enrichEventsWithSchedules(
 const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
 const generatedAt = new Date().toISOString();
 const allVerifiedEvents = finalizeVerification(overriddenEvents, generatedAt);
+
+if (QUALITY_GATES_ENABLED) {
+  const quality = runQualityGates({
+    events: allVerifiedEvents,
+    previousEvents,
+    providerHealth
+  });
+
+  quality.warnings.forEach((warning) => {
+    console.warn(`Quality warning: ${warning}`);
+  });
+
+  if (quality.errors.length) {
+    throw new Error(`Quality gates failed:\n- ${quality.errors.join('\n- ')}`);
+  }
+
+  console.log(`Quality gates passed for ${allVerifiedEvents.length} events.`);
+}
+
 const verifiedEvents = MAX_EVENTS > 0 ? allVerifiedEvents.slice(0, MAX_EVENTS) : allVerifiedEvents;
 
 if (MAX_EVENTS > 0 && allVerifiedEvents.length > MAX_EVENTS) {
@@ -3103,7 +3276,6 @@ const nextDataset = normalizeDataset({
   events: verifiedEvents
 });
 
-const previousEvents = previous && Array.isArray(previous.events) ? previous.events : null;
 if (previousEvents && JSON.stringify(previousEvents) === JSON.stringify(nextDataset.events)) {
   console.log('No event changes detected; keeping current dataset.');
   process.exit(0);
