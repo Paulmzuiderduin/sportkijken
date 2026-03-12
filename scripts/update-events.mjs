@@ -43,6 +43,10 @@ const QA_TITLE_BLOCKLIST_PATTERNS = [
   /\bthe rich eisen show\b/i,
   /\bahora o nunca\b/i,
   /\bsportscenter\b/i,
+  /\bdocumentary\b/i,
+  /\boriginals?\b/i,
+  /\bop zoek naar\b/i,
+  /\bde hoop van\b/i,
   /\bnederland in beweging\b/i,
   /\bzappsport\b/i,
   /\bzappelin\b/i,
@@ -258,9 +262,21 @@ const SCHEDULE_ONLY_SKIP_KEYWORDS = [
   'ahora o nunca',
   'rich eisen show',
   'the rich eisen show',
+  'documentary',
+  'originals',
+  'op zoek naar',
+  'de hoop van',
+  'interviews',
+  'persconferentie',
+  "kick 't met",
+  'dit was het weekend',
   'adios rafa',
   'film',
   'documentaire'
+];
+
+const EDITORIAL_PROGRAM_TITLE_PATTERNS = [
+  /^[a-zà-ÿ0-9.'’\s-]{3,}\s[–-]\s(de|het|een)\s+[a-zà-ÿ0-9]/i
 ];
 
 const SCHEDULE_ONLY_EVENT_KEYWORDS = [
@@ -1470,6 +1486,19 @@ function scheduleOnlyShouldSkip(title) {
   return !normalized || SCHEDULE_ONLY_SKIP_KEYWORDS.some((keyword) => normalized.includes(keyword));
 }
 
+function isEditorialScheduleProgram(title, context = '') {
+  const normalized = normalizeAsciiLower(`${title || ''} ${context || ''}`).replace(/\s+/g, ' ').trim();
+  if (!normalized) {
+    return false;
+  }
+
+  if (SCHEDULE_ONLY_SKIP_KEYWORDS.some((keyword) => normalized.includes(keyword))) {
+    return true;
+  }
+
+  return EDITORIAL_PROGRAM_TITLE_PATTERNS.some((pattern) => pattern.test(String(title || '')));
+}
+
 function looksLikeScheduledSportEvent(title) {
   const raw = String(title || '');
   const normalized = normalizeTitleForMatch(raw);
@@ -1543,7 +1572,7 @@ function createScheduleOnlyId(prefix, row) {
 }
 
 function parseEspnScheduleOnlyEvent(row) {
-  if (scheduleOnlyShouldSkip(row.title) || !looksLikeScheduledSportEvent(row.title)) {
+  if (scheduleOnlyShouldSkip(row.title) || isEditorialScheduleProgram(row.title, row.description) || !looksLikeScheduledSportEvent(row.title)) {
     return null;
   }
 
@@ -1586,7 +1615,7 @@ function parseEspnScheduleOnlyEvent(row) {
 }
 
 function parseZiggoScheduleOnlyEvent(row) {
-  if (scheduleOnlyShouldSkip(row.title)) {
+  if (scheduleOnlyShouldSkip(row.title) || isEditorialScheduleProgram(row.title, row.description)) {
     return null;
   }
   if (!row.live && !looksLikeScheduledSportEvent(row.title)) {
@@ -1629,7 +1658,7 @@ function parseZiggoScheduleOnlyEvent(row) {
 }
 
 function parseHboMaxScheduleOnlyEvent(row) {
-  if (scheduleOnlyShouldSkip(row.title)) {
+  if (scheduleOnlyShouldSkip(row.title) || isEditorialScheduleProgram(row.title, row.summary)) {
     return null;
   }
 
@@ -1681,7 +1710,7 @@ function viaplayChannelsForRow(row) {
 }
 
 function parseViaplayScheduleOnlyEvent(row) {
-  if (scheduleOnlyShouldSkip(row.title)) {
+  if (scheduleOnlyShouldSkip(row.title) || isEditorialScheduleProgram(row.title, row.summary)) {
     return null;
   }
 
