@@ -256,6 +256,20 @@ function formatDatasetDateTime(value) {
   return date.toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' });
 }
 
+function formatAgeLabel(totalMinutes) {
+  const minutes = Math.max(0, Math.round(Number(totalMinutes) || 0));
+  if (minutes < 60) {
+    return `${minutes} min`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  const restMinutes = minutes % 60;
+  if (restMinutes === 0) {
+    return `${hours} uur`;
+  }
+  return `${hours} uur ${restMinutes} min`;
+}
+
 function searchTextFromUrl() {
   if (typeof window === 'undefined') {
     return '';
@@ -988,7 +1002,7 @@ function App() {
       if (datasetAgeMinutes !== null && datasetAgeMinutes > 240) {
         return {
           level: 'notice',
-          message: `Laatste datasetwijziging ${Math.round(datasetAgeMinutes / 60)} uur geleden; recente broncontrole tijdelijk onbekend.`
+          message: `Laatste datasetcommit is ${formatAgeLabel(datasetAgeMinutes)} oud; recente workflow-check tijdelijk onbekend.`
         };
       }
 
@@ -1012,26 +1026,26 @@ function App() {
     if (ageMinutes > 240) {
       return {
         level: 'warning',
-        message: `Bronnen zijn ${Math.round(ageMinutes / 60)} uur geleden gecontroleerd. Controleer zenderinformatie extra goed.`
+        message: `Laatste workflow-check is ${formatAgeLabel(ageMinutes)} geleden. Controleer zenderinformatie extra goed.`
       };
     }
     if (ageMinutes > 120) {
       return {
         level: 'notice',
-        message: `Bronnen zijn ${ageMinutes} minuten geleden gecontroleerd.`
+        message: `Laatste workflow-check: ${formatAgeLabel(ageMinutes)} geleden.`
       };
     }
 
     if (datasetAgeMinutes !== null && lastRefreshCheckAt && datasetAgeMinutes > 180) {
       return {
         level: 'ok',
-        message: `Bronnen recent gecontroleerd; geen nieuwe datasetwijziging in ${Math.round(datasetAgeMinutes / 60)} uur.`
+        message: `Workflow-check ${formatAgeLabel(ageMinutes)} geleden; geen nieuwe datasetcommit sinds ${formatAgeLabel(datasetAgeMinutes)}.`
       };
     }
 
     return {
       level: 'ok',
-      message: `Bronnen ${ageMinutes} minuten geleden gecontroleerd.`
+      message: `Workflow-check ${formatAgeLabel(ageMinutes)} geleden.`
     };
   }, [dataset.generatedAt, lastRefreshCheckAt]);
 
@@ -1767,15 +1781,15 @@ function App() {
             <span>
               {dataset.isDemo
                 ? 'Handmatige demo-dataset.'
-                : 'Automatisch ververst (~3 uur) via NOS, Ziggo, ESPN en Viaplay.'}
+                : 'Automatisch ververst (~3 uur) via NOS, Ziggo, ESPN, Viaplay en HBO Max.'}
             </span>
             <span>
-              Laatst gecontroleerd: {lastRefreshCheckAt
+              Laatste workflow-check: {lastRefreshCheckAt
                 ? formatDatasetDateTime(lastRefreshCheckAt)
                 : 'Tijdelijk onbekend'}
             </span>
             <span>
-              Laatste datasetwijziging: {formatDatasetDateTime(dataset.generatedAt)}
+              Laatste datasetcommit: {formatDatasetDateTime(dataset.generatedAt)}
             </span>
             <span className={`dataset-status ${datasetStatus.level}`}>{datasetStatus.message}</span>
           </div>
