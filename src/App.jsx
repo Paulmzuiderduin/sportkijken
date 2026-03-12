@@ -11,7 +11,26 @@ const KNOWN_SPORT_META = {
   honkbal: { label: 'Honkbal', accent: '#c7791f' },
   ijshockey: { label: 'IJshockey', accent: '#0f6a8f' },
   golf: { label: 'Golf', accent: '#2a8c44' },
-  vechtsport: { label: 'Vechtsport', accent: '#7f1d1d' }
+  vechtsport: { label: 'Vechtsport', accent: '#7f1d1d' },
+  handbal: { label: 'Handbal', accent: '#a43f00' },
+  volleybal: { label: 'Volleybal', accent: '#5b6b17' },
+  hockey: { label: 'Hockey', accent: '#197278' },
+  wielrennen: { label: 'Wielrennen', accent: '#8c4a14' },
+  atletiek: { label: 'Atletiek', accent: '#8a3ffc' },
+  schaatsen: { label: 'Schaatsen', accent: '#0e7490' },
+  rugby: { label: 'Rugby', accent: '#6b21a8' },
+  darts: { label: 'Darts', accent: '#1f8a3b' },
+  olympics: { label: 'Olympische Spelen', accent: '#1d4ed8' },
+  paralympics: { label: 'Paralympics', accent: '#0d9488' },
+  zwemmen: { label: 'Zwemmen', accent: '#0369a1' },
+  turnen: { label: 'Turnen', accent: '#db2777' },
+  badminton: { label: 'Badminton', accent: '#3f6212' },
+  judo: { label: 'Judo', accent: '#7c2d12' },
+  roeien: { label: 'Roeien', accent: '#155e75' },
+  zeilen: { label: 'Zeilen', accent: '#2563eb' },
+  motorsport: { label: 'Motorsport', accent: '#b45309' },
+  cricket: { label: 'Cricket', accent: '#3f6212' },
+  overig: { label: 'Overige sport', accent: '#4b5563' }
 };
 
 const FALLBACK_ACCENTS = ['#0a7b52', '#2f67cf', '#c7351b', '#7e3af2', '#0f6a8f', '#7f1d1d', '#b45309'];
@@ -397,23 +416,6 @@ function buildSeoMeta(query) {
     description: `Bekijk direct waar je ${descriptionIntent} in Nederland kunt kijken: zender/stream, starttijd en gratis of betaald.`,
     url: `${SEO_BASE_URL}?q=${encodeURIComponent(normalizedQuery)}`
   };
-}
-
-function canonicalUrlFromLocation() {
-  if (typeof window === 'undefined') {
-    return SEO_BASE_URL;
-  }
-
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const normalizedQuery = toReadableSeoQuery(params.get('q') || '');
-    if (!normalizedQuery) {
-      return SEO_BASE_URL;
-    }
-    return `${SEO_BASE_URL}?q=${encodeURIComponent(normalizedQuery)}`;
-  } catch (error) {
-    return SEO_BASE_URL;
-  }
 }
 
 function loadPreferences(sportOptions = FALLBACK_SPORT_OPTIONS, providerOptions = FALLBACK_PROVIDER_OPTIONS) {
@@ -1015,6 +1017,31 @@ function App() {
   }, [preferences]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    try {
+      const normalizedQuery = toReadableSeoQuery(preferences.searchText);
+      const url = new URL(window.location.href);
+      const currentQuery = toReadableSeoQuery(url.searchParams.get('q') || '');
+      if (currentQuery === normalizedQuery) {
+        return;
+      }
+
+      if (normalizedQuery) {
+        url.searchParams.set('q', normalizedQuery);
+      } else {
+        url.searchParams.delete('q');
+      }
+
+      window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    } catch (error) {
+      // Ignore URL parsing issues.
+    }
+  }, [preferences.searchText]);
+
+  useEffect(() => {
     if (consentState !== 'granted') {
       return;
     }
@@ -1032,11 +1059,10 @@ function App() {
     setOrCreateMetaTag('meta[name="description"]', { name: 'description' }, seo.description);
     setOrCreateMetaTag('meta[property="og:title"]', { property: 'og:title' }, seo.title);
     setOrCreateMetaTag('meta[property="og:description"]', { property: 'og:description' }, seo.description);
-    const canonicalUrl = canonicalUrlFromLocation();
-    setOrCreateMetaTag('meta[property="og:url"]', { property: 'og:url' }, canonicalUrl);
+    setOrCreateMetaTag('meta[property="og:url"]', { property: 'og:url' }, seo.url);
     setOrCreateMetaTag('meta[name="twitter:title"]', { name: 'twitter:title' }, seo.title);
     setOrCreateMetaTag('meta[name="twitter:description"]', { name: 'twitter:description' }, seo.description);
-    setCanonicalHref(canonicalUrl);
+    setCanonicalHref(seo.url);
   }, [preferences.searchText]);
 
   useEffect(() => {

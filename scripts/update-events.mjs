@@ -1429,7 +1429,7 @@ function inferEspnScheduleSport(row) {
   }
 
   const titlePrefix = row.title.includes(':') ? row.title.split(':')[0] : '';
-  return inferSportFromCandidates([row.sectionName, ...(row.categories || []), titlePrefix], null);
+  return inferSportFromCandidates([row.sectionName, ...(row.categories || []), titlePrefix], 'overig');
 }
 
 function inferZiggoScheduleSport(row) {
@@ -1439,7 +1439,7 @@ function inferZiggoScheduleSport(row) {
   }
 
   const titlePrefix = row.title.includes(':') ? row.title.split(':')[0] : '';
-  return inferSportFromCandidates([titlePrefix], null);
+  return inferSportFromCandidates([titlePrefix], 'overig');
 }
 
 function scheduleOnlyLikelyDuplicate(candidate, existingEvents) {
@@ -1570,7 +1570,7 @@ function parseHboMaxScheduleOnlyEvent(row) {
 
   const sport = inferSportFromCandidates(
     [row.sportLabel, row.league, row.title, row.summary],
-    null
+    'overig'
   );
   if (!sport) {
     return null;
@@ -1622,7 +1622,7 @@ function parseViaplayScheduleOnlyEvent(row) {
 
   const sport = inferSportFromCandidates(
     [row.sportLabel, row.competition, row.title, row.summary, ...(row.genreLabels || [])],
-    null
+    'overig'
   );
   if (!sport) {
     return null;
@@ -1666,10 +1666,10 @@ function parseNpoGuideScheduleOnlyEvent(row) {
   const hasSportGenre = (row.genreLabels || []).some((genre) => normalizeAsciiLower(genre).includes('sport'));
   let sport = inferSportFromCandidates(
     [row.title, row.summary, ...(row.genreLabels || []), row.channelName],
-    null
+    'overig'
   );
   if (!sport && hasSportGenre) {
-    sport = 'sport';
+    sport = 'overig';
   }
   if (!sport) {
     return null;
@@ -1909,6 +1909,51 @@ const SPORT_KEYWORDS = [
   { sport: 'cricket', keywords: ['cricket'] }
 ];
 
+const CONTROLLED_SPORT_IDS = new Set([
+  ...SPORT_KEYWORDS.map((entry) => entry.sport),
+  'overig'
+]);
+
+const SPORT_ALIAS_TO_CANONICAL = new Map([
+  ['sport', 'overig'],
+  ['sports', 'overig'],
+  ['studio', 'overig'],
+  ['sportjournaal', 'overig'],
+  ['npo-sport', 'overig'],
+  ['nos-sport', 'overig'],
+  ['moto2', 'motorsport'],
+  ['moto3', 'motorsport'],
+  ['motogp', 'motorsport'],
+  ['formula-e', 'motorsport'],
+  ['uefa-youth-league', 'voetbal'],
+  ['women-s-super-league', 'voetbal'],
+  ['wk-shorttrack-montreal', 'schaatsen'],
+  ['ey-nk-padel-2024', 'tennis'],
+  ['alpineskien', 'overig'],
+  ['fis-ski-cross-world-cup', 'overig']
+]);
+
+const SPORT_SLUG_NEEDLES = [
+  ['eredivisie', 'voetbal'],
+  ['keuken-kampioen', 'voetbal'],
+  ['premier-league', 'voetbal'],
+  ['la-liga', 'voetbal'],
+  ['serie-a', 'voetbal'],
+  ['bundesliga', 'voetbal'],
+  ['ligue-1', 'voetbal'],
+  ['champions-league', 'voetbal'],
+  ['europa-league', 'voetbal'],
+  ['conference-league', 'voetbal'],
+  ['uefa', 'voetbal'],
+  ['shorttrack', 'schaatsen'],
+  ['padel', 'tennis'],
+  ['moto', 'motorsport'],
+  ['indycar', 'motorsport'],
+  ['nascar', 'motorsport'],
+  ['rally', 'motorsport'],
+  ['ski', 'overig']
+];
+
 const GENERIC_SPORT_FALLBACK_BLOCKLIST = new Set([
   'sport',
   'sports',
@@ -1954,18 +1999,42 @@ function fallbackSportSlugFromCandidates(candidates) {
   return null;
 }
 
-function inferSportFromCandidates(candidates, defaultSport = 'sport') {
+function canonicalSportId(rawSport) {
+  const normalized = slugify(normalizeAsciiLower(rawSport || ''));
+  if (!normalized) {
+    return null;
+  }
+
+  if (CONTROLLED_SPORT_IDS.has(normalized)) {
+    return normalized;
+  }
+
+  const exactAlias = SPORT_ALIAS_TO_CANONICAL.get(normalized);
+  if (exactAlias) {
+    return exactAlias;
+  }
+
+  const partialAlias = SPORT_SLUG_NEEDLES.find(([needle]) => normalized.includes(needle));
+  if (partialAlias) {
+    return partialAlias[1];
+  }
+
+  return null;
+}
+
+function inferSportFromCandidates(candidates, defaultSport = 'overig') {
   const detected = detectSportFromCandidates(candidates);
   if (detected) {
-    return detected;
+    return canonicalSportId(detected) || 'overig';
   }
 
   const fallback = fallbackSportSlugFromCandidates(candidates);
-  if (fallback) {
-    return fallback;
+  const canonicalFallback = canonicalSportId(fallback);
+  if (canonicalFallback) {
+    return canonicalFallback;
   }
 
-  return defaultSport;
+  return canonicalSportId(defaultSport) || 'overig';
 }
 
 function mapNosSport(item) {
@@ -1980,7 +2049,7 @@ function mapNosSport(item) {
     item?.owner,
     item?.title
   ].filter(Boolean);
-  return inferSportFromCandidates(candidates, 'sport');
+  return inferSportFromCandidates(candidates, 'overig');
 }
 
 function parseNosNextData(rawHtml) {
