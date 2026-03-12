@@ -19,11 +19,15 @@ const REQUEST_TIMEOUT_MS = 15000;
 const MAX_EVENTS = Number(process.env.MAX_EVENTS || 700);
 const NOS_SPORT_URL = 'https://nos.nl/sport';
 const HBO_MAX_SPORTS_URL = 'https://www.hbomax.com/nl/nl/sports';
+const VIAPLAY_SPORTS_URL = 'https://viaplay.com/nl-nl/sport';
+const NPO_GUIDE_CHANNELS_URL = 'https://npo.nl/start/api/domain/guide-channels';
+const NPO_GUIDE_CHANNEL_URL = 'https://npo.nl/start/api/domain/guide-channel';
 const NOS_LIVESTREAM_LIMIT = 120;
 const ZIGGO_EPG_BASE_URL = 'https://www.ziggosport.nl/cache/site/ZiggosportNL/json/epg';
 const ESPN_SCHEDULE_BASE_URL = 'https://www.espn.nl/watch/speelkalender/_/type/upcoming';
 const ZIGGO_EPG_LOOKAHEAD_DAYS = 30;
 const ESPN_SCHEDULE_LOOKAHEAD_DAYS = 28;
+const NPO_GUIDE_LOOKAHEAD_DAYS = 7;
 const VERIFY_LEVELS = ['confirmed', 'likely', 'unverified'];
 
 const CHANNEL_PRESETS = {
@@ -218,6 +222,10 @@ const SCHEDULE_ONLY_SKIP_KEYWORDS = [
   'heldinnen',
   'zolder van',
   'race cafe',
+  'in de slipstream',
+  'track positioning',
+  'onboard',
+  'timing',
   'this week',
   'preview',
   'tekengeld',
@@ -271,6 +279,45 @@ const BROADCAST_GENERAL_KEYWORDS = [
   'studio sport',
   'nabeschouwing',
   'voorbeschouwing'
+];
+
+const NPO_SPORT_HINT_KEYWORDS = [
+  'nos sport',
+  'sportjournaal',
+  'studio sport',
+  'zappsport',
+  'olymp',
+  'paralymp',
+  'eredivisie',
+  'champions league',
+  'europa league',
+  'conference league',
+  'formule 1',
+  'formula 1',
+  'grand prix',
+  'wereldkampioenschap',
+  'europees kampioenschap',
+  'kampioenschap',
+  'tour de france',
+  'giro d',
+  'vuelta',
+  'wielrennen',
+  'tennis',
+  'darts',
+  'hockey',
+  'basketbal',
+  'volleybal',
+  'handbal',
+  'atletiek',
+  'shorttrack',
+  'schaatsen'
+];
+
+const NPO_SPORT_BLOCKLIST_KEYWORDS = [
+  'nederland in beweging',
+  'zappelin go',
+  'dans mee met',
+  'dierendokter in het wild'
 ];
 
 const soccerFeeds = [
@@ -492,6 +539,13 @@ function formatDateForYmd(date) {
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');
   const day = String(date.getUTCDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+function formatDateForDutchGuide(date) {
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const year = String(date.getUTCFullYear());
+  return `${day}-${month}-${year}`;
 }
 
 function addDays(date, days) {
@@ -1209,7 +1263,7 @@ function removeChannelsByNeedles(channels, needles) {
   });
 }
 
-function enrichEventChannels(event, ziggoRows, espnRows) {
+function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows) {
   let nextChannels = event.channels || [];
   let nextSourceRefs = event.sourceRefs || [];
   let sourceType = event.sourceType;
@@ -1255,6 +1309,25 @@ function enrichEventChannels(event, ziggoRows, espnRows) {
     }
   }
 
+  if (hasProviderChannel(nextChannels, 'viaplay')) {
+    const matches = findScheduleRowsForEvent(event, viaplayRows, 150, 180);
+    if (matches.length) {
+      const nextViaplayChannels = mergeChannels(...matches.map((row) => viaplayChannelsForRow(row)));
+      if (nextViaplayChannels.length) {
+        const nonViaplayChannels = removeChannelsByNeedles(nextChannels, ['viaplay']);
+        nextChannels = mergeChannels(nonViaplayChannels, nextViaplayChannels);
+        nextSourceRefs = mergeSourceRefs(
+          nextSourceRefs,
+          matches.map((match) => createSourceRef('Viaplay sportagenda', match.sourceUrl, 'viaplay')).filter(Boolean),
+          matches.map((match) => (
+            match.eventUrl ? createSourceRef('Viaplay event', match.eventUrl, 'viaplay') : null
+          )).filter(Boolean)
+        );
+        sourceType = sourceType && sourceType !== 'viaplay' ? 'mixed' : 'viaplay';
+      }
+    }
+  }
+
   return {
     ...event,
     channels: nextChannels,
@@ -1263,8 +1336,10 @@ function enrichEventChannels(event, ziggoRows, espnRows) {
   };
 }
 
-function enrichEventsWithSchedules(events, ziggoRows, espnRows) {
-  return events.map((event) => applyProviderAccessBusinessRules(enrichEventChannels(event, ziggoRows, espnRows)));
+function enrichEventsWithSchedules(events, ziggoRows, espnRows, viaplayRows) {
+  return events.map((event) => applyProviderAccessBusinessRules(
+    enrichEventChannels(event, ziggoRows, espnRows, viaplayRows)
+  ));
 }
 
 function competitionFromCandidates(candidates, fallback = 'Sport') {
@@ -1506,7 +1581,107 @@ function parseHboMaxScheduleOnlyEvent(row) {
   };
 }
 
-function buildScheduleOnlyEvents(existingEvents, ziggoRows, espnRows, hboMaxRows) {
+function viaplayChannelsForRow(row) {
+  return mergeChannels([
+    { ...CHANNEL_PRESETS.viaplay[0], url: CHANNEL_PRESETS.viaplay[0].url },
+    { ...CHANNEL_PRESETS.viaplay[1], url: row.eventUrl || CHANNEL_PRESETS.viaplay[1].url }
+  ]);
+}
+
+function parseViaplayScheduleOnlyEvent(row) {
+  if (scheduleOnlyShouldSkip(row.title)) {
+    return null;
+  }
+
+  const sport = inferSportFromCandidates(
+    [row.sportLabel, row.competition, row.title, row.summary, ...(row.genreLabels || [])],
+    null
+  );
+  if (!sport) {
+    return null;
+  }
+
+  const competition = competitionFromCandidates(
+    [row.competition, row.sportLabel, row.title.split('|')[0], 'Viaplay'],
+    'Viaplay'
+  );
+
+  let contentMeta = detectContentTypeFromText(row.title, row.summary);
+  if (contentMeta.contentType === 'match' && !looksLikeScheduledSportEvent(row.title)) {
+    contentMeta = { contentType: 'broadcast', contentSubType: 'general' };
+  }
+
+  return {
+    id: createScheduleOnlyId('viaplay-schedule', row),
+    sport,
+    title: row.title,
+    competition,
+    start: row.start,
+    durationMinutes: durationFromStartEnd(row.start, row.end, 140),
+    location: 'Online',
+    channels: viaplayChannelsForRow(row),
+    notes: 'Automatisch toegevoegd vanuit Viaplay sportagenda.',
+    sourceType: 'viaplay',
+    sourceRefs: [
+      createSourceRef('Viaplay sportagenda', row.sourceUrl, 'viaplay'),
+      row.eventUrl ? createSourceRef('Viaplay event', row.eventUrl, 'viaplay') : null
+    ].filter(Boolean),
+    contentType: contentMeta.contentType,
+    ...(contentMeta.contentSubType ? { contentSubType: contentMeta.contentSubType } : {})
+  };
+}
+
+function parseNpoGuideScheduleOnlyEvent(row) {
+  if (!row?.title || scheduleOnlyShouldSkip(row.title)) {
+    return null;
+  }
+
+  const hasSportGenre = (row.genreLabels || []).some((genre) => normalizeAsciiLower(genre).includes('sport'));
+  let sport = inferSportFromCandidates(
+    [row.title, row.summary, ...(row.genreLabels || []), row.channelName],
+    null
+  );
+  if (!sport && hasSportGenre) {
+    sport = 'sport';
+  }
+  if (!sport) {
+    return null;
+  }
+
+  const competition = competitionFromCandidates(
+    [row.title.split(':')[0], ...(row.genreLabels || []), row.channelName],
+    'NPO Sport'
+  );
+
+  let contentMeta = detectContentTypeFromText(row.title, row.summary);
+  if (contentMeta.contentType === 'match' && !looksLikeScheduledSportEvent(row.title)) {
+    contentMeta = { contentType: 'broadcast', contentSubType: 'general' };
+  }
+  if (contentMeta.contentType === 'match' && isGenericGamesBroadcastTitle(row.title)) {
+    contentMeta = { contentType: 'broadcast', contentSubType: 'general' };
+  }
+
+  return {
+    id: createScheduleOnlyId('npo-guide', row),
+    sport,
+    title: row.title,
+    competition,
+    start: row.start,
+    durationMinutes: durationFromStartEnd(row.start, row.end, 60),
+    location: 'Online',
+    channels: mergeChannels(
+      [{ name: row.channelName, platform: 'tv', access: 'free', url: row.channelUrl }],
+      [{ name: 'NPO Start', platform: 'stream', access: 'free', url: row.channelUrl }]
+    ),
+    notes: 'Automatisch toegevoegd vanuit NPO gids (NPO 1/2/3).',
+    sourceType: 'npo-guide',
+    sourceRefs: [createSourceRef('NPO gids', row.sourceUrl, 'npo-guide')].filter(Boolean),
+    contentType: contentMeta.contentType,
+    ...(contentMeta.contentSubType ? { contentSubType: contentMeta.contentSubType } : {})
+  };
+}
+
+function buildScheduleOnlyEvents(existingEvents, ziggoRows, espnRows, hboMaxRows, viaplayRows, npoGuideRows) {
   const scheduleOnlyEvents = [];
   const combinedExisting = [...existingEvents];
 
@@ -1535,6 +1710,18 @@ function buildScheduleOnlyEvents(existingEvents, ziggoRows, espnRows, hboMaxRows
 
   hboMaxRows
     .map((row) => parseHboMaxScheduleOnlyEvent(row))
+    .filter(Boolean)
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
+    .forEach(addIfUnique);
+
+  viaplayRows
+    .map((row) => parseViaplayScheduleOnlyEvent(row))
+    .filter(Boolean)
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
+    .forEach(addIfUnique);
+
+  npoGuideRows
+    .map((row) => parseNpoGuideScheduleOnlyEvent(row))
     .filter(Boolean)
     .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
     .forEach(addIfUnique);
@@ -1798,6 +1985,92 @@ function hboText(value) {
   return String(value).trim();
 }
 
+function parseViaplayNextData(rawHtml) {
+  const match = rawHtml.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/);
+  if (!match) {
+    return null;
+  }
+  return safeParseJson(match[1]);
+}
+
+function extractViaplayScheduleRows(nextData, sourceUrl) {
+  const blocks = nextData?.props?.pageProps?.storeState?.page?.page?.raw?._embedded?.['viaplay:blocks'];
+  if (!Array.isArray(blocks)) {
+    return [];
+  }
+
+  const rows = [];
+  const seen = new Set();
+
+  blocks.forEach((block) => {
+    const products = block?._embedded?.['viaplay:products'];
+    if (!Array.isArray(products)) {
+      return;
+    }
+
+    products.forEach((product) => {
+      const type = normalizeAsciiLower(product?.type);
+      if (type && type !== 'sport') {
+        return;
+      }
+
+      const start = tryIso(product?.epg?.start || product?.epg?.streamStart || product?.recording?.startTime);
+      if (!start || !isWithinWindow(start)) {
+        return;
+      }
+
+      const title = String(product?.content?.title || product?._links?.self?.title || '').trim();
+      if (!title) {
+        return;
+      }
+
+      const end = tryIso(product?.epg?.end || product?.epg?.streamEnd || product?.recording?.endTime);
+      const summary = String(product?.content?.synopsis || '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const publicPath = String(product?.publicPath || '')
+        .replace(/^\/+/, '')
+        .trim();
+      const rawSegments = publicPath.split('/').filter(Boolean);
+      const pathSegments = rawSegments.map((segment) => {
+        try {
+          return decodeURIComponent(segment);
+        } catch {
+          return segment;
+        }
+      });
+      const genreLabels = Array.isArray(product?._links?.['viaplay:genres'])
+        ? product._links['viaplay:genres'].map((genre) => String(genre?.title || '').trim()).filter(Boolean)
+        : [];
+      const sportLabel = String(pathSegments[0] || genreLabels[0] || '').replace(/-/g, ' ').trim();
+      const competition = String(pathSegments[1] || '').replace(/-/g, ' ').trim();
+      const eventUrl = publicPath
+        ? `https://viaplay.com/nl-nl/sport/${publicPath}`
+        : VIAPLAY_SPORTS_URL;
+      const key = `${title}|${start}|${eventUrl}`;
+      if (seen.has(key)) {
+        return;
+      }
+      seen.add(key);
+
+      rows.push({
+        title,
+        summary,
+        start,
+        startMs: new Date(start).getTime(),
+        end,
+        sourceUrl,
+        eventUrl,
+        sportLabel,
+        competition,
+        genreLabels
+      });
+    });
+  });
+
+  return rows.sort((a, b) => a.startMs - b.startMs);
+}
+
 function extractHboMaxScheduleRows(nextData, sourceUrl) {
   const mappedData = nextData?.props?.pageProps?.mappedData;
   if (!mappedData || typeof mappedData !== 'object') {
@@ -1932,6 +2205,82 @@ function collapseHboMaxParallelGolfRows(rows) {
   });
 
   return passthrough.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+}
+
+function npoChannelName(rawName) {
+  const normalized = normalizeAsciiLower(rawName);
+  const numbered = normalized.match(/^npo\s*([0-9]+)$/);
+  if (numbered) {
+    return `NPO ${numbered[1]}`;
+  }
+  return String(rawName || '').trim();
+}
+
+function npoChannelUrlFromName(rawName) {
+  const normalized = normalizeAsciiLower(rawName);
+  if (normalized === 'npo 1') return 'https://www.npostart.nl/live/npo-1';
+  if (normalized === 'npo 2') return 'https://www.npostart.nl/live/npo-2';
+  if (normalized === 'npo 3') return 'https://www.npostart.nl/live/npo-3';
+  return 'https://www.npostart.nl/live';
+}
+
+function npoGuideGenreLabels(entry) {
+  const labels = [];
+  (entry?.genres || []).forEach((genre) => {
+    const primary = String(genre?.name || '').trim();
+    if (primary) {
+      labels.push(primary);
+    }
+    (genre?.secondaries || []).forEach((secondary) => {
+      const value = String(secondary?.name || '').trim();
+      if (value) {
+        labels.push(value);
+      }
+    });
+  });
+  return labels;
+}
+
+function isNpoSportGuideEntry(entry) {
+  const title = String(entry?.mainTitle || entry?.episodeTitle || '').trim();
+  if (!title) {
+    return false;
+  }
+
+  const normalizedTitle = normalizeAsciiLower(title);
+  if (normalizedTitle.startsWith('nos journaal')) {
+    return false;
+  }
+
+  const genreLabels = npoGuideGenreLabels(entry);
+  const normalizedGenres = normalizeAsciiLower(genreLabels.join(' '));
+  const synopsis = String(entry?.synopsis || '').trim();
+  const normalizedSynopsis = normalizeAsciiLower(synopsis);
+  const titleHaystack = normalizeAsciiLower(title);
+  const haystack = normalizeAsciiLower([title, synopsis, ...genreLabels].join(' '));
+  if (NPO_SPORT_BLOCKLIST_KEYWORDS.some((keyword) => haystack.includes(keyword))) {
+    return false;
+  }
+
+  const hasSportGenre = normalizedGenres.includes('sport');
+  const hasMatchupPattern = /\s(?:-|–|—|vs\.?|v\.?)\s/i.test(title);
+  const hasMajorTitleHint = NPO_SPORT_HINT_KEYWORDS.some((keyword) => titleHaystack.includes(keyword))
+    || /\b(wk|ek)\b/.test(titleHaystack);
+  const hasMajorSynopsisHint = NPO_SPORT_HINT_KEYWORDS.some((keyword) => normalizedSynopsis.includes(keyword))
+    || /\b(wk|ek)\b/.test(normalizedSynopsis);
+  const isNosBrand = /^(nos\b|zappsport\b)/.test(normalizedTitle);
+
+  if (hasMatchupPattern && hasSportGenre) {
+    return true;
+  }
+  if (hasMajorTitleHint) {
+    return true;
+  }
+  if (isNosBrand && (hasSportGenre || hasMajorSynopsisHint)) {
+    return true;
+  }
+
+  return false;
 }
 
 function cleanNosParticipantLabel(value) {
@@ -2076,6 +2425,127 @@ async function fetchHboMaxScheduleRows() {
   }
 
   return { rows, sources, errors };
+}
+
+async function fetchViaplayScheduleRows() {
+  const sources = [VIAPLAY_SPORTS_URL];
+  const errors = [];
+  const rows = [];
+
+  try {
+    const html = await fetchText(VIAPLAY_SPORTS_URL);
+    const nextData = parseViaplayNextData(html);
+    rows.push(...extractViaplayScheduleRows(nextData, VIAPLAY_SPORTS_URL));
+  } catch (error) {
+    errors.push(`Viaplay sportagenda: ${error.message}`);
+  }
+
+  return { rows, sources, errors };
+}
+
+async function fetchNpoGuideRows() {
+  const sources = [NPO_GUIDE_CHANNELS_URL];
+  const errors = [];
+  const rows = [];
+  const seen = new Set();
+
+  let channelsPayload = [];
+  try {
+    channelsPayload = await fetchJson(NPO_GUIDE_CHANNELS_URL);
+  } catch (error) {
+    return {
+      rows,
+      sources,
+      errors: [`NPO gidskanalen: ${error.message}`]
+    };
+  }
+
+  const channels = (Array.isArray(channelsPayload) ? channelsPayload : [])
+    .filter((channel) => ['npo1', 'npo2', 'npo3'].includes(normalizeAsciiLower(channel?.livestream?.slug)))
+    .map((channel) => ({
+      guid: String(channel?.guid || '').trim(),
+      name: npoChannelName(channel?.livestream?.title || channel?.title),
+      url: npoChannelUrlFromName(channel?.livestream?.title || channel?.title)
+    }))
+    .filter((channel) => channel.guid && channel.name);
+
+  const startDay = new Date(Date.UTC(NOW.getUTCFullYear(), NOW.getUTCMonth(), NOW.getUTCDate()));
+
+  for (let dayOffset = -1; dayOffset <= NPO_GUIDE_LOOKAHEAD_DAYS; dayOffset += 1) {
+    const guideDate = formatDateForDutchGuide(addDays(startDay, dayOffset));
+    let hasRowsForDay = false;
+
+    for (const channel of channels) {
+      const url = `${NPO_GUIDE_CHANNEL_URL}?date=${encodeURIComponent(guideDate)}&guid=${encodeURIComponent(channel.guid)}`;
+      sources.push(url);
+
+      try {
+        const payload = await fetchJson(url);
+        if (!Array.isArray(payload)) {
+          const message = normalizeAsciiLower(payload?.message || '');
+          if (!message.includes('date is not allowed')) {
+            errors.push(`NPO gids ${guideDate} ${channel.name}: onverwachte respons`);
+          }
+          continue;
+        }
+
+        hasRowsForDay = hasRowsForDay || payload.length > 0;
+        payload.forEach((entry) => {
+          if (!isNpoSportGuideEntry(entry)) {
+            return;
+          }
+
+          const title = String(entry?.mainTitle || entry?.episodeTitle || '').trim();
+          if (!title || normalizeAsciiLower(title).startsWith('nos journaal')) {
+            return;
+          }
+
+          const startSeconds = Number(entry?.programStart);
+          if (!Number.isFinite(startSeconds)) {
+            return;
+          }
+          const start = new Date(startSeconds * 1000).toISOString();
+          if (!isWithinWindow(start)) {
+            return;
+          }
+
+          const endSeconds = Number(entry?.programEnd);
+          const end = Number.isFinite(endSeconds) ? new Date(endSeconds * 1000).toISOString() : null;
+          const summary = String(entry?.synopsis || '').replace(/\s+/g, ' ').trim();
+          const genreLabels = npoGuideGenreLabels(entry);
+          const key = `${channel.name}|${title}|${start}`;
+          if (seen.has(key)) {
+            return;
+          }
+          seen.add(key);
+
+          rows.push({
+            title,
+            summary,
+            start,
+            startMs: new Date(start).getTime(),
+            end,
+            channelName: channel.name,
+            channelUrl: channel.url,
+            genreLabels,
+            sourceUrl: url
+          });
+        });
+      } catch (error) {
+        errors.push(`NPO gids ${guideDate} ${channel.name}: ${error.message}`);
+      }
+    }
+
+    if (!hasRowsForDay && dayOffset > 1) {
+      break;
+    }
+  }
+
+  return {
+    rows: rows.sort((a, b) => a.startMs - b.startMs),
+    sources: [...new Set(sources)],
+    errors
+  };
 }
 
 function parseTeamEvent(event, feed, idPrefix, sourceUrl) {
@@ -2338,8 +2808,10 @@ function sourcePriorityForEvent(event) {
   const baseByType = {
     manual: 100,
     nos: 92,
+    'npo-guide': 91,
     'hbo-max': 90,
     ziggo: 89,
+    viaplay: 88,
     mixed: 85,
     'espn-schedule': 82,
     espn: 70,
@@ -2401,6 +2873,15 @@ function inferVerification(event, generatedAt) {
     };
   }
 
+  if (sourceTypes.has('viaplay') && sourceTypes.has('espn')) {
+    return {
+      confidence: 'likely',
+      reason: 'Wedstrijd gekoppeld via ESPN feed en Viaplay sportagenda.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
   if (sourceTypes.has('espn-schedule') && sourceTypes.has('espn')) {
     return {
       confidence: 'likely',
@@ -2423,6 +2904,24 @@ function inferVerification(event, generatedAt) {
     return {
       confidence: 'likely',
       reason: 'Direct toegevoegd vanuit HBO Max sportagenda.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  if (sourceTypes.has('viaplay')) {
+    return {
+      confidence: 'likely',
+      reason: 'Direct toegevoegd vanuit Viaplay sportagenda.',
+      lastVerified: generatedAt,
+      priority: sourcePriorityForEvent(event)
+    };
+  }
+
+  if (sourceTypes.has('npo-guide')) {
+    return {
+      confidence: 'confirmed',
+      reason: 'Direct toegevoegd vanuit NPO gids (NPO 1/2/3).',
       lastVerified: generatedAt,
       priority: sourcePriorityForEvent(event)
     };
@@ -2521,6 +3020,8 @@ const namedSports = await fetchByFeeds(
 
 const nosSportLivestreams = await fetchNosSportLivestreams();
 const hboMaxSchedule = await fetchHboMaxScheduleRows();
+const viaplaySchedule = await fetchViaplayScheduleRows();
+const npoGuide = await fetchNpoGuideRows();
 const ziggoEpg = await fetchZiggoEpgRows();
 const espnSchedule = await fetchEspnScheduleRows();
 
@@ -2532,6 +3033,8 @@ const fetchErrors = [
   ...namedSports.errors,
   ...nosSportLivestreams.errors,
   ...hboMaxSchedule.errors,
+  ...viaplaySchedule.errors,
+  ...npoGuide.errors,
   ...ziggoEpg.errors,
   ...espnSchedule.errors
 ];
@@ -2550,9 +3053,21 @@ const mergedEvents = dedupeEvents([
   ...manualEvents
 ]);
 
-const scheduleOnlyEvents = buildScheduleOnlyEvents(mergedEvents, ziggoEpg.rows, espnSchedule.rows, hboMaxSchedule.rows);
+const scheduleOnlyEvents = buildScheduleOnlyEvents(
+  mergedEvents,
+  ziggoEpg.rows,
+  espnSchedule.rows,
+  hboMaxSchedule.rows,
+  viaplaySchedule.rows,
+  npoGuide.rows
+);
 const mergedWithScheduleOnly = dedupeEvents([...mergedEvents, ...scheduleOnlyEvents]);
-const enrichedEvents = enrichEventsWithSchedules(mergedWithScheduleOnly, ziggoEpg.rows, espnSchedule.rows);
+const enrichedEvents = enrichEventsWithSchedules(
+  mergedWithScheduleOnly,
+  ziggoEpg.rows,
+  espnSchedule.rows,
+  viaplaySchedule.rows
+);
 const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
 const generatedAt = new Date().toISOString();
 const allVerifiedEvents = finalizeVerification(overriddenEvents, generatedAt);
@@ -2578,6 +3093,8 @@ const nextDataset = normalizeDataset({
     ...namedSports.sources,
     ...nosSportLivestreams.sources,
     ...hboMaxSchedule.sources,
+    ...viaplaySchedule.sources,
+    ...npoGuide.sources,
     ...ziggoEpg.sources,
     ...espnSchedule.sources,
     'manual:src/data/major-events.nl.json',
