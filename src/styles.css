@@ -47,14 +47,6 @@
   --channel-condition: #63758a;
   --event-note: #6b7686;
   --link: #134c8b;
-  --badge-likely-bg: rgba(18, 78, 141, 0.14);
-  --badge-likely-text: #144f8c;
-  --badge-match-bg: rgba(15, 55, 104, 0.14);
-  --badge-match-text: #0f3768;
-  --badge-direct-bg: rgba(11, 99, 168, 0.16);
-  --badge-direct-text: #0b5697;
-  --badge-inferred-bg: rgba(129, 98, 22, 0.16);
-  --badge-inferred-text: #6d5510;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -105,14 +97,6 @@
     --channel-condition: #a8b9cf;
     --event-note: #9dafc5;
     --link: #93c5ff;
-    --badge-likely-bg: rgba(66, 145, 235, 0.24);
-    --badge-likely-text: #c8e3ff;
-    --badge-match-bg: rgba(93, 165, 255, 0.24);
-    --badge-match-text: #e2f0ff;
-    --badge-direct-bg: rgba(96, 171, 255, 0.28);
-    --badge-direct-text: #e2f1ff;
-    --badge-inferred-bg: rgba(236, 193, 84, 0.24);
-    --badge-inferred-text: #ffe8b5;
   }
 }
 
@@ -245,6 +229,12 @@ h3,
 .ghost:hover,
 .chip:hover {
   transform: translateY(-1px);
+}
+
+.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .beta-note {
@@ -703,73 +693,6 @@ h3,
   font-size: 0.9rem;
 }
 
-.verification-badge {
-  margin: 0;
-  width: fit-content;
-  border-radius: 999px;
-  padding: 0.2rem 0.56rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.verification-badge.confirmed {
-  background: rgba(13, 141, 90, 0.14);
-  color: #0f7a4f;
-}
-
-.verification-badge.likely {
-  background: var(--badge-likely-bg);
-  color: var(--badge-likely-text);
-}
-
-.verification-badge.unverified {
-  background: rgba(154, 61, 36, 0.14);
-  color: #8a3b25;
-}
-
-.reliability-badge {
-  margin: 0;
-  width: fit-content;
-  border-radius: 999px;
-  padding: 0.2rem 0.56rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.reliability-badge.direct {
-  background: var(--badge-direct-bg);
-  color: var(--badge-direct-text);
-}
-
-.reliability-badge.inferred {
-  background: var(--badge-inferred-bg);
-  color: var(--badge-inferred-text);
-}
-
-.content-type-badge {
-  margin: 0;
-  width: fit-content;
-  border-radius: 999px;
-  padding: 0.2rem 0.56rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.content-type-badge.match {
-  background: var(--badge-match-bg);
-  color: var(--badge-match-text);
-}
-
-.content-type-badge.broadcast {
-  background: rgba(105, 80, 18, 0.14);
-  color: #6e4f0d;
-}
-
-.content-type-badge.recap {
-  background: rgba(133, 35, 118, 0.14);
-  color: #7a1f6b;
-}
-
 .channel-list {
   margin: 0;
   padding: 0;
@@ -837,6 +760,17 @@ h3,
   gap: 0.45rem;
   font-size: 0.84rem;
   color: var(--muted);
+}
+
+.report-link {
+  color: var(--link);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.report-link:hover {
+  text-decoration: underline;
 }
 
 .event-note {
