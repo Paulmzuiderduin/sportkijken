@@ -86,7 +86,11 @@ const DEFAULT_ANALYTICS_RUNTIME = {
 };
 const CONTACT_EMAIL = 'info@paulzuiderduin.com';
 const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}`;
-const REFRESH_STATUS_URL = 'https://api.github.com/repos/Paulmzuiderduin/sportkijken/actions/workflows/update-data.yml/runs?per_page=1';
+const REFRESH_STATUS_URLS = [
+  'https://api.github.com/repos/Paulmzuiderduin/sportkijken/actions/workflows/update-data.yml/runs?per_page=5',
+  'https://api.github.com/repos/Paulmzuiderduin/sportkijken/actions/runs?per_page=20'
+];
+const REFRESH_STATUS_STORAGE_KEY = 'sportkijken-last-refresh-check-at-v1';
 const RUNTIME_DATASET_URL = '/events.nl.json';
 const RUNTIME_DATASET_POLL_MS = 5 * 60 * 1000;
 const SEO_BASE_URL = 'https://sportkijken.paulzuiderduin.com/';
@@ -394,6 +398,58 @@ function loadConsentState() {
   return 'unknown';
 }
 
+function normalizeIsoDateTime(value) {
+  const date = new Date(value || 0);
+  if (!Number.isFinite(date.getTime()) || date.getTime() <= 0) {
+    return null;
+  }
+  return date.toISOString();
+}
+
+function loadLastRefreshCheckAt() {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    return normalizeIsoDateTime(window.localStorage.getItem(REFRESH_STATUS_STORAGE_KEY));
+  } catch (error) {
+    return null;
+  }
+}
+
+function persistLastRefreshCheckAt(value) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    if (value) {
+      window.localStorage.setItem(REFRESH_STATUS_STORAGE_KEY, value);
+    } else {
+      window.localStorage.removeItem(REFRESH_STATUS_STORAGE_KEY);
+    }
+  } catch (error) {
+    // Ignore storage failures.
+  }
+}
+
+function parseLatestRefreshCheckAt(payload) {
+  const runs = Array.isArray(payload?.workflow_runs) ? payload.workflow_runs : [];
+  if (!runs.length) {
+    return null;
+  }
+
+  const sortedRuns = [...runs].sort((a, b) => {
+    const aTime = new Date(a?.updated_at || a?.run_started_at || a?.created_at || 0).getTime();
+    const bTime = new Date(b?.updated_at || b?.run_started_at || b?.created_at || 0).getTime();
+    return bTime - aTime;
+  });
+
+  const targetedRun = sortedRuns.find((run) => run?.name === 'Update Sports TV Guide Data') || sortedRuns[0];
+  return normalizeIsoDateTime(targetedRun?.updated_at || targetedRun?.run_started_at || targetedRun?.created_at);
+}
+
 function loadAnalyticsRuntime() {
   if (typeof window === 'undefined') {
     return DEFAULT_ANALYTICS_RUNTIME;
@@ -561,7 +617,7 @@ function App() {
   const [consentState, setConsentState] = useState(loadConsentState);
   const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
-  const [lastRefreshCheckAt, setLastRefreshCheckAt] = useState(null);
+  const [lastRefreshCheckAt, setLastRefreshCheckAt] = useState(loadLastRefreshCheckAt);
   const previousOptionsRef = useRef({
     sports: FALLBACK_SPORT_OPTIONS.map((sport) => sport.id),
     providers: FALLBACK_PROVIDER_OPTIONS
@@ -732,29 +788,38 @@ function App() {
     let cancelled = false;
 
     const fetchRefreshStatus = async () => {
-      try {
-        const response = await fetch(REFRESH_STATUS_URL, { cache: 'no-store' });
-        if (!response.ok) {
-          return;
-        }
+      for (const url of REFRESH_STATUS_URLS) {
+        try {
+          const response = await fetch(`${url}&t=${Date.now()}`, { cache: 'no-store' });
+          if (!response.ok) {
+            continue;
+          }
 
-        const payload = await response.json();
-        const latestRun = Array.isArray(payload?.workflow_runs) ? payload.workflow_runs[0] : null;
-        const checkedAt = latestRun?.updated_at || latestRun?.run_started_at || null;
-
-        if (!cancelled && checkedAt) {
-          setLastRefreshCheckAt(checkedAt);
+          const payload = await response.json();
+          const checkedAt = parseLatestRefreshCheckAt(payload);
+          if (!cancelled && checkedAt) {
+            setLastRefreshCheckAt(checkedAt);
+            persistLastRefreshCheckAt(checkedAt);
+            return;
+          }
+        } catch (error) {
+          // Try next endpoint before giving up.
         }
-      } catch (error) {
-        // Ignore network issues and keep the dataset fallback timestamp.
       }
     };
 
     fetchRefreshStatus();
     const intervalId = window.setInterval(fetchRefreshStatus, 15 * 60 * 1000);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchRefreshStatus();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
     return () => {
       cancelled = true;
       window.clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, []);
 
@@ -795,18 +860,36 @@ function App() {
   }, []);
 
   const datasetStatus = useMemo(() => {
-    if (!lastRefreshCheckAt && !dataset.generatedAt) {
+    const generatedAt = new Date(dataset.generatedAt || 0);
+    const generatedMs = generatedAt.getTime();
+    const datasetAgeMinutes = Number.isFinite(generatedMs) && generatedMs > 0
+      ? Math.max(0, Math.round((Date.now() - generatedMs) / 60000))
+      : null;
+
+    if (!lastRefreshCheckAt && datasetAgeMinutes === null) {
       return {
         level: 'notice',
         message: 'Dataset wordt geladen...'
       };
     }
 
-    const referenceAt = lastRefreshCheckAt || dataset.generatedAt || 0;
+    if (!lastRefreshCheckAt) {
+      if (datasetAgeMinutes !== null && datasetAgeMinutes > 240) {
+        return {
+          level: 'notice',
+          message: `Laatste datasetwijziging ${Math.round(datasetAgeMinutes / 60)} uur geleden; recente broncontrole tijdelijk onbekend.`
+        };
+      }
+
+      return {
+        level: 'notice',
+        message: 'Recente broncontrole tijdelijk onbekend; toon laatste datasetwijziging.'
+      };
+    }
+
+    const referenceAt = lastRefreshCheckAt;
     const referenceDate = new Date(referenceAt);
     const referenceMs = referenceDate.getTime();
-    const generatedAt = new Date(dataset.generatedAt || 0);
-    const generatedMs = generatedAt.getTime();
     if (!Number.isFinite(referenceMs) || referenceMs <= 0) {
       return {
         level: 'warning',
@@ -827,10 +910,6 @@ function App() {
         message: `Bronnen zijn ${ageMinutes} minuten geleden gecontroleerd.`
       };
     }
-
-    const datasetAgeMinutes = Number.isFinite(generatedMs) && generatedMs > 0
-      ? Math.max(0, Math.round((Date.now() - generatedMs) / 60000))
-      : null;
 
     if (datasetAgeMinutes !== null && lastRefreshCheckAt && datasetAgeMinutes > 180) {
       return {
@@ -1580,7 +1659,9 @@ function App() {
                 : 'Automatisch ververst (~3 uur) via NOS, Ziggo, ESPN en Viaplay.'}
             </span>
             <span>
-              Laatst gecontroleerd: {formatDatasetDateTime(lastRefreshCheckAt || dataset.generatedAt)}
+              Laatst gecontroleerd: {lastRefreshCheckAt
+                ? formatDatasetDateTime(lastRefreshCheckAt)
+                : 'Tijdelijk onbekend'}
             </span>
             <span>
               Laatste datasetwijziging: {formatDatasetDateTime(dataset.generatedAt)}
