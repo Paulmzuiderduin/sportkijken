@@ -86,6 +86,12 @@ const EMPTY_DATASET = {
   sources: [],
   events: []
 };
+const EMPTY_RUNTIME_META = {
+  generatedAt: null,
+  lastChangedAt: null,
+  checkedAt: null,
+  eventCount: null
+};
 const FALLBACK_EVENTS = [];
 const CONSENT_STORAGE_KEY = 'sportkijken-consent-v1';
 const DEFAULT_ANALYTICS_RUNTIME = {
@@ -98,15 +104,11 @@ const DEFAULT_ANALYTICS_RUNTIME = {
   lastEventAt: null
 };
 const CONTACT_EMAIL = 'info@paulzuiderduin.com';
-const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}`;
-const REFRESH_STATUS_URLS = [
-  'https://api.github.com/repos/Paulmzuiderduin/sportkijken/actions/workflows/update-data.yml/runs?per_page=5',
-  'https://api.github.com/repos/Paulmzuiderduin/sportkijken/actions/runs?per_page=20'
-];
-const REFRESH_STATUS_STORAGE_KEY = 'sportkijken-last-refresh-check-at-v1';
+const CONTACT_MAILTO_URL = `mailto:${CONTACT_EMAIL}`;
 const DATASET_CACHE_STORAGE_KEY = 'sportkijken-runtime-dataset-v1';
 const RUNTIME_DATASET_URL = '/events.nl.json';
 const RUNTIME_DATASET_META_URL = '/events.meta.json';
+const RUNTIME_DATASET_INDEX_URL = '/datasets/index.json';
 const RUNTIME_DATASET_POLL_MS = 5 * 60 * 1000;
 const SEO_BASE_URL = 'https://sportkijken.paulzuiderduin.com/';
 const SEO_BASE_TITLE = 'Waar Kan Ik Sport Kijken? | Sportkijken Nederland';
@@ -268,19 +270,93 @@ function normalizeRuntimeDatasetMeta(candidate) {
   }
 
   const generatedAt = normalizeIsoDateTime(candidate.generatedAt);
+  const checkedAt = normalizeIsoDateTime(candidate.checkedAt);
+  const lastChangedAt = normalizeIsoDateTime(candidate.lastChangedAt || candidate.generatedAt);
   const eventCountValue = Number(candidate.eventCount);
   const eventCount = Number.isFinite(eventCountValue) && eventCountValue >= 0
     ? Math.round(eventCountValue)
     : null;
 
-  if (!generatedAt && eventCount === null) {
+  if (!generatedAt && !checkedAt && eventCount === null) {
     return null;
   }
 
   return {
     generatedAt,
+    checkedAt,
+    lastChangedAt,
     eventCount
   };
+}
+
+function normalizeRuntimeDatasetIndex(candidate) {
+  if (!candidate || typeof candidate !== 'object' || !Array.isArray(candidate.buckets)) {
+    return null;
+  }
+
+  const buckets = candidate.buckets
+    .map((bucket) => {
+      if (!bucket || typeof bucket !== 'object') {
+        return null;
+      }
+      const id = String(bucket.id || '').trim();
+      const path = String(bucket.path || '').trim();
+      const start = normalizeIsoDateTime(bucket.start);
+      const end = normalizeIsoDateTime(bucket.end);
+      const eventCountValue = Number(bucket.eventCount);
+      const eventCount = Number.isFinite(eventCountValue) && eventCountValue >= 0 ? Math.round(eventCountValue) : 0;
+      if (!id || !path || !start || !end) {
+        return null;
+      }
+      return {
+        id,
+        path,
+        start,
+        end,
+        eventCount
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+
+  if (!buckets.length) {
+    return null;
+  }
+
+  return {
+    generatedAt: normalizeIsoDateTime(candidate.generatedAt),
+    checkedAt: normalizeIsoDateTime(candidate.checkedAt),
+    eventCount: Number.isFinite(Number(candidate.eventCount)) ? Math.round(Number(candidate.eventCount)) : buckets.reduce((sum, bucket) => sum + bucket.eventCount, 0),
+    buckets
+  };
+}
+
+function loadWindowForRange(rangeFilter) {
+  const now = new Date();
+  const windowStart = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+
+  if (rangeFilter === '7d') {
+    return { start: windowStart, end: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) };
+  }
+
+  if (rangeFilter === '30d') {
+    return { start: windowStart, end: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) };
+  }
+
+  return { start: null, end: null };
+}
+
+function bucketOverlapsWindow(bucket, window) {
+  if (!window.start || !window.end) {
+    return true;
+  }
+
+  const bucketStart = new Date(bucket.start).getTime();
+  const bucketEnd = new Date(bucket.end).getTime();
+  const windowStart = window.start.getTime();
+  const windowEnd = window.end.getTime();
+
+  return bucketStart <= windowEnd && bucketEnd >= windowStart;
 }
 
 function loadCachedDataset() {
@@ -499,50 +575,6 @@ function normalizeIsoDateTime(value) {
   return date.toISOString();
 }
 
-function loadLastRefreshCheckAt() {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
-  try {
-    return normalizeIsoDateTime(window.localStorage.getItem(REFRESH_STATUS_STORAGE_KEY));
-  } catch (error) {
-    return null;
-  }
-}
-
-function persistLastRefreshCheckAt(value) {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  try {
-    if (value) {
-      window.localStorage.setItem(REFRESH_STATUS_STORAGE_KEY, value);
-    } else {
-      window.localStorage.removeItem(REFRESH_STATUS_STORAGE_KEY);
-    }
-  } catch (error) {
-    // Ignore storage failures.
-  }
-}
-
-function parseLatestRefreshCheckAt(payload) {
-  const runs = Array.isArray(payload?.workflow_runs) ? payload.workflow_runs : [];
-  if (!runs.length) {
-    return null;
-  }
-
-  const sortedRuns = [...runs].sort((a, b) => {
-    const aTime = new Date(a?.updated_at || a?.run_started_at || a?.created_at || 0).getTime();
-    const bTime = new Date(b?.updated_at || b?.run_started_at || b?.created_at || 0).getTime();
-    return bTime - aTime;
-  });
-
-  const targetedRun = sortedRuns.find((run) => run?.name === 'Update Sports TV Guide Data') || sortedRuns[0];
-  return normalizeIsoDateTime(targetedRun?.updated_at || targetedRun?.run_started_at || targetedRun?.created_at);
-}
-
 function isReloadNavigation() {
   if (typeof window === 'undefined' || typeof performance === 'undefined') {
     return false;
@@ -597,9 +629,21 @@ function toIcsDate(date) {
   return date.toISOString().replace(/[-:]/g, '').replace('.000', '');
 }
 
+function buildContactComposeLink(subject, body) {
+  const params = new URLSearchParams();
+  if (subject) {
+    params.set('subject', subject);
+  }
+  if (body) {
+    params.set('body', body);
+  }
+  const query = params.toString();
+  return `mailto:${CONTACT_EMAIL}${query ? `?${query}` : ''}`;
+}
+
 function buildReportIncorrectListingLink(event, sportLabel) {
   if (!event) {
-    return GMAIL_COMPOSE_URL;
+    return CONTACT_MAILTO_URL;
   }
 
   const providerSummary = (event.channels || [])
@@ -629,7 +673,7 @@ function buildReportIncorrectListingLink(event, sportLabel) {
     `Page URL: ${typeof window !== 'undefined' ? window.location.href : ''}`
   ].join('\n');
 
-  return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return buildContactComposeLink(subject, body);
 }
 
 function trackAnalyticsEvent(eventName, params = {}) {
@@ -679,11 +723,18 @@ function getEventAccessLabel(event) {
   return 'Betaald';
 }
 
+const MAJOR_TAG_LABELS = {
+  paralympics: 'Paralympische Spelen',
+  olympics: 'Olympische Spelen',
+  'world-cup-wk': 'Wereldbekers en WK',
+  'national-championships': 'Nationale Kampioenschappen'
+};
+
 const MAJOR_GROUP_ORDER = [
-  'Paralympische Spelen',
-  'Olympische Spelen',
-  'Wereldbekers en WK',
-  'Nationale Kampioenschappen'
+  'paralympics',
+  'olympics',
+  'world-cup-wk',
+  'national-championships'
 ];
 
 const NATIONAL_CHAMPIONSHIP_PATTERNS = [
@@ -701,15 +752,20 @@ function isNationalChampionshipEvent(haystack) {
   return NATIONAL_CHAMPIONSHIP_PATTERNS.some((pattern) => pattern.test(haystack));
 }
 
-function majorGroupForEvent(event) {
+function majorTagForEvent(event) {
+  const explicitTag = String(event?.majorTag || '').trim();
+  if (explicitTag && MAJOR_TAG_LABELS[explicitTag]) {
+    return explicitTag;
+  }
+
   const haystack = `${event.title || ''} ${event.competition || ''} ${event.notes || ''}`.toLowerCase();
 
   if (haystack.includes('paralymp')) {
-    return 'Paralympische Spelen';
+    return 'paralympics';
   }
 
   if (haystack.includes('olymp')) {
-    return 'Olympische Spelen';
+    return 'olympics';
   }
 
   if (
@@ -719,13 +775,13 @@ function majorGroupForEvent(event) {
     || haystack.includes(' wk')
     || haystack.startsWith('wk ')
   ) {
-    return 'Wereldbekers en WK';
+    return 'world-cup-wk';
   }
 
   if (
     isNationalChampionshipEvent(haystack)
   ) {
-    return 'Nationale Kampioenschappen';
+    return 'national-championships';
   }
 
   return null;
@@ -736,7 +792,7 @@ function matchesMajorFilter(event, majorFilter) {
     return true;
   }
 
-  const isMajor = Boolean(majorGroupForEvent(event));
+  const isMajor = Boolean(majorTagForEvent(event));
   if (majorFilter === 'major') {
     return isMajor;
   }
@@ -753,7 +809,7 @@ function App() {
   const [consentState, setConsentState] = useState(loadConsentState);
   const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
-  const [lastRefreshCheckAt, setLastRefreshCheckAt] = useState(loadLastRefreshCheckAt);
+  const [datasetMeta, setDatasetMeta] = useState(EMPTY_RUNTIME_META);
   const shouldForceTopOnLoadRef = useRef(false);
   const datasetSnapshotRef = useRef(dataset);
   const previousOptionsRef = useRef({
@@ -905,14 +961,113 @@ function App() {
         if (!response.ok) {
           return null;
         }
-        return normalizeRuntimeDatasetMeta(await response.json());
+        const meta = normalizeRuntimeDatasetMeta(await response.json());
+        if (!cancelled && meta) {
+          setDatasetMeta(meta);
+        }
+        return meta;
       } catch (error) {
         return null;
       }
     };
 
-    const refreshDataset = async (forceFull = false) => {
-      if (forceFull) {
+    const fetchRuntimeDatasetIndex = async () => {
+      try {
+        const response = await fetch(`${RUNTIME_DATASET_INDEX_URL}?t=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) {
+          return null;
+        }
+        return normalizeRuntimeDatasetIndex(await response.json());
+      } catch (error) {
+        return null;
+      }
+    };
+
+    const fetchRuntimeDatasetByRange = async () => {
+      const index = await fetchRuntimeDatasetIndex();
+      if (!index) {
+        return false;
+      }
+
+      const selectedWindow = loadWindowForRange(preferences.rangeFilter);
+      const candidateBuckets = index.buckets.filter((bucket) => bucketOverlapsWindow(bucket, selectedWindow));
+      const targetBuckets = candidateBuckets.length ? candidateBuckets : index.buckets;
+
+      try {
+        const bucketPayloads = await Promise.all(
+          targetBuckets.map(async (bucket) => {
+            const response = await fetch(`${bucket.path}?t=${Date.now()}`, { cache: 'no-store' });
+            if (!response.ok) {
+              return null;
+            }
+            return normalizeRuntimeDataset(await response.json());
+          })
+        );
+
+        const eventsById = new Map();
+        bucketPayloads.forEach((payload) => {
+          if (!payload || !Array.isArray(payload.events)) {
+            return;
+          }
+          payload.events.forEach((event) => {
+            if (event?.id) {
+              eventsById.set(event.id, event);
+            }
+          });
+        });
+
+        const payload = normalizeRuntimeDataset({
+          generatedAt: index.generatedAt || null,
+          region: 'NL',
+          isDemo: false,
+          sources: [],
+          events: [...eventsById.values()]
+        });
+
+        if (!payload || cancelled) {
+          return false;
+        }
+
+        setDataset((current) => {
+          const currentGeneratedAt = current?.generatedAt || '';
+          const nextGeneratedAt = payload.generatedAt || '';
+          const currentCount = Array.isArray(current?.events) ? current.events.length : 0;
+          const nextCount = payload.events.length;
+          if (currentGeneratedAt === nextGeneratedAt && currentCount === nextCount) {
+            return current;
+          }
+
+          trackAnalyticsEvent('runtime_dataset_refresh', {
+            from_generated_at: currentGeneratedAt || 'unknown',
+            to_generated_at: nextGeneratedAt || 'unknown',
+            events: nextCount
+          });
+
+          persistCachedDataset(payload);
+          return payload;
+        });
+
+        if (!cancelled) {
+          setDatasetMeta((currentMeta) => ({
+            ...currentMeta,
+            generatedAt: index.generatedAt || currentMeta.generatedAt || null,
+            lastChangedAt: index.generatedAt || currentMeta.lastChangedAt || null,
+            checkedAt: index.checkedAt || currentMeta.checkedAt || null,
+            eventCount: index.eventCount
+          }));
+        }
+        return true;
+      } catch (error) {
+        return false;
+      }
+    };
+
+    const refreshDataset = async (forceReload = false) => {
+      if (forceReload) {
+        const updatedByRange = await fetchRuntimeDatasetByRange();
+        if (updatedByRange) {
+          return;
+        }
         const updated = await fetchRuntimeDataset();
         if (!updated) {
           await ensureBundledFallbackDataset();
@@ -927,6 +1082,10 @@ function App() {
       const meta = await fetchRuntimeDatasetMeta();
       if (!meta) {
         if (!currentCount) {
+          const updatedByRange = await fetchRuntimeDatasetByRange();
+          if (updatedByRange) {
+            return;
+          }
           const updated = await fetchRuntimeDataset();
           if (!updated) {
             await ensureBundledFallbackDataset();
@@ -935,10 +1094,15 @@ function App() {
         return;
       }
 
-      const generatedChanged = Boolean(meta.generatedAt && meta.generatedAt !== currentGeneratedAt);
+      const metaGeneratedAt = normalizeIsoDateTime(meta.lastChangedAt || meta.generatedAt);
+      const generatedChanged = Boolean(metaGeneratedAt && metaGeneratedAt !== currentGeneratedAt);
       const countChanged = Number.isFinite(meta.eventCount) && meta.eventCount !== currentCount;
 
       if (generatedChanged || countChanged || (!currentGeneratedAt && !currentCount)) {
+        const updatedByRange = await fetchRuntimeDatasetByRange();
+        if (updatedByRange) {
+          return;
+        }
         const updated = await fetchRuntimeDataset();
         if (!updated) {
           await ensureBundledFallbackDataset();
@@ -946,8 +1110,7 @@ function App() {
       }
     };
 
-    const hasCachedEvents = Array.isArray(datasetSnapshotRef.current?.events) && datasetSnapshotRef.current.events.length > 0;
-    refreshDataset(!hasCachedEvents);
+    refreshDataset(true);
 
     const intervalId = window.setInterval(() => {
       refreshDataset(false);
@@ -964,7 +1127,7 @@ function App() {
       window.clearInterval(intervalId);
       document.removeEventListener('visibilitychange', onVisibilityChange);
     };
-  }, []);
+  }, [preferences.rangeFilter]);
 
   useEffect(() => {
     const nextSportIds = sportOptions.map((sport) => sport.id);
@@ -1070,49 +1233,6 @@ function App() {
       return undefined;
     }
 
-    let cancelled = false;
-
-    const fetchRefreshStatus = async () => {
-      for (const url of REFRESH_STATUS_URLS) {
-        try {
-          const response = await fetch(`${url}&t=${Date.now()}`, { cache: 'no-store' });
-          if (!response.ok) {
-            continue;
-          }
-
-          const payload = await response.json();
-          const checkedAt = parseLatestRefreshCheckAt(payload);
-          if (!cancelled && checkedAt) {
-            setLastRefreshCheckAt(checkedAt);
-            persistLastRefreshCheckAt(checkedAt);
-            return;
-          }
-        } catch (error) {
-          // Try next endpoint before giving up.
-        }
-      }
-    };
-
-    fetchRefreshStatus();
-    const intervalId = window.setInterval(fetchRefreshStatus, 15 * 60 * 1000);
-    const onVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchRefreshStatus();
-      }
-    };
-    document.addEventListener('visibilitychange', onVisibilityChange);
-    return () => {
-      cancelled = true;
-      window.clearInterval(intervalId);
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return undefined;
-    }
-
     const syncConsent = (event) => {
       const detailState = event?.detail?.state;
       if (detailState === 'granted' || detailState === 'denied' || detailState === 'unknown') {
@@ -1145,69 +1265,65 @@ function App() {
   }, []);
 
   const datasetStatus = useMemo(() => {
-    const generatedAt = new Date(dataset.generatedAt || 0);
-    const generatedMs = generatedAt.getTime();
-    const datasetAgeMinutes = Number.isFinite(generatedMs) && generatedMs > 0
-      ? Math.max(0, Math.round((Date.now() - generatedMs) / 60000))
+    const changedAt = new Date(datasetMeta.lastChangedAt || dataset.generatedAt || 0);
+    const changedMs = changedAt.getTime();
+    const datasetAgeMinutes = Number.isFinite(changedMs) && changedMs > 0
+      ? Math.max(0, Math.round((Date.now() - changedMs) / 60000))
+      : null;
+    const checkedAt = new Date(datasetMeta.checkedAt || 0);
+    const checkedMs = checkedAt.getTime();
+    const checkedAgeMinutes = Number.isFinite(checkedMs) && checkedMs > 0
+      ? Math.max(0, Math.round((Date.now() - checkedMs) / 60000))
       : null;
 
-    if (!lastRefreshCheckAt && datasetAgeMinutes === null) {
+    if (checkedAgeMinutes === null && datasetAgeMinutes === null) {
       return {
         level: 'notice',
         message: 'Dataset wordt geladen...'
       };
     }
 
-    if (!lastRefreshCheckAt) {
+    if (checkedAgeMinutes === null) {
       if (datasetAgeMinutes !== null && datasetAgeMinutes > 240) {
         return {
           level: 'notice',
-          message: `Laatste datasetcommit is ${formatAgeLabel(datasetAgeMinutes)} oud; recente workflow-check tijdelijk onbekend.`
+          message: `Laatste datasetwijziging is ${formatAgeLabel(datasetAgeMinutes)} geleden; controlemoment tijdelijk onbekend.`
         };
       }
 
       return {
         level: 'notice',
-        message: 'Recente broncontrole tijdelijk onbekend; toon laatste datasetwijziging.'
+        message: 'Controlemoment tijdelijk onbekend; toon laatste datasetwijziging.'
       };
     }
 
-    const referenceAt = lastRefreshCheckAt;
-    const referenceDate = new Date(referenceAt);
-    const referenceMs = referenceDate.getTime();
-    if (!Number.isFinite(referenceMs) || referenceMs <= 0) {
+    if (checkedAgeMinutes > 240) {
       return {
         level: 'warning',
-        message: 'Kon geen geldige update-tijd bepalen.'
+        message: `Laatste broncontrole is ${formatAgeLabel(checkedAgeMinutes)} geleden.`
       };
     }
-
-    const ageMinutes = Math.max(0, Math.round((Date.now() - referenceMs) / 60000));
-    if (ageMinutes > 240) {
-      return {
-        level: 'warning',
-        message: `Laatste workflow-check is ${formatAgeLabel(ageMinutes)} geleden. Controleer zenderinformatie extra goed.`
-      };
-    }
-    if (ageMinutes > 120) {
+    if (checkedAgeMinutes > 120) {
       return {
         level: 'notice',
-        message: `Laatste workflow-check: ${formatAgeLabel(ageMinutes)} geleden.`
+        message: `Laatste broncontrole: ${formatAgeLabel(checkedAgeMinutes)} geleden.`
       };
     }
 
-    if (datasetAgeMinutes !== null && lastRefreshCheckAt && datasetAgeMinutes > 180) {
+    if (datasetAgeMinutes !== null && datasetAgeMinutes > 180) {
       return {
         level: 'ok',
-        message: `Workflow-check ${formatAgeLabel(ageMinutes)} geleden; geen nieuwe datasetcommit sinds ${formatAgeLabel(datasetAgeMinutes)}.`
+        message: `Bronnen gecontroleerd ${formatAgeLabel(checkedAgeMinutes)} geleden; geen nieuwe datasetwijziging sinds ${formatAgeLabel(datasetAgeMinutes)}.`
       };
     }
 
     return {
       level: 'ok',
-      message: `Workflow-check ${formatAgeLabel(ageMinutes)} geleden.`
+      message: datasetAgeMinutes !== null
+        ? `Bronnen gecontroleerd ${formatAgeLabel(checkedAgeMinutes)} geleden; dataset gewijzigd ${formatAgeLabel(datasetAgeMinutes)} geleden.`
+        : `Bronnen gecontroleerd ${formatAgeLabel(checkedAgeMinutes)} geleden.`
     };
-  }, [dataset.generatedAt, lastRefreshCheckAt]);
+  }, [dataset.generatedAt, datasetMeta.checkedAt, datasetMeta.lastChangedAt]);
 
   const filteredEvents = useMemo(() => {
     const now = new Date();
@@ -1290,23 +1406,23 @@ function App() {
       const regularEvents = [];
 
       dayGroup.events.forEach((event) => {
-        const major = majorGroupForEvent(event);
-        if (!major) {
+        const majorTag = majorTagForEvent(event);
+        if (!majorTag) {
           regularEvents.push(event);
           return;
         }
 
-        const bucket = majorMap.get(major);
+        const bucket = majorMap.get(majorTag);
         if (bucket) {
           bucket.events.push(event);
         } else {
-          majorMap.set(major, { label: major, events: [event] });
+          majorMap.set(majorTag, { tag: majorTag, label: MAJOR_TAG_LABELS[majorTag] || majorTag, events: [event] });
         }
       });
 
       const majorGroups = MAJOR_GROUP_ORDER
-        .filter((label) => majorMap.has(label))
-        .map((label) => majorMap.get(label));
+        .filter((tag) => majorMap.has(tag))
+        .map((tag) => majorMap.get(tag));
 
       return {
         ...dayGroup,
@@ -1617,8 +1733,6 @@ function App() {
           <a
             className="report-link"
             href={reportLink}
-            target="_blank"
-            rel="noreferrer"
             onClick={() => {
               trackAnalyticsEvent('report_incorrect_listing_click', {
                 sport: event.sport,
@@ -1664,9 +1778,7 @@ function App() {
               </a>
               <a
                 className="ghost contact-cta"
-                href={GMAIL_COMPOSE_URL}
-                target="_blank"
-                rel="noreferrer"
+                href={CONTACT_MAILTO_URL}
               >
                 Contact: {CONTACT_EMAIL}
               </a>
@@ -1931,12 +2043,12 @@ function App() {
                 : 'Automatisch ververst (~3 uur) via NOS, Ziggo, ESPN, Viaplay en HBO Max.'}
             </span>
             <span>
-              Laatste workflow-check: {lastRefreshCheckAt
-                ? formatDatasetDateTime(lastRefreshCheckAt)
+              Laatste broncontrole: {datasetMeta.checkedAt
+                ? formatDatasetDateTime(datasetMeta.checkedAt)
                 : 'Tijdelijk onbekend'}
             </span>
             <span>
-              Laatste datasetcommit: {formatDatasetDateTime(dataset.generatedAt)}
+              Laatste datasetwijziging: {formatDatasetDateTime(datasetMeta.lastChangedAt || dataset.generatedAt)}
             </span>
             <span className={`dataset-status ${datasetStatus.level}`}>{datasetStatus.message}</span>
           </div>

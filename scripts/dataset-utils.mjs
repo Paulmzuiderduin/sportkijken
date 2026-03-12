@@ -41,6 +41,10 @@ export function normalizeEvent(event) {
     throw new Error(`Invalid contentSubType for event ${event.id}: ${event.contentSubType}`);
   }
 
+  if (event.majorTag && !['paralympics', 'olympics', 'world-cup-wk', 'national-championships'].includes(event.majorTag)) {
+    throw new Error(`Invalid majorTag for event ${event.id}: ${event.majorTag}`);
+  }
+
   if (event.sourceRefs) {
     event.sourceRefs.forEach((ref) => {
       if (!ref || typeof ref !== 'object') {

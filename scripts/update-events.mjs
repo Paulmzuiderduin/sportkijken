@@ -344,6 +344,24 @@ const NPO_SPORT_BLOCKLIST_KEYWORDS = [
   'dierendokter in het wild'
 ];
 
+const MAJOR_TAGS = {
+  paralympics: 'paralympics',
+  olympics: 'olympics',
+  worldCupWk: 'world-cup-wk',
+  nationalChampionships: 'national-championships'
+};
+
+const NATIONAL_CHAMPIONSHIP_PATTERNS = [
+  /\bnationaal(?:\s+of)?\s+kampioenschap(?:pen)?\b/,
+  /\bnationale\s+kampioenschap(?:pen)?\b/,
+  /\bnederlands?\s+kampioenschap(?:pen)?\b/,
+  /\bnederlandse\s+kampioenschap(?:pen)?\b/,
+  /\bnational championship(?:s)?\b/,
+  /\bkampioenschap(?:pen)?\s+van\s+nederland\b/,
+  /\bdutch championships?\b/,
+  /\bnk\s+(?:allround|afstanden|sprint|indoor|outdoor|atletiek|wielrennen|veldrijden|tijdrit|judo|turnen|zwemmen|schaatsen|tafeltennis|badminton|hockey|volleybal|handbal|boksen|roeien|zeilen|triatlon|marathon)\b/
+];
+
 const soccerFeeds = [
   {
     slug: 'ned.1',
@@ -603,6 +621,53 @@ function isGenericGamesBroadcastTitle(title) {
     return false;
   }
   return !normalized.includes(':');
+}
+
+function inferMajorTagFromEvent(event) {
+  const haystack = normalizeAsciiLower(`${event.title || ''} ${event.competition || ''} ${event.notes || ''}`);
+  if (!haystack) {
+    return null;
+  }
+
+  if (haystack.includes('paralymp')) {
+    return MAJOR_TAGS.paralympics;
+  }
+
+  if (haystack.includes('olymp')) {
+    return MAJOR_TAGS.olympics;
+  }
+
+  if (
+    haystack.includes('world cup')
+    || haystack.includes('wereldbeker')
+    || haystack.includes('wereldkampioenschap')
+    || /\bwk\b/.test(haystack)
+  ) {
+    return MAJOR_TAGS.worldCupWk;
+  }
+
+  if (NATIONAL_CHAMPIONSHIP_PATTERNS.some((pattern) => pattern.test(haystack))) {
+    return MAJOR_TAGS.nationalChampionships;
+  }
+
+  return null;
+}
+
+function applyMajorTags(events) {
+  return events.map((event) => {
+    const explicitMajorTag = String(event?.majorTag || '').trim();
+    if (explicitMajorTag) {
+      return event;
+    }
+    const inferred = inferMajorTagFromEvent(event);
+    if (!inferred) {
+      return event;
+    }
+    return {
+      ...event,
+      majorTag: inferred
+    };
+  });
 }
 
 function normalizeTitleForMatch(value) {
@@ -2871,6 +2936,9 @@ function applyOverrideToEvent(event, rule) {
   if (set.contentSubType) {
     next.contentSubType = set.contentSubType;
   }
+  if (typeof set.majorTag === 'string') {
+    next.majorTag = set.majorTag;
+  }
   if (set.sourceRefs) {
     next.sourceRefs = mergeSourceRefs(next.sourceRefs || [], set.sourceRefs);
   }
@@ -3295,8 +3363,9 @@ const enrichedEvents = enrichEventsWithSchedules(
   viaplaySchedule.rows
 );
 const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
+const eventsWithMajorTags = applyMajorTags(overriddenEvents);
 const generatedAt = new Date().toISOString();
-const allVerifiedEvents = finalizeVerification(overriddenEvents, generatedAt);
+const allVerifiedEvents = finalizeVerification(eventsWithMajorTags, generatedAt);
 
 if (QUALITY_GATES_ENABLED) {
   const quality = runQualityGates({
