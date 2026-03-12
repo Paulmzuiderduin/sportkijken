@@ -285,7 +285,6 @@ const NPO_SPORT_HINT_KEYWORDS = [
   'nos sport',
   'sportjournaal',
   'studio sport',
-  'zappsport',
   'olymp',
   'paralymp',
   'eredivisie',
@@ -315,6 +314,7 @@ const NPO_SPORT_HINT_KEYWORDS = [
 
 const NPO_SPORT_BLOCKLIST_KEYWORDS = [
   'nederland in beweging',
+  'zappsport',
   'zappelin go',
   'dans mee met',
   'dierendokter in het wild'
@@ -2268,7 +2268,7 @@ function isNpoSportGuideEntry(entry) {
     || /\b(wk|ek)\b/.test(titleHaystack);
   const hasMajorSynopsisHint = NPO_SPORT_HINT_KEYWORDS.some((keyword) => normalizedSynopsis.includes(keyword))
     || /\b(wk|ek)\b/.test(normalizedSynopsis);
-  const isNosBrand = /^(nos\b|zappsport\b)/.test(normalizedTitle);
+  const isNosBrand = /^nos\b/.test(normalizedTitle);
 
   if (hasMatchupPattern && hasSportGenre) {
     return true;
