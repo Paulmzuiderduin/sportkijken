@@ -1831,7 +1831,7 @@ function App() {
         {consentState === 'unknown' ? (
           <section className="panel consent-banner" role="region" aria-label="Privacy-instellingen">
             <p>
-              We gebruiken optionele analytics (GA4) alleen met jouw toestemming.
+              We gebruiken Umami voor privacyvriendelijke basisstatistieken. Optionele analytics via GA4 starten alleen met jouw toestemming.
             </p>
             <div className="consent-actions">
               <button
