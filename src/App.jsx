@@ -113,6 +113,7 @@ const RUNTIME_DATASET_POLL_MS = 5 * 60 * 1000;
 const SEO_BASE_URL = 'https://sportkijken.paulzuiderduin.com/';
 const SEO_BASE_TITLE = 'Waar Kan Ik Sport Kijken? | Sportkijken Nederland';
 const SEO_BASE_DESCRIPTION = 'Waar kan ik voetbal, Formule 1, tennis en andere sport kijken? Sportkijken geeft per wedstrijd een NL-overzicht met zender/stream, tijd en gratis of betaald.';
+const SEO_BASE_KEYWORDS = 'waar kan ik sport kijken, sport op tv vandaag, voetbal kijken, formule 1 kijken, tennis kijken, nos livestream sport, ziggo sport tv gids, espn tv gids';
 
 function formatSportLabel(id) {
   return id
@@ -472,7 +473,8 @@ function buildSeoMeta(query) {
     return {
       title: SEO_BASE_TITLE,
       description: SEO_BASE_DESCRIPTION,
-      url: SEO_BASE_URL
+      url: SEO_BASE_URL,
+      keywords: SEO_BASE_KEYWORDS
     };
   }
 
@@ -490,7 +492,15 @@ function buildSeoMeta(query) {
   return {
     title: `${capitalizeFirst(question)}? | Sportkijken`,
     description: `Bekijk direct waar je ${descriptionIntent} in Nederland kunt kijken: zender/stream, starttijd en gratis of betaald.`,
-    url: `${SEO_BASE_URL}?q=${encodeURIComponent(normalizedQuery)}`
+    url: `${SEO_BASE_URL}?q=${encodeURIComponent(normalizedQuery)}`,
+    keywords: [
+      `waar kan ik ${descriptionIntent} kijken`,
+      `${descriptionIntent} kijken`,
+      `${descriptionIntent} op tv`,
+      `${descriptionIntent} livestream`,
+      'sport op tv vandaag',
+      'sportkijken nederland'
+    ].join(', ')
   };
 }
 
@@ -1220,6 +1230,7 @@ function App() {
 
     document.title = seo.title;
     setOrCreateMetaTag('meta[name="description"]', { name: 'description' }, seo.description);
+    setOrCreateMetaTag('meta[name="keywords"]', { name: 'keywords' }, seo.keywords || SEO_BASE_KEYWORDS);
     setOrCreateMetaTag('meta[property="og:title"]', { property: 'og:title' }, seo.title);
     setOrCreateMetaTag('meta[property="og:description"]', { property: 'og:description' }, seo.description);
     setOrCreateMetaTag('meta[property="og:url"]', { property: 'og:url' }, seo.url);
