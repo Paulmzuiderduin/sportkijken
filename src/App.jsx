@@ -333,7 +333,7 @@ function normalizeRuntimeDatasetIndex(candidate) {
 
 function loadWindowForRange(rangeFilter) {
   const now = new Date();
-  const windowStart = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+  const windowStart = new Date(now.getTime() - 6 * 60 * 60 * 1000);
 
   if (rangeFilter === '7d') {
     return { start: windowStart, end: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) };
@@ -1328,7 +1328,7 @@ function App() {
   const filteredEvents = useMemo(() => {
     const now = new Date();
     const matchThreshold = new Date(now.getTime() - 3 * 60 * 60 * 1000);
-    const broadcastThreshold = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+    const broadcastThreshold = new Date(now.getTime() - 6 * 60 * 60 * 1000);
 
     let rangeMax = null;
     if (preferences.rangeFilter === '7d') {
