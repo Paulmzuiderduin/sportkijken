@@ -664,23 +664,23 @@ function buildReportIncorrectListingLink(event, sportLabel) {
     })
     .join('\n');
 
-  const subject = `Incorrect listing: ${event.title || 'Sportevent'}`;
+  const subject = `Onjuiste vermelding: ${event.title || 'Sportevent'}`;
   const body = [
-    'Hi, I found an incorrect listing on Sportkijken.',
+    'Hallo, ik heb een onjuiste vermelding gevonden op Sportkijken.',
     '',
     `Event: ${event.title || '-'}`,
     `Sport: ${sportLabel || event.sport || '-'}`,
-    `Competition: ${event.competition || '-'}`,
-    `Date (NL): ${DATE_FORMATTER.format(event.startDate)} ${TIME_FORMATTER.format(event.startDate)}-${TIME_FORMATTER.format(event.endDate)}`,
-    `Event ID: ${event.id || '-'}`,
+    `Competitie: ${event.competition || '-'}`,
+    `Datum (NL): ${DATE_FORMATTER.format(event.startDate)} ${TIME_FORMATTER.format(event.startDate)}-${TIME_FORMATTER.format(event.endDate)}`,
+    `Event-ID: ${event.id || '-'}`,
     '',
-    'Shown providers:',
+    'Getoonde aanbieders:',
     providerSummary || '-',
     '',
-    'What seems wrong:',
+    'Wat lijkt er onjuist:',
     '- ',
     '',
-    `Page URL: ${typeof window !== 'undefined' ? window.location.href : ''}`
+    `Pagina-URL: ${typeof window !== 'undefined' ? window.location.href : ''}`
   ].join('\n');
 
   return buildContactComposeLink(subject, body);
@@ -1752,7 +1752,7 @@ function App() {
               });
             }}
           >
-            Report incorrect listing
+            Meld onjuiste vermelding
           </a>
         </footer>
       </div>
