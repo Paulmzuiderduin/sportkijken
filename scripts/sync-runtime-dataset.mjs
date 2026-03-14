@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const sourcePath = resolve(__dirname, '../src/data/events.nl.json');
+const sourceCheckPath = resolve(__dirname, '../src/data/source-check.nl.json');
 const targetPath = resolve(__dirname, '../public/events.nl.json');
 const targetMetaPath = resolve(__dirname, '../public/events.meta.json');
 const targetSitemapPath = resolve(__dirname, '../public/sitemap.xml');
@@ -37,6 +38,16 @@ function normalizeIso(value) {
     return null;
   }
   return date.toISOString();
+}
+
+async function readSourceCheckTimestamp() {
+  try {
+    const raw = await readFile(sourceCheckPath, 'utf8');
+    const parsed = JSON.parse(raw);
+    return normalizeIso(parsed?.checkedAt);
+  } catch {
+    return null;
+  }
 }
 
 function ymdFromIso(value) {
@@ -85,7 +96,7 @@ const dataset = await readFile(sourcePath, 'utf8');
 const parsed = JSON.parse(dataset);
 const events = Array.isArray(parsed?.events) ? parsed.events : [];
 const eventCount = events.length;
-const checkedAt = new Date().toISOString();
+const checkedAt = await readSourceCheckTimestamp() || new Date().toISOString();
 const lastChangedAt = normalizeIso(parsed?.generatedAt);
 const lastmodDate = ymdFromIso(lastChangedAt || checkedAt);
 const datasetMeta = {

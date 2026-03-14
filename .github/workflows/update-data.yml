@@ -29,19 +29,24 @@ jobs:
       - name: Refresh events dataset + runtime metadata
         run: npm run data:update
 
+      - name: Stamp source-check timestamp
+        run: |
+          mkdir -p src/data
+          printf '{\n  "checkedAt": "%s"\n}\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > src/data/source-check.nl.json
+
       - name: Commit and push when changed
         run: |
-          if git diff --quiet -- src/data/events.nl.json public/sitemap.xml; then
+          if git diff --quiet -- src/data/events.nl.json public/sitemap.xml src/data/source-check.nl.json; then
             echo "No tracked data changes to commit."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/data/events.nl.json public/sitemap.xml
+          git add src/data/events.nl.json public/sitemap.xml src/data/source-check.nl.json
 
           if git diff --quiet --cached -- src/data/events.nl.json; then
-            git commit -m "chore(data): refresh sitemap metadata"
+            git commit -m "chore(data): refresh source-check timestamp"
           else
             git commit -m "chore(data): refresh sports schedule"
           fi
