@@ -34,6 +34,9 @@ jobs:
           mkdir -p src/data
           printf '{\n  "checkedAt": "%s"\n}\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > src/data/source-check.nl.json
 
+      - name: Regenerate runtime metadata after source-check update
+        run: node scripts/sync-runtime-dataset.mjs
+
       - name: Commit and push when changed
         run: |
           if git diff --quiet -- src/data/events.nl.json public/sitemap.xml src/data/source-check.nl.json; then
