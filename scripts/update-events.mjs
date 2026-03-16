@@ -3202,10 +3202,48 @@ function formatQaEvent(event) {
   return `${event.id} | ${event.start} | ${event.title}`;
 }
 
+function quarantineReasonForEvent(event) {
+  const title = String(event?.title || '');
+
+  if (QA_TITLE_BLOCKLIST_PATTERNS.some((pattern) => pattern.test(title))) {
+    return 'blocklisted_title';
+  }
+
+  if ((event?.contentType || 'match') === 'match' && scheduleOnlyShouldSkip(title)) {
+    return 'noisy_match';
+  }
+
+  return null;
+}
+
+function splitPublishableEvents(events) {
+  const publishable = [];
+  const quarantined = [];
+
+  (Array.isArray(events) ? events : []).forEach((event) => {
+    const reason = quarantineReasonForEvent(event);
+    if (!reason) {
+      publishable.push(event);
+      return;
+    }
+
+    quarantined.push({
+      event,
+      reason
+    });
+  });
+
+  return {
+    publishable,
+    quarantined
+  };
+}
+
 function runQualityGates({
   events,
   previousEvents,
-  providerHealth
+  providerHealth,
+  quarantinedEvents = []
 }) {
   const errors = [];
   const warnings = [];
@@ -3220,7 +3258,7 @@ function runQualityGates({
   }
 
   const blockedTitleEvents = events
-    .filter((event) => QA_TITLE_BLOCKLIST_PATTERNS.some((pattern) => pattern.test(String(event.title || ''))))
+    .filter((event) => quarantineReasonForEvent(event) === 'blocklisted_title')
     .slice(0, 12);
   if (blockedTitleEvents.length) {
     errors.push(
@@ -3229,12 +3267,19 @@ function runQualityGates({
   }
 
   const noisyMatches = events
-    .filter((event) => (event.contentType || 'match') === 'match' && scheduleOnlyShouldSkip(event.title))
+    .filter((event) => quarantineReasonForEvent(event) === 'noisy_match')
     .slice(0, 12);
   if (noisyMatches.length) {
     errors.push(
       `Pre-show/recap ruis als wedstrijd gedetecteerd: ${noisyMatches.map((event) => formatQaEvent(event)).join(' || ')}`
     );
+  }
+
+  if (quarantinedEvents.length) {
+    const sample = quarantinedEvents
+      .slice(0, 8)
+      .map(({ event, reason }) => `${reason}: ${formatQaEvent(event)}`);
+    warnings.push(`Quarantaine: ${quarantinedEvents.length} event(s) uitgesloten van publicatie: ${sample.join(' || ')}`);
   }
 
   const duplicateMap = new Map();
@@ -3414,13 +3459,16 @@ const enrichedEvents = enrichEventsWithSchedules(
 const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
 const eventsWithMajorTags = applyMajorTags(overriddenEvents);
 const generatedAt = new Date().toISOString();
-const allVerifiedEvents = finalizeVerification(eventsWithMajorTags, generatedAt);
+const verifiedBeforeQuarantine = finalizeVerification(eventsWithMajorTags, generatedAt);
+const publishableSplit = splitPublishableEvents(verifiedBeforeQuarantine);
+const allVerifiedEvents = publishableSplit.publishable;
 
 if (QUALITY_GATES_ENABLED) {
   const quality = runQualityGates({
     events: allVerifiedEvents,
     previousEvents,
-    providerHealth
+    providerHealth,
+    quarantinedEvents: publishableSplit.quarantined
   });
 
   quality.warnings.forEach((warning) => {
