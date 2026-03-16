@@ -2084,7 +2084,17 @@ function App() {
             </div>
 
             <div className="filter-group inline-group">
-              <p className="filter-title">TV-provider</p>
+              <div className="filter-title-row">
+                <p className="filter-title">TV-provider</p>
+                <span
+                  className="filter-tooltip"
+                  title="Past voorwaardelijke zenders aan op jouw tv-provider. Bijvoorbeeld: Eurosport kan via Ziggo anders beschikbaar zijn dan via KPN."
+                  aria-label="Past voorwaardelijke zenders aan op jouw tv-provider. Bijvoorbeeld: Eurosport kan via Ziggo anders beschikbaar zijn dan via KPN."
+                  tabIndex={0}
+                >
+                  i
+                </span>
+              </div>
               <div className="chips-inline">
                 {TV_PROVIDER_OPTIONS.map((option) => (
                   <button
@@ -2098,6 +2108,9 @@ function App() {
                   </button>
                 ))}
               </div>
+              <p className="filter-help">
+                We gebruiken dit om voorwaardelijke zenders slimmer te tonen, zoals Eurosport. Niet elke aanbieder gebruikt dezelfde kanaalrechten.
+              </p>
             </div>
 
             <div className="filter-group inline-group">
