@@ -7,7 +7,7 @@ export function assertValidChannel(channel, eventId) {
     throw new Error(`Invalid channel platform for event ${eventId}: ${channel.platform}`);
   }
 
-  if (!['free', 'paid'].includes(channel.access)) {
+  if (!['free', 'paid', 'mixed'].includes(channel.access)) {
     throw new Error(`Invalid channel access for event ${eventId}: ${channel.access}`);
   }
 
@@ -17,6 +17,21 @@ export function assertValidChannel(channel, eventId) {
 
   if (channel.conditions && typeof channel.conditions !== 'string') {
     throw new Error(`Invalid channel conditions for event ${eventId}: ${channel.conditions}`);
+  }
+
+  if (channel.tvProviderAccess) {
+    if (typeof channel.tvProviderAccess !== 'object' || Array.isArray(channel.tvProviderAccess)) {
+      throw new Error(`Invalid channel tvProviderAccess for event ${eventId}`);
+    }
+
+    Object.entries(channel.tvProviderAccess).forEach(([provider, access]) => {
+      if (!provider || typeof provider !== 'string') {
+        throw new Error(`Invalid tvProviderAccess provider for event ${eventId}`);
+      }
+      if (!['free', 'paid', 'mixed'].includes(access)) {
+        throw new Error(`Invalid tvProviderAccess access for event ${eventId}: ${provider}=${access}`);
+      }
+    });
   }
 }
 
@@ -106,7 +121,14 @@ export function normalizeEvent(event) {
       platform: channel.platform,
       access: channel.access,
       ...(channel.url ? { url: channel.url.trim() } : {}),
-      ...(channel.conditions ? { conditions: channel.conditions.trim() } : {})
+      ...(channel.conditions ? { conditions: channel.conditions.trim() } : {}),
+      ...(channel.tvProviderAccess
+        ? {
+            tvProviderAccess: Object.fromEntries(
+              Object.entries(channel.tvProviderAccess).map(([provider, access]) => [provider.trim(), access])
+            )
+          }
+        : {})
     }))
   };
 }

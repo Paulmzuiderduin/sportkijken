@@ -47,6 +47,16 @@ const ACCESS_OPTIONS = [
   { id: 'paid', label: 'Alleen betaald' }
 ];
 
+const TV_PROVIDER_OPTIONS = [
+  { id: 'all', label: 'Geen voorkeur' },
+  { id: 'ziggo', label: 'Ziggo' },
+  { id: 'kpn', label: 'KPN' },
+  { id: 'odido', label: 'Odido' },
+  { id: 'delta', label: 'DELTA' },
+  { id: 'caiway', label: 'Caiway' },
+  { id: 'canal-digitaal', label: 'Canal Digitaal' }
+];
+
 const MAJOR_FILTER_OPTIONS = [
   { id: 'all', label: 'Alles' },
   { id: 'major', label: 'Alleen grote events' },
@@ -208,6 +218,7 @@ function defaultPreferences(sportOptions = FALLBACK_SPORT_OPTIONS, providerOptio
   return {
     selectedSports: sportOptions.map((sport) => sport.id),
     selectedProviders: providerOptions,
+    tvProvider: 'all',
     accessFilter: 'all',
     majorFilter: 'all',
     rangeFilter: '30d',
@@ -533,6 +544,9 @@ function loadPreferences(sportOptions = FALLBACK_SPORT_OPTIONS, providerOptions 
     return {
       selectedSports: selectedSports.length ? selectedSports : defaults.selectedSports,
       selectedProviders,
+      tvProvider: TV_PROVIDER_OPTIONS.some((option) => option.id === parsed.tvProvider)
+        ? parsed.tvProvider
+        : defaults.tvProvider,
       accessFilter: ACCESS_OPTIONS.some((option) => option.id === parsed.accessFilter)
         ? parsed.accessFilter
         : defaults.accessFilter,
@@ -651,14 +665,14 @@ function buildContactComposeLink(subject, body) {
   return `mailto:${CONTACT_EMAIL}${query ? `?${query}` : ''}`;
 }
 
-function buildReportIncorrectListingLink(event, sportLabel) {
+function buildReportIncorrectListingLink(event, sportLabel, tvProvider = 'all') {
   if (!event) {
     return CONTACT_MAILTO_URL;
   }
 
   const providerSummary = (event.channels || [])
     .map((channel) => {
-      const access = channel.access === 'free' ? 'gratis' : 'betaald';
+      const access = accessLabelText(effectiveChannelAccess(channel, tvProvider)).toLowerCase();
       const conditions = channel.conditions ? ` - ${channel.conditions}` : '';
       return `${channel.name} (${channel.platform}, ${access})${conditions}`;
     })
@@ -701,11 +715,41 @@ function trackAnalyticsEvent(eventName, params = {}) {
   }
 }
 
-function hasAccess(event, accessFilter) {
+function accessLabelText(access) {
+  if (access === 'free') {
+    return 'Gratis';
+  }
+  if (access === 'mixed') {
+    return 'Voorwaardelijk';
+  }
+  return 'Betaald';
+}
+
+function effectiveChannelAccess(channel, tvProvider = 'all') {
+  const providerKey = typeof tvProvider === 'string' ? tvProvider : 'all';
+  const byProvider = channel?.tvProviderAccess;
+  if (
+    providerKey !== 'all'
+    && byProvider
+    && typeof byProvider === 'object'
+    && typeof byProvider[providerKey] === 'string'
+  ) {
+    return byProvider[providerKey];
+  }
+  return channel?.access || 'paid';
+}
+
+function hasAccess(event, accessFilter, tvProvider = 'all') {
   if (accessFilter === 'all') {
     return true;
   }
-  return event.channels.some((channel) => channel.access === accessFilter);
+  return event.channels.some((channel) => {
+    const access = effectiveChannelAccess(channel, tvProvider);
+    if (access === accessFilter) {
+      return true;
+    }
+    return access === 'mixed' && (accessFilter === 'free' || accessFilter === 'paid');
+  });
 }
 
 function eventContentType(event) {
@@ -720,17 +764,23 @@ function hasProvider(event, selectedProviders) {
   return event.channels.some((channel) => selected.has(normalizeProviderName(channel.name)));
 }
 
-function getEventAccessLabel(event) {
-  const hasFree = event.channels.some((channel) => channel.access === 'free');
-  const hasPaid = event.channels.some((channel) => channel.access === 'paid');
+function getEventAccessLabel(event, tvProvider = 'all') {
+  const hasFree = event.channels.some((channel) => effectiveChannelAccess(channel, tvProvider) === 'free');
+  const hasPaid = event.channels.some((channel) => effectiveChannelAccess(channel, tvProvider) === 'paid');
+  const hasMixed = event.channels.some((channel) => effectiveChannelAccess(channel, tvProvider) === 'mixed');
 
-  if (hasFree && hasPaid) {
+  if (hasMixed || (hasFree && hasPaid)) {
     return 'Gratis + betaald';
   }
   if (hasFree) {
     return 'Gratis';
   }
   return 'Betaald';
+}
+
+function getEventAccessTone(event, tvProvider = 'all') {
+  const label = getEventAccessLabel(event, tvProvider);
+  return label === 'Gratis' ? 'free' : label === 'Betaald' ? 'paid' : 'mixed';
 }
 
 const MAJOR_TAG_LABELS = {
@@ -1223,6 +1273,23 @@ function App() {
   }, [consentState]);
 
   useEffect(() => {
+    if (typeof document === 'undefined') {
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    if (consentState === 'unknown') {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = previousOverflow || '';
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [consentState]);
+
+  useEffect(() => {
     const seo = buildSeoMeta(preferences.searchText);
     if (typeof document === 'undefined') {
       return;
@@ -1368,7 +1435,7 @@ function App() {
         return false;
       }
 
-      if (!hasAccess(event, preferences.accessFilter)) {
+      if (!hasAccess(event, preferences.accessFilter, preferences.tvProvider)) {
         return false;
       }
 
@@ -1444,8 +1511,12 @@ function App() {
   }, [filteredEvents]);
 
   const counters = useMemo(() => {
-    const free = filteredEvents.filter((event) => event.channels.some((channel) => channel.access === 'free')).length;
-    const paid = filteredEvents.filter((event) => event.channels.some((channel) => channel.access === 'paid')).length;
+    const free = filteredEvents.filter((event) =>
+      event.channels.some((channel) => effectiveChannelAccess(channel, preferences.tvProvider) === 'free')
+    ).length;
+    const paid = filteredEvents.filter((event) =>
+      event.channels.some((channel) => effectiveChannelAccess(channel, preferences.tvProvider) === 'paid')
+    ).length;
 
     return {
       total: filteredEvents.length,
@@ -1453,7 +1524,7 @@ function App() {
       paid,
       nextEvent: filteredEvents[0] || null
     };
-  }, [filteredEvents]);
+  }, [filteredEvents, preferences.tvProvider]);
 
   const providerOptionsForView = useMemo(() => {
     const query = preferences.providerSearchText.trim().toLowerCase();
@@ -1559,6 +1630,11 @@ function App() {
     setPreferences((current) => ({ ...current, accessFilter: accessId }));
   };
 
+  const setTvProvider = (providerId) => {
+    trackAnalyticsEvent('filter_tv_provider_change', { provider: providerId });
+    setPreferences((current) => ({ ...current, tvProvider: providerId }));
+  };
+
   const setMajorFilter = (majorId) => {
     trackAnalyticsEvent('filter_major_change', { major: majorId });
     setPreferences((current) => ({ ...current, majorFilter: majorId }));
@@ -1647,7 +1723,8 @@ function App() {
     filteredEvents.forEach((event) => {
       const channels = event.channels
         .map((channel) => {
-          const base = `${channel.name} (${channel.access === 'free' ? 'gratis' : 'betaald'})`;
+          const access = effectiveChannelAccess(channel, preferences.tvProvider);
+          const base = `${channel.name} (${accessLabelText(access).toLowerCase()})`;
           const withCondition = channel.conditions ? `${base} - ${channel.conditions}` : base;
           return channel.url ? `${withCondition} ${channel.url}` : withCondition;
         })
@@ -1686,7 +1763,9 @@ function App() {
 
   const renderEventCard = (event) => {
     const sportMeta = sportMetaFor(event.sport, sportLookup);
-    const reportLink = buildReportIncorrectListingLink(event, sportMeta.label);
+    const reportLink = buildReportIncorrectListingLink(event, sportMeta.label, preferences.tvProvider);
+    const eventAccessLabel = getEventAccessLabel(event, preferences.tvProvider);
+    const eventAccessTone = getEventAccessTone(event, preferences.tvProvider);
 
     return (
       <div key={event.id} className="event-card">
@@ -1732,14 +1811,16 @@ function App() {
                 )}
                 {channel.conditions ? <small className="channel-condition">{channel.conditions}</small> : null}
               </div>
-              <span className={`access ${channel.access}`}>{channel.access === 'free' ? 'Gratis' : 'Betaald'}</span>
+              <span className={`access ${effectiveChannelAccess(channel, preferences.tvProvider)}`}>
+                {accessLabelText(effectiveChannelAccess(channel, preferences.tvProvider))}
+              </span>
             </li>
           ))}
         </ul>
 
         <footer>
-          <span className={`event-access ${getEventAccessLabel(event) === 'Gratis' ? 'free' : 'paid'}`}>
-            {getEventAccessLabel(event)}
+          <span className={`event-access ${eventAccessTone}`}>
+            {eventAccessLabel}
           </span>
           <a
             className="report-link"
@@ -1829,35 +1910,44 @@ function App() {
         </section>
 
         {consentState === 'unknown' ? (
-          <section className="panel consent-banner" role="region" aria-label="Privacy-instellingen">
-            <p>
-              We gebruiken Umami voor privacyvriendelijke basisstatistieken. Optionele analytics via GA4 starten alleen met jouw toestemming.
-            </p>
-            <div className="consent-actions">
-              <button
-                type="button"
-                className="primary"
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  setConsent('granted');
-                }}
-              >
-                Toestaan
-              </button>
-              <button
-                type="button"
-                className="ghost"
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  setConsent('denied');
-                }}
-              >
-                Niet toestaan
-              </button>
-            </div>
-          </section>
+          <div className="consent-modal" role="presentation">
+            <section className="consent-dialog" role="dialog" aria-modal="true" aria-labelledby="sportkijken-consent-title" aria-describedby="sportkijken-consent-copy">
+              <p className="kicker">Analytics preferences</p>
+              <h2 id="sportkijken-consent-title">Help improve Sportkijken</h2>
+              <p id="sportkijken-consent-copy">
+                We gebruiken Umami voor privacyvriendelijke basisstatistieken. Optionele analytics via Google Analytics 4 starten alleen met jouw toestemming.
+              </p>
+              <div className="consent-note">
+                <span>• Google Analytics 4 blijft uit totdat je toestemt.</span>
+                <span>• We blokkeren geen functies als je weigert.</span>
+                <span>• Je kunt dit later aanpassen via de privacyknoppen onderaan de pagina.</span>
+              </div>
+              <div className="consent-actions">
+                <button
+                  type="button"
+                  className="ghost"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setConsent('denied');
+                  }}
+                >
+                  Niet toestaan
+                </button>
+                <button
+                  type="button"
+                  className="primary"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setConsent('granted');
+                  }}
+                >
+                  Toestaan
+                </button>
+              </div>
+            </section>
+          </div>
         ) : null}
 
         <section className="panel filters-panel">
@@ -1986,6 +2076,23 @@ function App() {
                     className={`chip ${preferences.rangeFilter === option.id ? 'is-selected' : ''}`}
                     onClick={() => setRangeFilter(option.id)}
                     aria-pressed={preferences.rangeFilter === option.id}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="filter-group inline-group">
+              <p className="filter-title">TV-provider</p>
+              <div className="chips-inline">
+                {TV_PROVIDER_OPTIONS.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`chip ${preferences.tvProvider === option.id ? 'is-selected' : ''}`}
+                    onClick={() => setTvProvider(option.id)}
+                    aria-pressed={preferences.tvProvider === option.id}
                   >
                     {option.label}
                   </button>

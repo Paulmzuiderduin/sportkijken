@@ -90,12 +90,32 @@ const CHANNEL_PRESETS = {
     { name: 'Viaplay', platform: 'stream', access: 'paid', url: 'https://viaplay.com/nl-nl/sport' }
   ],
   eurosport: [
-    { name: 'Eurosport', platform: 'tv', access: 'paid', url: 'https://www.eurosport.nl/' },
+    {
+      name: 'Eurosport 1/2',
+      platform: 'tv',
+      access: 'mixed',
+      url: 'https://www.eurosport.nl/',
+      conditions: 'Bij Ziggo zijn Eurosport 1 en 2 vaak inbegrepen; bij KPN meestal alleen Eurosport 1.',
+      tvProviderAccess: {
+        ziggo: 'free',
+        kpn: 'mixed'
+      }
+    },
     { name: 'HBO Max', platform: 'stream', access: 'paid', url: 'https://www.hbomax.com/nl/nl/sports' }
   ],
   hboMax: [
     { name: 'HBO Max', platform: 'stream', access: 'paid', url: 'https://www.hbomax.com/nl/nl/sports' },
-    { name: 'Eurosport', platform: 'tv', access: 'paid', url: 'https://www.eurosport.nl/' }
+    {
+      name: 'Eurosport 1/2',
+      platform: 'tv',
+      access: 'mixed',
+      url: 'https://www.eurosport.nl/',
+      conditions: 'Bij Ziggo zijn Eurosport 1 en 2 vaak inbegrepen; bij KPN meestal alleen Eurosport 1.',
+      tvProviderAccess: {
+        ziggo: 'free',
+        kpn: 'mixed'
+      }
+    }
   ],
   nos: [
     { name: 'NOS.nl Live', platform: 'stream', access: 'free', url: 'https://nos.nl/live' },
