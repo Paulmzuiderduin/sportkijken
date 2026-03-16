@@ -866,6 +866,7 @@ function App() {
   const [dataset, setDataset] = useState(loadCachedDataset);
   const [preferences, setPreferences] = useState(() => loadPreferences(FALLBACK_SPORT_OPTIONS, FALLBACK_PROVIDER_OPTIONS));
   const [providersExpanded, setProvidersExpanded] = useState(false);
+  const [tvProviderInfoOpen, setTvProviderInfoOpen] = useState(false);
   const [consentState, setConsentState] = useState(loadConsentState);
   const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
@@ -2086,15 +2087,21 @@ function App() {
             <div className="filter-group inline-group">
               <div className="filter-title-row">
                 <p className="filter-title">TV-provider</p>
-                <span
+                <button
+                  type="button"
                   className="filter-tooltip"
-                  title="Past voorwaardelijke zenders aan op jouw tv-provider. Bijvoorbeeld: Eurosport kan via Ziggo anders beschikbaar zijn dan via KPN."
-                  aria-label="Past voorwaardelijke zenders aan op jouw tv-provider. Bijvoorbeeld: Eurosport kan via Ziggo anders beschikbaar zijn dan via KPN."
-                  tabIndex={0}
+                  aria-label="Uitleg over TV-provider"
+                  aria-expanded={tvProviderInfoOpen}
+                  onClick={() => setTvProviderInfoOpen((current) => !current)}
                 >
-                  i
-                </span>
+                  ?
+                </button>
               </div>
+              {tvProviderInfoOpen ? (
+                <p className="filter-popover">
+                  Past voorwaardelijke zenders aan op jouw provider. Voorbeeld: Eurosport kan via Ziggo anders beschikbaar zijn dan via KPN.
+                </p>
+              ) : null}
               <div className="chips-inline">
                 {TV_PROVIDER_OPTIONS.map((option) => (
                   <button
@@ -2109,7 +2116,7 @@ function App() {
                 ))}
               </div>
               <p className="filter-help">
-                We gebruiken dit om voorwaardelijke zenders slimmer te tonen, zoals Eurosport. Niet elke aanbieder gebruikt dezelfde kanaalrechten.
+                Beinvloedt voorwaardelijke zenders.
               </p>
             </div>
 
