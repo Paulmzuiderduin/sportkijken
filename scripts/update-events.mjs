@@ -318,7 +318,9 @@ const BROADCAST_GENERAL_KEYWORDS = [
   'sportjournaal',
   'studio sport',
   'nabeschouwing',
-  'voorbeschouwing'
+  'voorbeschouwing',
+  'persconferentie',
+  'press conference'
 ];
 
 const NPO_SPORT_HINT_KEYWORDS = [
