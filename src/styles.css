@@ -29,6 +29,9 @@
   --chip-text: #32445a;
   --chip-hover-border: #8ba2be;
   --chip-hover-bg: #edf2f8;
+  --chip-selected-border: #3a689b;
+  --chip-selected-bg: #eaf3ff;
+  --chip-selected-text: #173e6a;
   --ghost-border: rgba(15, 28, 42, 0.16);
   --ghost-bg: #ffffff;
   --ghost-active-bg: #edf4fb;
@@ -78,6 +81,9 @@
     --chip-text: #d3e0ef;
     --chip-hover-border: #6f8cad;
     --chip-hover-bg: #233245;
+    --chip-selected-border: #7aa7df;
+    --chip-selected-bg: #22344a;
+    --chip-selected-text: #e5f0ff;
     --ghost-border: rgba(176, 197, 221, 0.35);
     --ghost-bg: #131d29;
     --ghost-active-bg: #1f3350;
@@ -395,27 +401,23 @@ h3,
 }
 
 .chip.is-selected {
-  border-color: #082445;
-  background: linear-gradient(135deg, #0e3b70, #1d5ea9);
-  color: #ffffff;
-  box-shadow: 0 8px 18px -12px rgba(14, 59, 112, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+  border-color: var(--chip-selected-border);
+  background: var(--chip-selected-bg);
+  color: var(--chip-selected-text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--chip-selected-border) 22%, transparent);
 }
 
 .sport-chip.is-selected {
   border-color: color-mix(in srgb, var(--chip-accent) 64%, #08192b);
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--chip-accent) 65%, #0e315a),
-    color-mix(in srgb, var(--chip-accent) 42%, #1d5ea9)
-  );
-  box-shadow:
-    0 8px 18px -12px rgba(14, 59, 112, 0.9),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  background: color-mix(in srgb, var(--chip-accent) 12%, var(--chip-bg));
+  color: color-mix(in srgb, var(--chip-accent) 74%, var(--ink));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--chip-accent) 28%, transparent);
 }
 
 .provider-chip.is-selected {
-  border-color: #0a2f59;
-  background: linear-gradient(135deg, #154983, #2f6fb7);
+  border-color: var(--chip-selected-border);
+  background: var(--chip-selected-bg);
+  color: var(--chip-selected-text);
 }
 
 .chip:focus-visible {
