@@ -123,12 +123,14 @@ h3,
 .page {
   position: relative;
   overflow: hidden;
+  min-height: 100vh;
 }
 
 .ambient {
-  position: absolute;
+  position: fixed;
   filter: blur(40px);
   pointer-events: none;
+  z-index: -1;
 }
 
 .ambient-top {
