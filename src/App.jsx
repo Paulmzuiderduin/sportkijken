@@ -38,6 +38,8 @@ const FALLBACK_ACCENTS = ['#0a7b52', '#2f67cf', '#c7351b', '#7e3af2', '#0f6a8f',
 const RANGE_OPTIONS = [
   { id: '7d', label: 'Komende 7 dagen' },
   { id: '30d', label: 'Komende 30 dagen' },
+  { id: '90d', label: 'Komende 90 dagen' },
+  { id: '180d', label: 'Komende 6 maanden' },
   { id: 'all', label: 'Alles gepland' }
 ];
 
@@ -366,6 +368,14 @@ function loadWindowForRange(rangeFilter) {
 
   if (rangeFilter === '30d') {
     return { start: windowStart, end: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) };
+  }
+
+  if (rangeFilter === '90d') {
+    return { start: windowStart, end: new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000) };
+  }
+
+  if (rangeFilter === '180d') {
+    return { start: windowStart, end: new Date(now.getTime() + 180 * 24 * 60 * 60 * 1000) };
   }
 
   return { start: null, end: null };
@@ -1427,6 +1437,10 @@ function App() {
       rangeMax = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
     } else if (preferences.rangeFilter === '30d') {
       rangeMax = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    } else if (preferences.rangeFilter === '90d') {
+      rangeMax = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+    } else if (preferences.rangeFilter === '180d') {
+      rangeMax = new Date(now.getTime() + 180 * 24 * 60 * 60 * 1000);
     }
 
     const text = preferences.searchText.trim().toLowerCase();

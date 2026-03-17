@@ -12,7 +12,7 @@ const providerRulesPath = resolve(__dirname, './provider-rules.nl.json');
 
 const NOW = new Date();
 const windowStart = new Date(NOW.getTime() - 4 * 60 * 60 * 1000);
-const windowEnd = new Date(NOW.getTime() + 75 * 24 * 60 * 60 * 1000);
+const windowEnd = new Date(NOW.getTime() + 180 * 24 * 60 * 60 * 1000);
 const RANGE_START = formatDateForApi(windowStart);
 const RANGE_END = formatDateForApi(windowEnd);
 const DATE_RANGE = `${RANGE_START}-${RANGE_END}`;
