@@ -890,6 +890,7 @@ function App() {
   const [preferences, setPreferences] = useState(() => loadPreferences(FALLBACK_SPORT_OPTIONS, FALLBACK_PROVIDER_OPTIONS));
   const [providersExpanded, setProvidersExpanded] = useState(false);
   const [tvProviderInfoOpen, setTvProviderInfoOpen] = useState(false);
+  const [jumpDay, setJumpDay] = useState('');
   const [consentState, setConsentState] = useState(loadConsentState);
   const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
@@ -1537,6 +1538,24 @@ function App() {
       };
     });
   }, [filteredEvents]);
+
+  const dayJumpOptions = useMemo(() => (
+    groupedEvents.map((group) => ({
+      id: group.key,
+      label: `${group.dayNumber} · ${group.label}`
+    }))
+  ), [groupedEvents]);
+
+  const jumpToDay = (dayKey) => {
+    if (!dayKey || typeof document === 'undefined') {
+      return;
+    }
+    const el = document.getElementById(`day-${dayKey}`);
+    if (!el) {
+      return;
+    }
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   const counters = useMemo(() => {
     const free = filteredEvents.filter((event) =>
@@ -2240,6 +2259,25 @@ function App() {
         </section>
 
         <section className="agenda">
+          {dayJumpOptions.length ? (
+            <div className="agenda-tools">
+              <label className="agenda-label" htmlFor="jump-day">Spring naar datum</label>
+              <select
+                id="jump-day"
+                value={jumpDay}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setJumpDay(value);
+                  jumpToDay(value);
+                }}
+              >
+                <option value="">Kies een dag</option>
+                {dayJumpOptions.map((option) => (
+                  <option key={option.id} value={option.id}>{option.label}</option>
+                ))}
+              </select>
+            </div>
+          ) : null}
           {groupedEvents.length === 0 ? (
             <article className="panel empty-state">
               <h2>Geen events met deze filters</h2>
@@ -2247,7 +2285,7 @@ function App() {
             </article>
           ) : (
             groupedEvents.map((group) => (
-              <article key={group.key} className="day-block">
+              <article key={group.key} id={`day-${group.key}`} className="day-block">
                 <header>
                   <p className="day-number">{group.dayNumber}</p>
                   <h2>{group.label}</h2>

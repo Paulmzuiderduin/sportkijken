@@ -687,6 +687,36 @@ h3,
   gap: 1rem;
 }
 
+.agenda-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  position: sticky;
+  top: 0.7rem;
+  z-index: 5;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  border-radius: 0.9rem;
+}
+
+.agenda-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary-deep);
+}
+
+.agenda-tools select {
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.7rem;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: inherit;
+  font-weight: 600;
+}
+
 .day-block {
   display: grid;
   gap: 0.75rem;
