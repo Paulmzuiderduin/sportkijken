@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const sourcePath = resolve(__dirname, '../src/data/events.nl.json');
 const sourceCheckPath = resolve(__dirname, '../src/data/source-check.nl.json');
+const providerHealthPath = resolve(__dirname, '../src/data/provider-health.nl.json');
 const targetPath = resolve(__dirname, '../public/events.nl.json');
 const targetMetaPath = resolve(__dirname, '../public/events.meta.json');
 const targetSitemapPath = resolve(__dirname, '../public/sitemap.xml');
@@ -45,6 +46,16 @@ async function readSourceCheckTimestamp() {
     const raw = await readFile(sourceCheckPath, 'utf8');
     const parsed = JSON.parse(raw);
     return normalizeIso(parsed?.checkedAt);
+  } catch {
+    return null;
+  }
+}
+
+async function readProviderHealth() {
+  try {
+    const raw = await readFile(providerHealthPath, 'utf8');
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : null;
   } catch {
     return null;
   }
@@ -97,6 +108,7 @@ const parsed = JSON.parse(dataset);
 const events = Array.isArray(parsed?.events) ? parsed.events : [];
 const eventCount = events.length;
 const checkedAt = await readSourceCheckTimestamp() || new Date().toISOString();
+const providerHealth = await readProviderHealth();
 const lastChangedAt = normalizeIso(parsed?.generatedAt);
 const lastmodDate = ymdFromIso(lastChangedAt || checkedAt);
 const datasetMeta = {
@@ -104,7 +116,8 @@ const datasetMeta = {
   lastChangedAt,
   checkedAt,
   eventCount,
-  shardStrategy: 'month'
+  shardStrategy: 'month',
+  ...(providerHealth ? { providerHealth } : {})
 };
 
 await mkdir(dirname(targetPath), { recursive: true });

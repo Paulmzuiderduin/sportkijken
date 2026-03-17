@@ -116,9 +116,22 @@ const DEFAULT_ANALYTICS_RUNTIME = {
 const CONTACT_EMAIL = 'info@paulzuiderduin.com';
 const CONTACT_MAILTO_URL = `mailto:${CONTACT_EMAIL}`;
 const DATASET_CACHE_STORAGE_KEY = 'sportkijken-runtime-dataset-v1';
-const RUNTIME_DATASET_URL = '/events.nl.json';
-const RUNTIME_DATASET_META_URL = '/events.meta.json';
-const RUNTIME_DATASET_INDEX_URL = '/datasets/index.json';
+const DATA_BASE_URL = import.meta.env.VITE_DATA_BASE_URL
+  || (import.meta.env.PROD ? 'https://raw.githubusercontent.com/Paulmzuiderduin/sportkijken/data' : '');
+
+function withDataBaseUrl(path) {
+  if (!DATA_BASE_URL) {
+    return path;
+  }
+  if (DATA_BASE_URL.endsWith('/')) {
+    return `${DATA_BASE_URL.slice(0, -1)}${path}`;
+  }
+  return `${DATA_BASE_URL}${path}`;
+}
+
+const RUNTIME_DATASET_URL = withDataBaseUrl('/events.nl.json');
+const RUNTIME_DATASET_META_URL = withDataBaseUrl('/events.meta.json');
+const RUNTIME_DATASET_INDEX_URL = withDataBaseUrl('/datasets/index.json');
 const RUNTIME_DATASET_POLL_MS = 5 * 60 * 1000;
 const SEO_BASE_URL = 'https://sportkijken.paulzuiderduin.com/';
 const SEO_BASE_TITLE = 'Waar Kan Ik Sport Kijken? | Sportkijken Nederland';
@@ -1057,7 +1070,7 @@ function App() {
       try {
         const bucketPayloads = await Promise.all(
           targetBuckets.map(async (bucket) => {
-            const response = await fetch(`${bucket.path}?t=${Date.now()}`, { cache: 'no-store' });
+            const response = await fetch(`${withDataBaseUrl(bucket.path)}?t=${Date.now()}`, { cache: 'no-store' });
             if (!response.ok) {
               return null;
             }

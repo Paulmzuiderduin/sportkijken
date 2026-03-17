@@ -7,6 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const datasetPath = resolve(__dirname, '../src/data/events.nl.json');
 const majorEventsPath = resolve(__dirname, '../src/data/major-events.nl.json');
 const overridesPath = resolve(__dirname, '../src/data/event-overrides.nl.json');
+const providerHealthPath = resolve(__dirname, '../src/data/provider-health.nl.json');
 const providerRulesPath = resolve(__dirname, './provider-rules.nl.json');
 
 const NOW = new Date();
@@ -2958,6 +2959,87 @@ function normalizeOverrideRules(parsed) {
   return [];
 }
 
+async function readProviderHealth() {
+  const raw = await readFile(providerHealthPath, 'utf8').catch(() => null);
+  if (!raw) {
+    return null;
+  }
+  return safeParseJson(raw);
+}
+
+function buildProviderHealthReport(currentHealth, previousHealth, checkedAt) {
+  const previousProviders = previousHealth?.providers || previousHealth || {};
+  const providerKeys = new Set([
+    ...Object.keys(QA_MIN_ROWS_BY_SOURCE),
+    ...Object.keys(currentHealth || {}),
+    ...Object.keys(previousProviders || {})
+  ]);
+
+  const providers = {};
+  providerKeys.forEach((key) => {
+    const rows = Number(currentHealth?.[key]?.rows || 0);
+    const errors = Array.isArray(currentHealth?.[key]?.errors) ? currentHealth[key].errors : [];
+    const minRows = Number(QA_MIN_ROWS_BY_SOURCE[key] || 1);
+    const ok = errors.length === 0 && rows >= minRows;
+    const lastOkAt = ok ? checkedAt : (previousProviders?.[key]?.lastOkAt || null);
+    const status = ok ? 'ok' : rows === 0 ? 'down' : 'degraded';
+
+    providers[key] = {
+      rows,
+      errors,
+      minRows,
+      ok,
+      status,
+      checkedAt,
+      lastOkAt,
+      fallbackApplied: false
+    };
+  });
+
+  return {
+    checkedAt,
+    providers
+  };
+}
+
+function applyProviderFallbacks(events, previousEvents, healthReport) {
+  if (!Array.isArray(previousEvents) || !previousEvents.length) {
+    return events;
+  }
+
+  const next = Array.isArray(events) ? [...events] : [];
+  const existingIds = new Set(next.map((event) => event?.id).filter(Boolean));
+  const providers = healthReport?.providers || {};
+  const fallbackProviders = Object.entries(providers)
+    .filter(([, info]) => info && info.ok === false)
+    .map(([key]) => key);
+
+  if (!fallbackProviders.length) {
+    return next;
+  }
+
+  fallbackProviders.forEach((provider) => {
+    const candidates = previousEvents.filter((event) => eventHasSourceType(event, provider));
+    if (!candidates.length) {
+      return;
+    }
+
+    candidates.forEach((event) => {
+      if (!event?.id || existingIds.has(event.id)) {
+        return;
+      }
+      existingIds.add(event.id);
+      next.push(event);
+    });
+
+    if (providers[provider]) {
+      providers[provider].fallbackApplied = true;
+    }
+  });
+
+  return next;
+}
+
 function includesAnyNeedle(value, needles) {
   const haystack = String(value || '').toLowerCase();
   const list = Array.isArray(needles) ? needles : [needles];
@@ -3334,11 +3416,12 @@ function runQualityGates({
   Object.entries(QA_MIN_ROWS_BY_SOURCE).forEach(([sourceType, minRows]) => {
     const health = providerHealth[sourceType] || { rows: 0, errors: [] };
     const errorCount = Array.isArray(health.errors) ? health.errors.length : 0;
-    if (errorCount === 0 && Number(health.rows || 0) < minRows) {
+    const rows = Number(health.rows || 0);
+    if (errorCount === 0 && rows < minRows) {
       errors.push(`Bron ${sourceType} levert te weinig rijen (${health.rows} < ${minRows}) zonder fetch-fouten.`);
     }
-    if (errorCount > 0 && Number(health.rows || 0) === 0) {
-      errors.push(`Bron ${sourceType} volledig uitgevallen (0 rijen met ${errorCount} fetch-fouten).`);
+    if (errorCount > 0 && rows < minRows) {
+      warnings.push(`Bron ${sourceType} levert te weinig rijen (${rows} < ${minRows}) met ${errorCount} fetch-fouten.`);
     }
   });
 
@@ -3371,6 +3454,7 @@ function runQualityGates({
 const previousRaw = await readFile(datasetPath, 'utf8').catch(() => null);
 const previous = previousRaw ? safeParseJson(previousRaw) : null;
 const previousEvents = previous && Array.isArray(previous.events) ? previous.events : null;
+const previousProviderHealth = await readProviderHealth();
 const manualRaw = await readFile(majorEventsPath, 'utf8').catch(() => '[]');
 const manualParsed = safeParseJson(manualRaw);
 const manualEvents = normalizeManualEvents(manualParsed);
@@ -3447,6 +3531,8 @@ const providerHealth = {
   'hbo-max': { rows: hboMaxSchedule.rows.length, errors: hboMaxSchedule.errors }
 };
 
+const providerHealthReport = buildProviderHealthReport(providerHealth, previousProviderHealth, new Date().toISOString());
+
 if (fetchErrors.length) {
   console.warn(`Partial fetch issues: ${fetchErrors.join(' | ')}`);
 }
@@ -3478,8 +3564,10 @@ const enrichedEvents = enrichEventsWithSchedules(
 );
 const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
 const eventsWithMajorTags = applyMajorTags(overriddenEvents);
+const eventsWithFallbacks = applyProviderFallbacks(eventsWithMajorTags, previousEvents, providerHealthReport);
+await writeFile(providerHealthPath, `${JSON.stringify(providerHealthReport, null, 2)}\n`, 'utf8');
 const generatedAt = new Date().toISOString();
-const verifiedBeforeQuarantine = finalizeVerification(eventsWithMajorTags, generatedAt);
+const verifiedBeforeQuarantine = finalizeVerification(eventsWithFallbacks, generatedAt);
 const publishableSplit = splitPublishableEvents(verifiedBeforeQuarantine);
 const allVerifiedEvents = publishableSplit.publishable;
 
@@ -3509,6 +3597,10 @@ if (MAX_EVENTS > 0 && allVerifiedEvents.length > MAX_EVENTS) {
 }
 
 if (!verifiedEvents.length) {
+  if (Array.isArray(previousEvents) && previousEvents.length) {
+    console.warn('No events fetched; keeping previous dataset.');
+    process.exit(0);
+  }
   throw new Error('No events fetched; aborting dataset overwrite.');
 }
 
