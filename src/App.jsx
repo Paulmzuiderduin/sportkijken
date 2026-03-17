@@ -34,6 +34,7 @@ const KNOWN_SPORT_META = {
 };
 
 const FALLBACK_ACCENTS = ['#0a7b52', '#2f67cf', '#c7351b', '#7e3af2', '#0f6a8f', '#7f1d1d', '#b45309'];
+const MOBILE_EVENT_LIMIT = 700;
 
 const RANGE_OPTIONS = [
   { id: '7d', label: 'Komende 7 dagen' },
@@ -890,7 +891,7 @@ function App() {
   const [preferences, setPreferences] = useState(() => loadPreferences(FALLBACK_SPORT_OPTIONS, FALLBACK_PROVIDER_OPTIONS));
   const [providersExpanded, setProvidersExpanded] = useState(false);
   const [tvProviderInfoOpen, setTvProviderInfoOpen] = useState(false);
-  const [jumpDay, setJumpDay] = useState('');
+  const [isCompactLayout, setIsCompactLayout] = useState(false);
   const [consentState, setConsentState] = useState(loadConsentState);
   const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
@@ -964,6 +965,24 @@ function App() {
     scrollToPageTop();
     shouldForceTopOnLoadRef.current = false;
   }, [dataset.generatedAt]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return undefined;
+    }
+
+    const media = window.matchMedia('(max-width: 900px)');
+    const update = () => setIsCompactLayout(media.matches);
+    update();
+
+    if (typeof media.addEventListener === 'function') {
+      media.addEventListener('change', update);
+      return () => media.removeEventListener('change', update);
+    }
+
+    media.addListener(update);
+    return () => media.removeListener(update);
+  }, []);
 
   useEffect(() => {
     datasetSnapshotRef.current = dataset;
@@ -1489,10 +1508,18 @@ function App() {
     });
   }, [events, preferences]);
 
+  const visibleEvents = useMemo(() => {
+    const limit = isCompactLayout ? MOBILE_EVENT_LIMIT : null;
+    if (!limit || filteredEvents.length <= limit) {
+      return filteredEvents;
+    }
+    return filteredEvents.slice(0, limit);
+  }, [filteredEvents, isCompactLayout]);
+
   const groupedEvents = useMemo(() => {
     const map = new Map();
 
-    filteredEvents.forEach((event) => {
+    visibleEvents.forEach((event) => {
       const dayKey = DAY_KEY_FORMATTER.format(event.startDate);
       const existing = map.get(dayKey);
 
@@ -1537,12 +1564,12 @@ function App() {
         regularEvents
       };
     });
-  }, [filteredEvents]);
+  }, [visibleEvents]);
 
   const dayJumpOptions = useMemo(() => (
     groupedEvents.map((group) => ({
       id: group.key,
-      label: `${group.dayNumber} · ${group.label}`
+      label: group.dayNumber
     }))
   ), [groupedEvents]);
 
@@ -1558,20 +1585,20 @@ function App() {
   };
 
   const counters = useMemo(() => {
-    const free = filteredEvents.filter((event) =>
+    const free = visibleEvents.filter((event) =>
       event.channels.some((channel) => effectiveChannelAccess(channel, preferences.tvProvider) === 'free')
     ).length;
-    const paid = filteredEvents.filter((event) =>
+    const paid = visibleEvents.filter((event) =>
       event.channels.some((channel) => effectiveChannelAccess(channel, preferences.tvProvider) === 'paid')
     ).length;
 
     return {
-      total: filteredEvents.length,
+      total: visibleEvents.length,
       free,
       paid,
-      nextEvent: filteredEvents[0] || null
+      nextEvent: visibleEvents[0] || null
     };
-  }, [filteredEvents, preferences.tvProvider]);
+  }, [visibleEvents, preferences.tvProvider]);
 
   const providerOptionsForView = useMemo(() => {
     const query = preferences.providerSearchText.trim().toLowerCase();
@@ -2259,57 +2286,56 @@ function App() {
         </section>
 
         <section className="agenda">
-          {dayJumpOptions.length ? (
-            <div className="agenda-tools">
-              <label className="agenda-label" htmlFor="jump-day">Spring naar datum</label>
-              <select
-                id="jump-day"
-                value={jumpDay}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  setJumpDay(value);
-                  jumpToDay(value);
-                }}
-              >
-                <option value="">Kies een dag</option>
-                {dayJumpOptions.map((option) => (
-                  <option key={option.id} value={option.id}>{option.label}</option>
-                ))}
-              </select>
-            </div>
-          ) : null}
           {groupedEvents.length === 0 ? (
             <article className="panel empty-state">
               <h2>Geen events met deze filters</h2>
               <p>Pas je sport-, aanbieder-, periode-, toegang- of grote-events-filter aan om resultaten te zien.</p>
             </article>
           ) : (
-            groupedEvents.map((group) => (
-              <article key={group.key} id={`day-${group.key}`} className="day-block">
-                <header>
-                  <p className="day-number">{group.dayNumber}</p>
-                  <h2>{group.label}</h2>
-                </header>
-
-                {group.majorGroups.map((majorGroup) => (
-                  <section key={`${group.key}-${majorGroup.label}`} className="major-group">
-                    <h3 className="major-group-title">{majorGroup.label}</h3>
-                    <div className="cards">
-                      {majorGroup.events.map(renderEventCard)}
-                    </div>
-                  </section>
+            <div className="agenda-layout">
+              <nav className="date-rail" aria-label="Spring naar datum">
+                {dayJumpOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className="date-rail-item"
+                    onClick={() => jumpToDay(option.id)}
+                    aria-label={`Spring naar ${option.label}`}
+                  >
+                    <span className="date-rail-dot" aria-hidden="true" />
+                    <span className="date-rail-label">{option.label}</span>
+                  </button>
                 ))}
+              </nav>
+              <div className="agenda-content">
+                {groupedEvents.map((group) => (
+                  <article key={group.key} id={`day-${group.key}`} className="day-block">
+                    <header>
+                      <p className="day-number">{group.dayNumber}</p>
+                      <h2>{group.label}</h2>
+                    </header>
 
-                {group.regularEvents.length ? (
-                  <section className="major-group">
-                    {group.majorGroups.length ? <h3 className="major-group-title secondary">Overige events</h3> : null}
-                    <div className="cards">
-                      {group.regularEvents.map(renderEventCard)}
-                    </div>
-                  </section>
-                ) : null}
-              </article>
-            ))
+                    {group.majorGroups.map((majorGroup) => (
+                      <section key={`${group.key}-${majorGroup.label}`} className="major-group">
+                        <h3 className="major-group-title">{majorGroup.label}</h3>
+                        <div className="cards">
+                          {majorGroup.events.map(renderEventCard)}
+                        </div>
+                      </section>
+                    ))}
+
+                    {group.regularEvents.length ? (
+                      <section className="major-group">
+                        {group.majorGroups.length ? <h3 className="major-group-title secondary">Overige events</h3> : null}
+                        <div className="cards">
+                          {group.regularEvents.map(renderEventCard)}
+                        </div>
+                      </section>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            </div>
           )}
         </section>
 
