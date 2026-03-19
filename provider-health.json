@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-03-19T14:24:32.781Z",
+  "checkedAt": "2026-03-19T14:42:53.305Z",
   "providers": {
     "nos": {
       "rows": 10,
@@ -7,28 +7,28 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-19T14:24:32.781Z",
-      "lastOkAt": "2026-03-19T14:24:32.781Z",
+      "checkedAt": "2026-03-19T14:42:53.305Z",
+      "lastOkAt": "2026-03-19T14:42:53.305Z",
       "fallbackApplied": false
     },
     "ziggo": {
-      "rows": 2827,
+      "rows": 2823,
       "errors": [],
       "minRows": 15,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-19T14:24:32.781Z",
-      "lastOkAt": "2026-03-19T14:24:32.781Z",
+      "checkedAt": "2026-03-19T14:42:53.305Z",
+      "lastOkAt": "2026-03-19T14:42:53.305Z",
       "fallbackApplied": false
     },
     "espn-schedule": {
-      "rows": 2871,
+      "rows": 2870,
       "errors": [],
       "minRows": 12,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-19T14:24:32.781Z",
-      "lastOkAt": "2026-03-19T14:24:32.781Z",
+      "checkedAt": "2026-03-19T14:42:53.305Z",
+      "lastOkAt": "2026-03-19T14:42:53.305Z",
       "fallbackApplied": false
     },
     "viaplay": {
@@ -37,8 +37,8 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-19T14:24:32.781Z",
-      "lastOkAt": "2026-03-19T14:24:32.781Z",
+      "checkedAt": "2026-03-19T14:42:53.305Z",
+      "lastOkAt": "2026-03-19T14:42:53.305Z",
       "fallbackApplied": false
     },
     "npo-guide": {
@@ -47,8 +47,8 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-19T14:24:32.781Z",
-      "lastOkAt": "2026-03-19T14:24:32.781Z",
+      "checkedAt": "2026-03-19T14:42:53.305Z",
+      "lastOkAt": "2026-03-19T14:42:53.305Z",
       "fallbackApplied": false
     },
     "hbo-max": {
@@ -57,8 +57,8 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-19T14:24:32.781Z",
-      "lastOkAt": "2026-03-19T14:24:32.781Z",
+      "checkedAt": "2026-03-19T14:42:53.305Z",
+      "lastOkAt": "2026-03-19T14:42:53.305Z",
       "fallbackApplied": false
     }
   }
