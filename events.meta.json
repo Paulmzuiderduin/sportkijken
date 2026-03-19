@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-03-19T15:07:23.303Z",
-  "lastChangedAt": "2026-03-19T15:07:23.303Z",
+  "generatedAt": "2026-03-19T15:16:04.436Z",
+  "lastChangedAt": "2026-03-19T15:16:04.436Z",
   "checkedAt": "2026-03-19T13:46:11.000Z",
-  "eventCount": 1159,
+  "eventCount": 1679,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-03-19T15:07:21.817Z",
+    "checkedAt": "2026-03-19T15:16:03.028Z",
     "providers": {
       "nos": {
         "rows": 10,
@@ -13,18 +13,18 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-19T15:07:21.817Z",
-        "lastOkAt": "2026-03-19T15:07:21.817Z",
+        "checkedAt": "2026-03-19T15:16:03.028Z",
+        "lastOkAt": "2026-03-19T15:16:03.028Z",
         "fallbackApplied": false
       },
       "ziggo": {
-        "rows": 2819,
+        "rows": 2817,
         "errors": [],
         "minRows": 15,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-19T15:07:21.817Z",
-        "lastOkAt": "2026-03-19T15:07:21.817Z",
+        "checkedAt": "2026-03-19T15:16:03.028Z",
+        "lastOkAt": "2026-03-19T15:16:03.028Z",
         "fallbackApplied": false
       },
       "espn-schedule": {
@@ -33,8 +33,8 @@
         "minRows": 12,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-19T15:07:21.817Z",
-        "lastOkAt": "2026-03-19T15:07:21.817Z",
+        "checkedAt": "2026-03-19T15:16:03.028Z",
+        "lastOkAt": "2026-03-19T15:16:03.028Z",
         "fallbackApplied": false
       },
       "viaplay": {
@@ -43,8 +43,8 @@
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-19T15:07:21.817Z",
-        "lastOkAt": "2026-03-19T15:07:21.817Z",
+        "checkedAt": "2026-03-19T15:16:03.028Z",
+        "lastOkAt": "2026-03-19T15:16:03.028Z",
         "fallbackApplied": false
       },
       "npo-guide": {
@@ -53,8 +53,8 @@
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-19T15:07:21.817Z",
-        "lastOkAt": "2026-03-19T15:07:21.817Z",
+        "checkedAt": "2026-03-19T15:16:03.028Z",
+        "lastOkAt": "2026-03-19T15:16:03.028Z",
         "fallbackApplied": false
       },
       "hbo-max": {
@@ -63,8 +63,8 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-19T15:07:21.817Z",
-        "lastOkAt": "2026-03-19T15:07:21.817Z",
+        "checkedAt": "2026-03-19T15:16:03.028Z",
+        "lastOkAt": "2026-03-19T15:16:03.028Z",
         "fallbackApplied": false
       }
     }
