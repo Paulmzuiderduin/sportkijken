@@ -1426,7 +1426,7 @@ function filterMatchesByMatchup(event, matches) {
   return matches.filter((row) => isSameMatchup(event.title, row.title));
 }
 
-function shouldDropUnverifiedProviderChannels(event, providerKey, providerHealthReport, rows) {
+function shouldTrackProviderMismatch(event, providerKey, providerHealthReport, rows) {
   if (!Array.isArray(rows) || rows.length === 0) {
     return false;
   }
@@ -1439,6 +1439,15 @@ function shouldDropUnverifiedProviderChannels(event, providerKey, providerHealth
     return false;
   }
   return true;
+}
+
+const PROVIDER_MISMATCH_COUNTS = {};
+
+function trackProviderMismatch(providerKey) {
+  if (!providerKey) {
+    return;
+  }
+  PROVIDER_MISMATCH_COUNTS[providerKey] = (PROVIDER_MISMATCH_COUNTS[providerKey] || 0) + 1;
 }
 
 function removeChannelsByNeedles(channels, needles) {
@@ -1485,8 +1494,8 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows, p
         );
         sourceType = sourceType === 'espn' ? 'mixed' : sourceType;
       }
-    } else if (shouldDropUnverifiedProviderChannels(event, 'ziggo', providerHealthReport, ziggoRows)) {
-      nextChannels = removeChannelsByNeedles(nextChannels, ['ziggo']);
+    } else if (shouldTrackProviderMismatch(event, 'ziggo', providerHealthReport, ziggoRows)) {
+      trackProviderMismatch('ziggo');
     }
   }
 
@@ -1512,8 +1521,8 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows, p
         );
         sourceType = sourceType === 'espn' ? 'mixed' : sourceType;
       }
-    } else if (shouldDropUnverifiedProviderChannels(event, 'espn-schedule', providerHealthReport, espnRows)) {
-      nextChannels = removeChannelsByNeedles(nextChannels, ['espn']);
+    } else if (shouldTrackProviderMismatch(event, 'espn-schedule', providerHealthReport, espnRows)) {
+      trackProviderMismatch('espn-schedule');
     }
   }
 
@@ -1536,8 +1545,8 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows, p
         );
         sourceType = sourceType && sourceType !== 'viaplay' ? 'mixed' : 'viaplay';
       }
-    } else if (shouldDropUnverifiedProviderChannels(event, 'viaplay', providerHealthReport, viaplayRows)) {
-      nextChannels = removeChannelsByNeedles(nextChannels, ['viaplay']);
+    } else if (shouldTrackProviderMismatch(event, 'viaplay', providerHealthReport, viaplayRows)) {
+      trackProviderMismatch('viaplay');
     }
   }
 
@@ -1557,8 +1566,8 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows, p
         );
         sourceType = sourceType ? 'mixed' : 'npo-guide';
       }
-    } else if (shouldDropUnverifiedProviderChannels(event, 'npo-guide', providerHealthReport, npoRows)) {
-      nextChannels = removeChannelsByNeedles(nextChannels, ['npo 1', 'npo 2', 'npo 3', 'npo start']);
+    } else if (shouldTrackProviderMismatch(event, 'npo-guide', providerHealthReport, npoRows)) {
+      trackProviderMismatch('npo-guide');
     }
   }
 
@@ -3413,10 +3422,6 @@ function formatQaEvent(event) {
 function quarantineReasonForEvent(event) {
   const title = String(event?.title || '');
 
-  if (!Array.isArray(event?.channels) || event.channels.length === 0) {
-    return 'missing_channels';
-  }
-
   if (QA_TITLE_BLOCKLIST_PATTERNS.some((pattern) => pattern.test(title))) {
     return 'blocklisted_title';
   }
@@ -3642,6 +3647,22 @@ const providerHealth = {
 };
 
 const providerHealthReport = buildProviderHealthReport(providerHealth, previousProviderHealth, new Date().toISOString());
+
+Object.entries(PROVIDER_MISMATCH_COUNTS).forEach(([key, count]) => {
+  if (!providerHealthReport.providers[key]) {
+    providerHealthReport.providers[key] = {
+      rows: Number(providerHealth?.[key]?.rows || 0),
+      errors: Array.isArray(providerHealth?.[key]?.errors) ? providerHealth[key].errors : [],
+      minRows: Number(QA_MIN_ROWS_BY_SOURCE[key] || 1),
+      ok: false,
+      status: 'degraded',
+      checkedAt: providerHealthReport.checkedAt,
+      lastOkAt: null,
+      fallbackApplied: false
+    };
+  }
+  providerHealthReport.providers[key].unmatchedMatchups = count;
+});
 
 if (fetchErrors.length) {
   console.warn(`Partial fetch issues: ${fetchErrors.join(' | ')}`);
