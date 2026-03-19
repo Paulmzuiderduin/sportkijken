@@ -128,6 +128,11 @@ const CHANNEL_PRESETS = {
     { name: 'NPO 3', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-3' },
     { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/live' }
   ],
+  npoPrimary: [
+    { name: 'NPO 1', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-1' },
+    { name: 'NPO Start', platform: 'stream', access: 'free', url: 'https://www.npostart.nl/live' },
+    { name: 'NOS.nl Live', platform: 'stream', access: 'free', url: 'https://nos.nl/live' }
+  ],
   npoNosFull: [
     { name: 'NPO 1', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-1' },
     { name: 'NPO 2', platform: 'tv', access: 'free', url: 'https://www.npostart.nl/live/npo-2' },
@@ -189,6 +194,13 @@ const DEFAULT_DUTCH_CLUB_KEYWORDS = [
   'nec',
   'vitesse',
   'willem ii'
+];
+
+const NETHERLANDS_TEAM_KEYWORDS = [
+  'nederland',
+  'netherlands',
+  'oranje',
+  'ned'
 ];
 
 const PROVIDER_RULES = await loadProviderRules(providerRulesPath);
@@ -494,9 +506,10 @@ const soccerFeeds = [
     slug: 'fifa.worldq.uefa',
     sport: 'voetbal',
     competition: 'WK kwalificatie UEFA',
-    channels: mergeChannels(CHANNEL_PRESETS.npoNosFull, CHANNEL_PRESETS.ziggo),
+    channels: CHANNEL_PRESETS.ziggo,
     note: 'Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land.',
-    forceNos: true
+    addNosForNetherlandsOnly: true,
+    nosMode: 'primary'
   }
 ];
 
@@ -859,6 +872,16 @@ function shouldAddNosChannels(feed, title, competition) {
     return true;
   }
 
+  if (feed.addNosForNetherlandsOnly) {
+    const haystack = `${title} ${competition}`.toLowerCase();
+    return NETHERLANDS_TEAM_KEYWORDS.some((keyword) => {
+      if (keyword === 'ned') {
+        return /\bned\b/i.test(haystack);
+      }
+      return haystack.includes(keyword);
+    });
+  }
+
   if (!feed.addNosForMajors) {
     return false;
   }
@@ -1097,7 +1120,8 @@ function channelsForEvent(feed, title, competition) {
   }
 
   if (shouldAddNosChannels(feed, title, competition)) {
-    return mergeChannels(channels, CHANNEL_PRESETS.npoNosFull);
+    const nosPreset = feed.nosMode === 'primary' ? CHANNEL_PRESETS.npoPrimary : CHANNEL_PRESETS.npoNosFull;
+    return mergeChannels(channels, nosPreset);
   }
 
   return channels;
