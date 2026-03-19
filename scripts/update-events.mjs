@@ -237,6 +237,40 @@ const TEAM_NOISE_WORDS = new Set([
   'vrouwen'
 ]);
 
+const TEAM_SYNONYM_PATTERNS = [
+  [/\brepublic of ireland\b/g, 'ierland'],
+  [/\bnorthern ireland\b/g, 'noord ierland'],
+  [/\bnorth macedonia\b/g, 'noord macedonie'],
+  [/\bczech republic\b/g, 'tsjechie'],
+  [/\bczechia\b/g, 'tsjechie'],
+  [/\bturkiye\b/g, 'turkije'],
+  [/\bnetherlands\b/g, 'nederland'],
+  [/\bbelgium\b/g, 'belgie'],
+  [/\bgermany\b/g, 'duitsland'],
+  [/\bspain\b/g, 'spanje'],
+  [/\bitaly\b/g, 'italie'],
+  [/\bfrance\b/g, 'frankrijk'],
+  [/\bsweden\b/g, 'zweden'],
+  [/\bpoland\b/g, 'polen'],
+  [/\baustria\b/g, 'oostenrijk'],
+  [/\bswitzerland\b/g, 'zwitserland'],
+  [/\bdenmark\b/g, 'denemarken'],
+  [/\bnorway\b/g, 'noorwegen'],
+  [/\bfinland\b/g, 'finland'],
+  [/\bscotland\b/g, 'schotland'],
+  [/\bwales\b/g, 'wales'],
+  [/\bengland\b/g, 'engeland'],
+  [/\bukraine\b/g, 'oekraine'],
+  [/\bcroatia\b/g, 'kroatie'],
+  [/\bserbia\b/g, 'servie'],
+  [/\bslovenia\b/g, 'slovenie'],
+  [/\bslovakia\b/g, 'slowakije'],
+  [/\bbosnia and herzegovina\b/g, 'bosnie herzegovina'],
+  [/\busa\b/g, 'verenigde staten'],
+  [/\bunited states\b/g, 'verenigde staten'],
+  [/\bthe netherlands\b/g, 'nederland']
+];
+
 const SCHEDULE_ONLY_SKIP_KEYWORDS = [
   'samenvatting',
   'hoogtepunten',
@@ -720,7 +754,11 @@ function normalizeTitleForMatch(value) {
 }
 
 function cleanTeamName(value) {
-  return normalizeTitleForMatch(value)
+  let normalized = normalizeTitleForMatch(value);
+  TEAM_SYNONYM_PATTERNS.forEach(([pattern, replacement]) => {
+    normalized = normalized.replace(pattern, replacement);
+  });
+  return normalized
     .replace(/[^a-z0-9 ]+/g, ' ')
     .split(' ')
     .filter((token) => token && token.length > 1 && !TEAM_NOISE_WORDS.has(token))
@@ -1380,6 +1418,14 @@ function findScheduleRowsForEvent(event, rows, maxLeadMinutes = 180, maxLagMinut
   return grouped.length ? grouped : [anchor];
 }
 
+function filterMatchesByMatchup(event, matches) {
+  const eventMatchup = splitMatchupTitle(event.title);
+  if (!eventMatchup) {
+    return matches;
+  }
+  return matches.filter((row) => isSameMatchup(event.title, row.title));
+}
+
 function removeChannelsByNeedles(channels, needles) {
   const normalizedNeedles = needles.map((needle) => normalizeAsciiLower(needle));
   return (channels || []).filter((channel) => {
@@ -1406,7 +1452,10 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
   let sourceType = event.sourceType;
 
   if (hasProviderChannel(nextChannels, 'ziggo')) {
-    const matches = findScheduleRowsForEvent(event, ziggoRows, 210, 150);
+    const matches = filterMatchesByMatchup(
+      event,
+      findScheduleRowsForEvent(event, ziggoRows, 210, 150)
+    );
     if (matches.length) {
       const ziggoChannels = mergeChannels(
         ...matches.map((row) => row.channels.map((channelName) => ziggoChannelFromName(channelName)).filter(Boolean))
@@ -1425,7 +1474,10 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
   }
 
   if (hasProviderChannel(nextChannels, 'espn')) {
-    const matches = findScheduleRowsForEvent(event, espnRows, 120, 120);
+    const matches = filterMatchesByMatchup(
+      event,
+      findScheduleRowsForEvent(event, espnRows, 120, 120)
+    );
     if (matches.length) {
       const espnChannels = mergeChannels(
         ...matches.map((row) => (
@@ -1447,7 +1499,10 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
   }
 
   if (hasProviderChannel(nextChannels, 'viaplay')) {
-    const matches = findScheduleRowsForEvent(event, viaplayRows, 150, 180);
+    const matches = filterMatchesByMatchup(
+      event,
+      findScheduleRowsForEvent(event, viaplayRows, 150, 180)
+    );
     if (matches.length) {
       const nextViaplayChannels = mergeChannels(...matches.map((row) => viaplayChannelsForRow(row)));
       if (nextViaplayChannels.length) {
@@ -1466,19 +1521,18 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
   }
 
   if (Array.isArray(npoRows) && npoRows.length) {
-    const matches = findScheduleRowsForEvent(event, npoRows, 180, 180);
-    const eventMatchup = splitMatchupTitle(event.title);
-    const filteredMatches = eventMatchup
-      ? matches.filter((row) => isSameMatchup(event.title, row.title))
-      : matches;
-    if (filteredMatches.length) {
-      const npoChannels = mergeChannels(...filteredMatches.map((row) => npoChannelsFromRow(row)));
+    const matches = filterMatchesByMatchup(
+      event,
+      findScheduleRowsForEvent(event, npoRows, 180, 180)
+    );
+    if (matches.length) {
+      const npoChannels = mergeChannels(...matches.map((row) => npoChannelsFromRow(row)));
       if (npoChannels.length) {
         const nonNpoChannels = removeChannelsByNeedles(nextChannels, ['npo 1', 'npo 2', 'npo 3', 'npo start']);
         nextChannels = mergeChannels(nonNpoChannels, npoChannels);
         nextSourceRefs = mergeSourceRefs(
           nextSourceRefs,
-          filteredMatches.map((match) => createSourceRef('NPO gids', match.sourceUrl, 'npo-guide')).filter(Boolean)
+          matches.map((match) => createSourceRef('NPO gids', match.sourceUrl, 'npo-guide')).filter(Boolean)
         );
         sourceType = sourceType ? 'mixed' : 'npo-guide';
       }
