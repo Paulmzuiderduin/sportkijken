@@ -1426,6 +1426,21 @@ function filterMatchesByMatchup(event, matches) {
   return matches.filter((row) => isSameMatchup(event.title, row.title));
 }
 
+function shouldDropUnverifiedProviderChannels(event, providerKey, providerHealthReport, rows) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return false;
+  }
+  const eventMatchup = splitMatchupTitle(event.title);
+  if (!eventMatchup) {
+    return false;
+  }
+  const providerInfo = providerHealthReport?.providers?.[providerKey];
+  if (!providerInfo || providerInfo.ok !== true) {
+    return false;
+  }
+  return true;
+}
+
 function removeChannelsByNeedles(channels, needles) {
   const normalizedNeedles = needles.map((needle) => normalizeAsciiLower(needle));
   return (channels || []).filter((channel) => {
@@ -1446,7 +1461,7 @@ function npoChannelsFromRow(row) {
   );
 }
 
-function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
+function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows, providerHealthReport) {
   let nextChannels = event.channels || [];
   let nextSourceRefs = event.sourceRefs || [];
   let sourceType = event.sourceType;
@@ -1470,6 +1485,8 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
         );
         sourceType = sourceType === 'espn' ? 'mixed' : sourceType;
       }
+    } else if (shouldDropUnverifiedProviderChannels(event, 'ziggo', providerHealthReport, ziggoRows)) {
+      nextChannels = removeChannelsByNeedles(nextChannels, ['ziggo']);
     }
   }
 
@@ -1495,6 +1512,8 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
         );
         sourceType = sourceType === 'espn' ? 'mixed' : sourceType;
       }
+    } else if (shouldDropUnverifiedProviderChannels(event, 'espn-schedule', providerHealthReport, espnRows)) {
+      nextChannels = removeChannelsByNeedles(nextChannels, ['espn']);
     }
   }
 
@@ -1517,6 +1536,8 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
         );
         sourceType = sourceType && sourceType !== 'viaplay' ? 'mixed' : 'viaplay';
       }
+    } else if (shouldDropUnverifiedProviderChannels(event, 'viaplay', providerHealthReport, viaplayRows)) {
+      nextChannels = removeChannelsByNeedles(nextChannels, ['viaplay']);
     }
   }
 
@@ -1536,6 +1557,8 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
         );
         sourceType = sourceType ? 'mixed' : 'npo-guide';
       }
+    } else if (shouldDropUnverifiedProviderChannels(event, 'npo-guide', providerHealthReport, npoRows)) {
+      nextChannels = removeChannelsByNeedles(nextChannels, ['npo 1', 'npo 2', 'npo 3', 'npo start']);
     }
   }
 
@@ -1547,9 +1570,9 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
   };
 }
 
-function enrichEventsWithSchedules(events, ziggoRows, espnRows, viaplayRows, npoRows) {
+function enrichEventsWithSchedules(events, ziggoRows, espnRows, viaplayRows, npoRows, providerHealthReport) {
   return events.map((event) => applyProviderAccessBusinessRules(
-    enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows)
+    enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows, providerHealthReport)
   ));
 }
 
@@ -3390,6 +3413,10 @@ function formatQaEvent(event) {
 function quarantineReasonForEvent(event) {
   const title = String(event?.title || '');
 
+  if (!Array.isArray(event?.channels) || event.channels.length === 0) {
+    return 'missing_channels';
+  }
+
   if (QA_TITLE_BLOCKLIST_PATTERNS.some((pattern) => pattern.test(title))) {
     return 'blocklisted_title';
   }
@@ -3644,7 +3671,8 @@ const enrichedEvents = enrichEventsWithSchedules(
   ziggoEpg.rows,
   espnSchedule.rows,
   viaplaySchedule.rows,
-  npoGuide.rows
+  npoGuide.rows,
+  providerHealthReport
 );
 const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
 const eventsWithMajorTags = applyMajorTags(overriddenEvents);
