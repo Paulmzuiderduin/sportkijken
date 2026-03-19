@@ -196,12 +196,6 @@ const DEFAULT_DUTCH_CLUB_KEYWORDS = [
   'willem ii'
 ];
 
-const NETHERLANDS_TEAM_KEYWORDS = [
-  'nederland',
-  'netherlands',
-  'oranje',
-  'ned'
-];
 
 const PROVIDER_RULES = await loadProviderRules(providerRulesPath);
 const DUTCH_CLUB_KEYWORDS = Array.isArray(PROVIDER_RULES.dutchClubKeywords) && PROVIDER_RULES.dutchClubKeywords.length
@@ -498,18 +492,15 @@ const soccerFeeds = [
     slug: 'uefa.nations',
     sport: 'voetbal',
     competition: 'UEFA Nations League',
-    channels: mergeChannels(CHANNEL_PRESETS.ziggo, CHANNEL_PRESETS.npoTv),
-    note: 'Automatisch opgehaald. Uitzendrechten kunnen per wedstrijd verschillen.',
-    addNosForMajors: true
+    channels: CHANNEL_PRESETS.ziggo,
+    note: 'Automatisch opgehaald. Uitzendrechten kunnen per wedstrijd verschillen.'
   },
   {
     slug: 'fifa.worldq.uefa',
     sport: 'voetbal',
     competition: 'WK kwalificatie UEFA',
     channels: CHANNEL_PRESETS.ziggo,
-    note: 'Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land.',
-    addNosForNetherlandsOnly: true,
-    nosMode: 'primary'
+    note: 'Automatisch opgehaald. Uitzendrechten verschillen per wedstrijd en land.'
   }
 ];
 
@@ -529,16 +520,14 @@ const tennisFeeds = [
     sport: 'tennis',
     competition: 'ATP',
     channels: CHANNEL_PRESETS.eurosport,
-    note: 'Automatisch opgehaald. Beschikbaarheid verschilt per toernooi.',
-    addNosForMajors: true
+    note: 'Automatisch opgehaald. Beschikbaarheid verschilt per toernooi.'
   },
   {
     slug: 'wta',
     sport: 'tennis',
     competition: 'WTA',
     channels: CHANNEL_PRESETS.eurosport,
-    note: 'Automatisch opgehaald. Beschikbaarheid verschilt per toernooi.',
-    addNosForMajors: true
+    note: 'Automatisch opgehaald. Beschikbaarheid verschilt per toernooi.'
   }
 ];
 
@@ -872,16 +861,6 @@ function shouldAddNosChannels(feed, title, competition) {
     return true;
   }
 
-  if (feed.addNosForNetherlandsOnly) {
-    const haystack = `${title} ${competition}`.toLowerCase();
-    return NETHERLANDS_TEAM_KEYWORDS.some((keyword) => {
-      if (keyword === 'ned') {
-        return /\bned\b/i.test(haystack);
-      }
-      return haystack.includes(keyword);
-    });
-  }
-
   if (!feed.addNosForMajors) {
     return false;
   }
@@ -1120,8 +1099,7 @@ function channelsForEvent(feed, title, competition) {
   }
 
   if (shouldAddNosChannels(feed, title, competition)) {
-    const nosPreset = feed.nosMode === 'primary' ? CHANNEL_PRESETS.npoPrimary : CHANNEL_PRESETS.npoNosFull;
-    return mergeChannels(channels, nosPreset);
+    return mergeChannels(channels, CHANNEL_PRESETS.npoPrimary);
   }
 
   return channels;
@@ -1415,7 +1393,19 @@ function removeChannelsByNeedles(channels, needles) {
   });
 }
 
-function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows) {
+function npoChannelsFromRow(row) {
+  const channelName = npoChannelName(row?.channelName);
+  if (!channelName) {
+    return [];
+  }
+  const channelUrl = npoChannelUrlFromName(channelName);
+  return mergeChannels(
+    [{ name: channelName, platform: 'tv', access: 'free', url: channelUrl }],
+    [{ name: 'NPO Start', platform: 'stream', access: 'free', url: channelUrl }]
+  );
+}
+
+function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
   let nextChannels = event.channels || [];
   let nextSourceRefs = event.sourceRefs || [];
   let sourceType = event.sourceType;
@@ -1480,6 +1470,22 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows) {
     }
   }
 
+  if (Array.isArray(npoRows) && npoRows.length) {
+    const matches = findScheduleRowsForEvent(event, npoRows, 180, 180);
+    if (matches.length) {
+      const npoChannels = mergeChannels(...matches.map((row) => npoChannelsFromRow(row)));
+      if (npoChannels.length) {
+        const nonNpoChannels = removeChannelsByNeedles(nextChannels, ['npo 1', 'npo 2', 'npo 3', 'npo start']);
+        nextChannels = mergeChannels(nonNpoChannels, npoChannels);
+        nextSourceRefs = mergeSourceRefs(
+          nextSourceRefs,
+          matches.map((match) => createSourceRef('NPO gids', match.sourceUrl, 'npo-guide')).filter(Boolean)
+        );
+        sourceType = sourceType ? 'mixed' : 'npo-guide';
+      }
+    }
+  }
+
   return {
     ...event,
     channels: nextChannels,
@@ -1488,9 +1494,9 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows) {
   };
 }
 
-function enrichEventsWithSchedules(events, ziggoRows, espnRows, viaplayRows) {
+function enrichEventsWithSchedules(events, ziggoRows, espnRows, viaplayRows, npoRows) {
   return events.map((event) => applyProviderAccessBusinessRules(
-    enrichEventChannels(event, ziggoRows, espnRows, viaplayRows)
+    enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows)
   ));
 }
 
@@ -3584,7 +3590,8 @@ const enrichedEvents = enrichEventsWithSchedules(
   mergedWithScheduleOnly,
   ziggoEpg.rows,
   espnSchedule.rows,
-  viaplaySchedule.rows
+  viaplaySchedule.rows,
+  npoGuide.rows
 );
 const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
 const eventsWithMajorTags = applyMajorTags(overriddenEvents);
