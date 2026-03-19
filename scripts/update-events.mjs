@@ -861,12 +861,7 @@ function shouldAddNosChannels(feed, title, competition) {
     return true;
   }
 
-  if (!feed.addNosForMajors) {
-    return false;
-  }
-
-  const haystack = `${title} ${competition}`.toLowerCase();
-  return MAJOR_FREE_KEYWORDS.some((keyword) => haystack.includes(keyword));
+  return false;
 }
 
 function shouldMarkDutchClubUefaMatchOnZiggoGo(feed, title, competition) {
@@ -1472,14 +1467,18 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows) {
 
   if (Array.isArray(npoRows) && npoRows.length) {
     const matches = findScheduleRowsForEvent(event, npoRows, 180, 180);
-    if (matches.length) {
-      const npoChannels = mergeChannels(...matches.map((row) => npoChannelsFromRow(row)));
+    const eventMatchup = splitMatchupTitle(event.title);
+    const filteredMatches = eventMatchup
+      ? matches.filter((row) => isSameMatchup(event.title, row.title))
+      : matches;
+    if (filteredMatches.length) {
+      const npoChannels = mergeChannels(...filteredMatches.map((row) => npoChannelsFromRow(row)));
       if (npoChannels.length) {
         const nonNpoChannels = removeChannelsByNeedles(nextChannels, ['npo 1', 'npo 2', 'npo 3', 'npo start']);
         nextChannels = mergeChannels(nonNpoChannels, npoChannels);
         nextSourceRefs = mergeSourceRefs(
           nextSourceRefs,
-          matches.map((match) => createSourceRef('NPO gids', match.sourceUrl, 'npo-guide')).filter(Boolean)
+          filteredMatches.map((match) => createSourceRef('NPO gids', match.sourceUrl, 'npo-guide')).filter(Boolean)
         );
         sourceType = sourceType ? 'mixed' : 'npo-guide';
       }
