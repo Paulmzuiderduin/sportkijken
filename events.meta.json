@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-03-20T07:17:31.844Z",
-  "lastChangedAt": "2026-03-20T07:17:31.844Z",
-  "checkedAt": "2026-03-20T07:17:32.000Z",
+  "generatedAt": "2026-03-20T10:02:05.656Z",
+  "lastChangedAt": "2026-03-20T10:02:05.656Z",
+  "checkedAt": "2026-03-20T10:02:06.000Z",
   "eventCount": 2000,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-03-20T07:17:27.346Z",
+    "checkedAt": "2026-03-20T10:01:58.308Z",
     "providers": {
       "nos": {
         "rows": 10,
@@ -13,8 +13,8 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-20T07:17:27.346Z",
-        "lastOkAt": "2026-03-20T07:17:27.346Z",
+        "checkedAt": "2026-03-20T10:01:58.308Z",
+        "lastOkAt": "2026-03-20T10:01:58.308Z",
         "fallbackApplied": false
       },
       "ziggo": {
@@ -23,14 +23,13 @@
         "minRows": 15,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-20T07:17:27.346Z",
-        "lastOkAt": "2026-03-20T07:17:27.346Z",
+        "checkedAt": "2026-03-20T10:01:58.308Z",
+        "lastOkAt": "2026-03-20T10:01:58.308Z",
         "fallbackApplied": false
       },
       "espn-schedule": {
-        "rows": 2056,
+        "rows": 2516,
         "errors": [
-          "ESPN schedule 20260321: HTTP 503",
           "ESPN schedule 20260322: HTTP 503",
           "ESPN schedule 20260324: HTTP 503",
           "ESPN schedule 20260325: HTTP 503",
@@ -42,18 +41,18 @@
           "ESPN schedule 20260403: HTTP 503",
           "ESPN schedule 20260404: HTTP 503",
           "ESPN schedule 20260405: HTTP 503",
+          "ESPN schedule 20260407: HTTP 503",
+          "ESPN schedule 20260408: HTTP 503",
           "ESPN schedule 20260410: HTTP 503",
           "ESPN schedule 20260411: HTTP 503",
           "ESPN schedule 20260412: HTTP 503",
           "ESPN schedule 20260414: HTTP 503",
-          "ESPN schedule 20260415: HTTP 503",
-          "ESPN schedule 20260416: HTTP 503",
           "ESPN schedule 20260417: HTTP 503"
         ],
         "minRows": 12,
         "ok": false,
         "status": "degraded",
-        "checkedAt": "2026-03-20T07:17:27.346Z",
+        "checkedAt": "2026-03-20T10:01:58.308Z",
         "lastOkAt": "2026-03-19T15:16:03.028Z",
         "fallbackApplied": true
       },
@@ -63,18 +62,18 @@
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-20T07:17:27.346Z",
-        "lastOkAt": "2026-03-20T07:17:27.346Z",
+        "checkedAt": "2026-03-20T10:01:58.308Z",
+        "lastOkAt": "2026-03-20T10:01:58.308Z",
         "fallbackApplied": false
       },
       "npo-guide": {
-        "rows": 33,
+        "rows": 32,
         "errors": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-20T07:17:27.346Z",
-        "lastOkAt": "2026-03-20T07:17:27.346Z",
+        "checkedAt": "2026-03-20T10:01:58.308Z",
+        "lastOkAt": "2026-03-20T10:01:58.308Z",
         "fallbackApplied": false
       },
       "hbo-max": {
@@ -83,8 +82,8 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-20T07:17:27.346Z",
-        "lastOkAt": "2026-03-20T07:17:27.346Z",
+        "checkedAt": "2026-03-20T10:01:58.308Z",
+        "lastOkAt": "2026-03-20T10:01:58.308Z",
         "fallbackApplied": false
       }
     }
