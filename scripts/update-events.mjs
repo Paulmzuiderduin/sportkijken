@@ -847,6 +847,11 @@ function isReplayLikeTitle(title) {
   return ['samenvatting', 'highlights', 'herhaling', 'voorbeschouwing', 'nabeschouwing'].some((word) => normalized.includes(word));
 }
 
+function isSchakelenTitle(title, description = '') {
+  const normalized = normalizeTitleForMatch(`${title || ''} ${description || ''}`);
+  return normalized.includes('schakel') || normalized.includes('switch');
+}
+
 function hasProviderChannel(channels, providerName) {
   const needle = normalizeAsciiLower(providerName);
   return (channels || []).some((channel) => normalizeAsciiLower(channel.name).includes(needle));
@@ -1100,17 +1105,20 @@ function applyProviderAccessBusinessRules(event) {
       const isStream = ruleListIncludes(streamNames, normalizedCanonical);
       const isFree = ruleListIncludes(freeNames, normalizedCanonical);
 
+      const baseConditions = isFree
+        ? (ESPN_RULES.freeConditions || 'Gratis voor KPN-klanten met geschikt tv-pakket.')
+        : isStream
+          ? (ESPN_RULES.paidStreamConditions || 'Streaming via ESPN Watch met geschikt abonnement.')
+        : (ESPN_RULES.paidTvConditions || 'Alleen met ESPN Compleet of geschikt tv-pakket.');
+      const extraConditions = channel.extraConditions ? ` ${channel.extraConditions}` : '';
+
       return {
         ...channel,
         name: canonicalName,
         platform: isStream ? 'stream' : 'tv',
         access: isFree ? 'free' : 'paid',
         url: channel.url || (isStream ? (ESPN_RULES.watchUrl || 'https://www.espn.nl/watch/') : (ESPN_RULES.scheduleUrl || 'https://www.espn.nl/watch/schedule')),
-        conditions: isFree
-          ? (ESPN_RULES.freeConditions || 'Gratis voor KPN-klanten met geschikt tv-pakket.')
-          : isStream
-            ? (ESPN_RULES.paidStreamConditions || 'Streaming via ESPN Watch met geschikt abonnement.')
-          : (ESPN_RULES.paidTvConditions || 'Alleen met ESPN Compleet of geschikt tv-pakket.')
+        conditions: `${baseConditions}${extraConditions}`.trim()
       };
     }
 
@@ -1506,13 +1514,18 @@ function enrichEventChannels(event, ziggoRows, espnRows, viaplayRows, npoRows, p
       findScheduleRowsForEvent(event, espnRows, 120, 120)
     );
     if (matches.length) {
+      const isSchakelen = matches.some((row) => isSchakelenTitle(row.title, row.description));
       const espnChannels = mergeChannels(
         ...matches.map((row) => (
           row.channels
             .map((channelName) => espnChannelFromName(channelName, row.watchUrl))
             .filter(Boolean)
         ))
-      );
+      ).map((channel) => (
+        isSchakelen
+          ? { ...channel, extraConditions: 'Schakel-uitzending (meerdere wedstrijden in 1 programma).' }
+          : channel
+      ));
       if (espnChannels.length) {
         const nonEspnChannels = removeChannelsByNeedles(nextChannels, ['espn']);
         nextChannels = mergeChannels(nonEspnChannels, espnChannels);
