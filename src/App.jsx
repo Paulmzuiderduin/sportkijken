@@ -155,6 +155,8 @@ function colorForSport(id) {
 function buildSportOptions(events) {
   return [...new Set([...Object.keys(KNOWN_SPORT_META), ...events.map((event) => event.sport)])]
     .sort((a, b) => {
+      if (a === 'overig') return 1;
+      if (b === 'overig') return -1;
       const aLabel = KNOWN_SPORT_META[a]?.label || formatSportLabel(a);
       const bLabel = KNOWN_SPORT_META[b]?.label || formatSportLabel(b);
       return aLabel.localeCompare(bLabel, 'nl-NL');
