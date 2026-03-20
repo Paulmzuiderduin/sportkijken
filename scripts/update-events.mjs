@@ -48,6 +48,7 @@ const QA_TITLE_BLOCKLIST_PATTERNS = [
   /\boriginals?\b/i,
   /\bop zoek naar\b/i,
   /\bde hoop van\b/i,
+  /\boj\.*\s*made in america\b/i,
   /\bnederland in beweging\b/i,
   /\bzappsport\b/i,
   /\bzappelin\b/i,
