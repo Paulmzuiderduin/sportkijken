@@ -40,6 +40,9 @@ const QA_MIN_ROWS_BY_SOURCE = {
   'npo-guide': 5
 };
 const QA_DROP_TRACKED_SOURCES = ['nos', 'ziggo', 'espn-schedule', 'viaplay', 'npo-guide'];
+const QA_DROP_THRESHOLD_BY_SOURCE = {
+  'espn-schedule': 0.2
+};
 const QA_TITLE_BLOCKLIST_PATTERNS = [
   /\bthe rich eisen show\b/i,
   /\bahora o nunca\b/i,
@@ -1627,6 +1630,12 @@ function durationFromStartEnd(startIso, endIso, fallbackMinutes = 120) {
 
 function normalizedTitleKey(title) {
   return normalizeTitleForMatch(title)
+    .replace(/\ben espanol\b/g, ' ')
+    .replace(/\bcuartos de final\b/g, ' ')
+    .replace(/\bsemifinal\b/g, ' ')
+    .replace(/\bfinal\b/g, ' ')
+    .replace(/\bpartido de ida\b/g, ' ')
+    .replace(/\bpartido de vuelta\b/g, ' ')
     .replace(/[^a-z0-9 ]+/g, ' ')
     .replace(/\b(live|livestream|wedstrijd|match|sport)\b/g, ' ')
     .replace(/\s+/g, ' ')
@@ -3470,11 +3479,20 @@ function splitPublishableEvents(events) {
   };
 }
 
+function hasFetchErrorForSource(fetchErrors, sourceType) {
+  if (!Array.isArray(fetchErrors) || !fetchErrors.length) {
+    return false;
+  }
+  const needle = normalizeAsciiLower(sourceType);
+  return fetchErrors.some((error) => normalizeAsciiLower(error).includes(needle));
+}
+
 function runQualityGates({
   events,
   previousEvents,
   providerHealth,
-  quarantinedEvents = []
+  quarantinedEvents = [],
+  fetchErrors = []
 }) {
   const errors = [];
   const warnings = [];
@@ -3546,11 +3564,12 @@ function runQualityGates({
     const health = providerHealth[sourceType] || { rows: 0, errors: [] };
     const errorCount = Array.isArray(health.errors) ? health.errors.length : 0;
     const rows = Number(health.rows || 0);
-    if (errorCount === 0 && rows < minRows) {
+    const hasFetchErrors = errorCount > 0 || hasFetchErrorForSource(fetchErrors, sourceType);
+    if (!hasFetchErrors && rows < minRows) {
       errors.push(`Bron ${sourceType} levert te weinig rijen (${health.rows} < ${minRows}) zonder fetch-fouten.`);
     }
-    if (errorCount > 0 && rows < minRows) {
-      warnings.push(`Bron ${sourceType} levert te weinig rijen (${rows} < ${minRows}) met ${errorCount} fetch-fouten.`);
+    if (hasFetchErrors && rows < minRows) {
+      warnings.push(`Bron ${sourceType} levert te weinig rijen (${rows} < ${minRows}) met fetch-fouten.`);
     }
   });
 
@@ -3562,9 +3581,13 @@ function runQualityGates({
       }
 
       const currentCount = countEventsBySourceType(events, sourceType);
-      const threshold = Math.max(1, Math.floor(previousCount * 0.4));
+      const dropRatio = Number.isFinite(QA_DROP_THRESHOLD_BY_SOURCE[sourceType])
+        ? QA_DROP_THRESHOLD_BY_SOURCE[sourceType]
+        : 0.4;
+      const threshold = Math.max(1, Math.floor(previousCount * dropRatio));
       const health = providerHealth[sourceType] || { errors: [] };
-      const hasSourceErrors = Array.isArray(health.errors) && health.errors.length > 0;
+      const hasSourceErrors = (Array.isArray(health.errors) && health.errors.length > 0)
+        || hasFetchErrorForSource(fetchErrors, sourceType);
       if (!hasSourceErrors && currentCount < threshold) {
         errors.push(
           `Kwaliteitsval voor ${sourceType}: ${currentCount} events (vorige dataset: ${previousCount}, drempel: ${threshold}).`
@@ -3723,7 +3746,8 @@ if (QUALITY_GATES_ENABLED) {
     events: allVerifiedEvents,
     previousEvents,
     providerHealth,
-    quarantinedEvents: publishableSplit.quarantined
+    quarantinedEvents: publishableSplit.quarantined,
+    fetchErrors
   });
 
   quality.warnings.forEach((warning) => {
