@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-03-24T07:34:16.151Z",
+  "checkedAt": "2026-03-24T10:13:15.965Z",
   "providers": {
     "nos": {
       "rows": 10,
@@ -7,33 +7,25 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-24T07:34:16.151Z",
-      "lastOkAt": "2026-03-24T07:34:16.151Z",
+      "checkedAt": "2026-03-24T10:13:15.965Z",
+      "lastOkAt": "2026-03-24T10:13:15.965Z",
       "fallbackApplied": false
     },
     "ziggo": {
-      "rows": 2692,
+      "rows": 2685,
       "errors": [],
       "minRows": 15,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-24T07:34:16.151Z",
-      "lastOkAt": "2026-03-24T07:34:16.151Z",
+      "checkedAt": "2026-03-24T10:13:15.965Z",
+      "lastOkAt": "2026-03-24T10:13:15.965Z",
       "fallbackApplied": false
     },
     "espn-schedule": {
-      "rows": 1439,
+      "rows": 3670,
       "errors": [
-        "ESPN schedule 20260325: HTTP 503",
-        "ESPN schedule 20260326: HTTP 503",
-        "ESPN schedule 20260327: HTTP 503",
         "ESPN schedule 20260328: HTTP 503",
-        "ESPN schedule 20260329: HTTP 503",
-        "ESPN schedule 20260331: HTTP 503",
-        "ESPN schedule 20260401: HTTP 503",
-        "ESPN schedule 20260402: HTTP 503",
         "ESPN schedule 20260403: HTTP 503",
-        "ESPN schedule 20260404: HTTP 503",
         "ESPN schedule 20260407: HTTP 503",
         "ESPN schedule 20260408: HTTP 503",
         "ESPN schedule 20260410: HTTP 503",
@@ -41,6 +33,7 @@
         "ESPN schedule 20260412: HTTP 503",
         "ESPN schedule 20260414: HTTP 503",
         "ESPN schedule 20260415: HTTP 503",
+        "ESPN schedule 20260416: HTTP 503",
         "ESPN schedule 20260417: HTTP 503",
         "ESPN schedule 20260418: HTTP 503",
         "ESPN schedule 20260419: HTTP 503",
@@ -49,7 +42,7 @@
       "minRows": 12,
       "ok": false,
       "status": "degraded",
-      "checkedAt": "2026-03-24T07:34:16.151Z",
+      "checkedAt": "2026-03-24T10:13:15.965Z",
       "lastOkAt": "2026-03-23T18:46:56.491Z",
       "fallbackApplied": true
     },
@@ -59,8 +52,8 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-24T07:34:16.151Z",
-      "lastOkAt": "2026-03-24T07:34:16.151Z",
+      "checkedAt": "2026-03-24T10:13:15.965Z",
+      "lastOkAt": "2026-03-24T10:13:15.965Z",
       "fallbackApplied": false
     },
     "npo-guide": {
@@ -69,8 +62,8 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-24T07:34:16.151Z",
-      "lastOkAt": "2026-03-24T07:34:16.151Z",
+      "checkedAt": "2026-03-24T10:13:15.965Z",
+      "lastOkAt": "2026-03-24T10:13:15.965Z",
       "fallbackApplied": false
     },
     "hbo-max": {
@@ -79,8 +72,8 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-03-24T07:34:16.151Z",
-      "lastOkAt": "2026-03-24T07:34:16.151Z",
+      "checkedAt": "2026-03-24T10:13:15.965Z",
+      "lastOkAt": "2026-03-24T10:13:15.965Z",
       "fallbackApplied": false
     }
   }
