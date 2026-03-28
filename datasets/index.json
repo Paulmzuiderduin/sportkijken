@@ -1,56 +1,28 @@
 {
-  "generatedAt": "2026-03-27T21:54:36.471Z",
-  "checkedAt": "2026-03-27T21:54:36.000Z",
+  "generatedAt": "2026-03-28T03:20:41.605Z",
+  "checkedAt": "2026-03-28T03:20:41.000Z",
   "eventCount": 2000,
   "buckets": [
     {
       "id": "2026-03",
       "path": "/datasets/events-2026-03.json",
-      "start": "2026-03-27T16:30:00.000Z",
+      "start": "2026-03-28T00:00:00.000Z",
       "end": "2026-03-31T23:55:00.000Z",
-      "eventCount": 645
+      "eventCount": 621
     },
     {
       "id": "2026-04",
       "path": "/datasets/events-2026-04.json",
       "start": "2026-04-01T00:00:00.000Z",
       "end": "2026-04-30T23:00:00.000Z",
-      "eventCount": 940
+      "eventCount": 1096
     },
     {
       "id": "2026-05",
       "path": "/datasets/events-2026-05.json",
       "start": "2026-05-01T16:30:00.000Z",
-      "end": "2026-05-31T19:30:00.000Z",
-      "eventCount": 314
-    },
-    {
-      "id": "2026-06",
-      "path": "/datasets/events-2026-06.json",
-      "start": "2026-06-02T00:00:00.000Z",
-      "end": "2026-06-26T11:30:00.000Z",
-      "eventCount": 52
-    },
-    {
-      "id": "2026-07",
-      "path": "/datasets/events-2026-07.json",
-      "start": "2026-07-02T04:00:00.000Z",
-      "end": "2026-07-31T04:00:00.000Z",
-      "eventCount": 26
-    },
-    {
-      "id": "2026-08",
-      "path": "/datasets/events-2026-08.json",
-      "start": "2026-08-06T04:00:00.000Z",
-      "end": "2026-08-27T04:00:00.000Z",
-      "eventCount": 13
-    },
-    {
-      "id": "2026-09",
-      "path": "/datasets/events-2026-09.json",
-      "start": "2026-09-04T10:30:00.000Z",
-      "end": "2026-09-21T04:00:00.000Z",
-      "eventCount": 10
+      "end": "2026-05-24T18:00:00.000Z",
+      "eventCount": 283
     }
   ]
 }
