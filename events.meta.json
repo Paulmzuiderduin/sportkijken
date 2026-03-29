@@ -1,41 +1,37 @@
 {
-  "generatedAt": "2026-03-29T15:51:07.286Z",
-  "lastChangedAt": "2026-03-29T15:51:07.286Z",
-  "checkedAt": "2026-03-29T15:51:07.000Z",
+  "generatedAt": "2026-03-29T21:51:00.304Z",
+  "lastChangedAt": "2026-03-29T21:51:00.304Z",
+  "checkedAt": "2026-03-29T21:51:00.000Z",
   "eventCount": 2000,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-03-29T15:50:56.813Z",
+    "checkedAt": "2026-03-29T21:50:45.489Z",
     "providers": {
       "nos": {
-        "rows": 11,
+        "rows": 10,
         "errors": [],
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-29T15:50:56.813Z",
-        "lastOkAt": "2026-03-29T15:50:56.813Z",
+        "checkedAt": "2026-03-29T21:50:45.489Z",
+        "lastOkAt": "2026-03-29T21:50:45.489Z",
         "fallbackApplied": false
       },
       "ziggo": {
-        "rows": 2535,
+        "rows": 2480,
         "errors": [],
         "minRows": 15,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-29T15:50:56.813Z",
-        "lastOkAt": "2026-03-29T15:50:56.813Z",
+        "checkedAt": "2026-03-29T21:50:45.489Z",
+        "lastOkAt": "2026-03-29T21:50:45.489Z",
         "fallbackApplied": false
       },
       "espn-schedule": {
-        "rows": 3468,
+        "rows": 4845,
         "errors": [
-          "ESPN schedule 20260402: HTTP 503",
-          "ESPN schedule 20260403: HTTP 503",
-          "ESPN schedule 20260407: HTTP 503",
+          "ESPN schedule 20260408: HTTP 503",
           "ESPN schedule 20260410: HTTP 503",
-          "ESPN schedule 20260411: HTTP 503",
-          "ESPN schedule 20260412: HTTP 503",
           "ESPN schedule 20260414: HTTP 503",
           "ESPN schedule 20260415: HTTP 503",
           "ESPN schedule 20260417: HTTP 503",
@@ -49,38 +45,38 @@
         "minRows": 12,
         "ok": false,
         "status": "degraded",
-        "checkedAt": "2026-03-29T15:50:56.813Z",
+        "checkedAt": "2026-03-29T21:50:45.489Z",
         "lastOkAt": "2026-03-23T18:46:56.491Z",
         "fallbackApplied": true
       },
       "viaplay": {
-        "rows": 35,
+        "rows": 24,
         "errors": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-29T15:50:56.813Z",
-        "lastOkAt": "2026-03-29T15:50:56.813Z",
+        "checkedAt": "2026-03-29T21:50:45.489Z",
+        "lastOkAt": "2026-03-29T21:50:45.489Z",
         "fallbackApplied": false
       },
       "npo-guide": {
-        "rows": 27,
+        "rows": 26,
         "errors": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-29T15:50:56.813Z",
-        "lastOkAt": "2026-03-29T15:50:56.813Z",
+        "checkedAt": "2026-03-29T21:50:45.489Z",
+        "lastOkAt": "2026-03-29T21:50:45.489Z",
         "fallbackApplied": false
       },
       "hbo-max": {
-        "rows": 27,
+        "rows": 26,
         "errors": [],
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-03-29T15:50:56.813Z",
-        "lastOkAt": "2026-03-29T15:50:56.813Z",
+        "checkedAt": "2026-03-29T21:50:45.489Z",
+        "lastOkAt": "2026-03-29T21:50:45.489Z",
         "fallbackApplied": false
       }
     }
