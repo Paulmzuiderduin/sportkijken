@@ -977,6 +977,7 @@ function App() {
     }
 
     let cancelled = false;
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const ensureBundledFallbackDataset = async () => {
       const current = datasetSnapshotRef.current || EMPTY_DATASET;
@@ -1079,17 +1080,31 @@ function App() {
       const selectedWindow = loadWindowForRange(preferences.rangeFilter);
       const candidateBuckets = index.buckets.filter((bucket) => bucketOverlapsWindow(bucket, selectedWindow));
       const targetBuckets = candidateBuckets.length ? candidateBuckets : index.buckets;
+      const cacheBuster = index.generatedAt || Date.now();
 
       try {
-        const bucketPayloads = await Promise.all(
-          targetBuckets.map(async (bucket) => {
-            const response = await fetch(`${withDataBaseUrl(bucket.path)}?t=${Date.now()}`, { cache: 'no-store' });
-            if (!response.ok) {
-              return null;
+        const bucketPayloads = [];
+        for (const bucket of targetBuckets) {
+          let attempt = 0;
+          let payload = null;
+          while (attempt < 2 && !payload) {
+            const response = await fetch(`${withDataBaseUrl(bucket.path)}?v=${cacheBuster}`, { cache: 'no-store' });
+            if (response.status === 429) {
+              attempt += 1;
+              await sleep(350 * attempt);
+              continue;
             }
-            return normalizeRuntimeDataset(await response.json());
-          })
-        );
+            if (!response.ok) {
+              payload = null;
+              break;
+            }
+            payload = normalizeRuntimeDataset(await response.json());
+          }
+          if (!payload) {
+            return false;
+          }
+          bucketPayloads.push(payload);
+        }
 
         const eventsById = new Map();
         bucketPayloads.forEach((payload) => {
