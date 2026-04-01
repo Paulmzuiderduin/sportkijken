@@ -1642,6 +1642,21 @@ function normalizedTitleKey(title) {
     .trim();
 }
 
+function isPlaceholderMatchTitle(title) {
+  const normalized = normalizeTitleForMatch(title)
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!normalized) {
+    return false;
+  }
+  const tokens = normalized.split(' ').filter(Boolean);
+  if (!tokens.length) {
+    return false;
+  }
+  return tokens.every((token) => token === 'tbd' || token === 'tba');
+}
+
 function scheduleOnlyShouldSkip(title) {
   const normalized = normalizeAsciiLower(title).replace(/\s+/g, ' ').trim();
   return !normalized || SCHEDULE_ONLY_SKIP_KEYWORDS.some((keyword) => normalized.includes(keyword));
@@ -3534,6 +3549,9 @@ function runQualityGates({
   const duplicateMap = new Map();
   const duplicateExamples = [];
   events.forEach((event) => {
+    if (isPlaceholderMatchTitle(event.title)) {
+      return;
+    }
     const providerKey = [...new Set((event.channels || [])
       .map((channel) => normalizeAsciiLower(channel?.name))
       .filter(Boolean))]
