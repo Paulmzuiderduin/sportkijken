@@ -1630,6 +1630,10 @@ function durationFromStartEnd(startIso, endIso, fallbackMinutes = 120) {
 
 function normalizedTitleKey(title) {
   return normalizeTitleForMatch(title)
+    .replace(/\bpresented by\b/g, ' ')
+    .replace(/\b(first|second|third|fourth)\s+round\b/g, ' ')
+    .replace(/\b(round\s+[0-9]+|round\s+i+|round\s+ii+|round\s+iii+|round\s+iv+)\b/g, ' ')
+    .replace(/\bgame\s+[0-9]+(?:\s*\(if necessary\))?\b/g, ' ')
     .replace(/\ben espanol\b/g, ' ')
     .replace(/\bcuartos de final\b/g, ' ')
     .replace(/\bsemifinal\b/g, ' ')
