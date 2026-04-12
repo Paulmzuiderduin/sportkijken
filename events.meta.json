@@ -1,38 +1,39 @@
 {
-  "generatedAt": "2026-04-12T15:56:31.276Z",
-  "lastChangedAt": "2026-04-12T15:56:31.276Z",
-  "checkedAt": "2026-04-12T15:56:31.000Z",
+  "generatedAt": "2026-04-12T19:12:32.166Z",
+  "lastChangedAt": "2026-04-12T19:12:32.166Z",
+  "checkedAt": "2026-04-12T19:12:32.000Z",
   "eventCount": 2000,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-04-12T15:56:22.130Z",
+    "checkedAt": "2026-04-12T19:12:28.002Z",
     "providers": {
       "nos": {
-        "rows": 11,
+        "rows": 10,
         "errors": [],
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-04-12T15:56:22.130Z",
-        "lastOkAt": "2026-04-12T15:56:22.130Z",
+        "checkedAt": "2026-04-12T19:12:28.002Z",
+        "lastOkAt": "2026-04-12T19:12:28.002Z",
         "fallbackApplied": false
       },
       "ziggo": {
-        "rows": 2647,
+        "rows": 2615,
         "errors": [],
         "minRows": 15,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-04-12T15:56:22.130Z",
-        "lastOkAt": "2026-04-12T15:56:22.130Z",
+        "checkedAt": "2026-04-12T19:12:28.002Z",
+        "lastOkAt": "2026-04-12T19:12:28.002Z",
         "fallbackApplied": false
       },
       "espn-schedule": {
-        "rows": 3460,
+        "rows": 2445,
         "errors": [
-          "ESPN schedule 20260416: HTTP 503",
           "ESPN schedule 20260417: HTTP 503",
+          "ESPN schedule 20260418: HTTP 503",
           "ESPN schedule 20260421: HTTP 503",
+          "ESPN schedule 20260422: HTTP 503",
           "ESPN schedule 20260424: HTTP 503",
           "ESPN schedule 20260425: HTTP 503",
           "ESPN schedule 20260426: HTTP 503",
@@ -41,6 +42,7 @@
           "ESPN schedule 20260430: HTTP 503",
           "ESPN schedule 20260501: HTTP 503",
           "ESPN schedule 20260502: HTTP 503",
+          "ESPN schedule 20260503: HTTP 503",
           "ESPN schedule 20260505: HTTP 503",
           "ESPN schedule 20260508: HTTP 503",
           "ESPN schedule 20260509: HTTP 503",
@@ -49,18 +51,18 @@
         "minRows": 12,
         "ok": false,
         "status": "degraded",
-        "checkedAt": "2026-04-12T15:56:22.130Z",
+        "checkedAt": "2026-04-12T19:12:28.002Z",
         "lastOkAt": "2026-04-09T18:13:33.107Z",
         "fallbackApplied": true
       },
       "viaplay": {
-        "rows": 46,
+        "rows": 36,
         "errors": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-04-12T15:56:22.130Z",
-        "lastOkAt": "2026-04-12T15:56:22.130Z",
+        "checkedAt": "2026-04-12T19:12:28.002Z",
+        "lastOkAt": "2026-04-12T19:12:28.002Z",
         "fallbackApplied": false
       },
       "npo-guide": {
@@ -69,8 +71,8 @@
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-04-12T15:56:22.130Z",
-        "lastOkAt": "2026-04-12T15:56:22.130Z",
+        "checkedAt": "2026-04-12T19:12:28.002Z",
+        "lastOkAt": "2026-04-12T19:12:28.002Z",
         "fallbackApplied": false
       },
       "hbo-max": {
@@ -79,8 +81,8 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-04-12T15:56:22.130Z",
-        "lastOkAt": "2026-04-12T15:56:22.130Z",
+        "checkedAt": "2026-04-12T19:12:28.002Z",
+        "lastOkAt": "2026-04-12T19:12:28.002Z",
         "fallbackApplied": false
       }
     }
