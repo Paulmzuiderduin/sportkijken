@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-04-13T08:27:03.734Z",
+  "checkedAt": "2026-04-13T10:59:23.712Z",
   "providers": {
     "nos": {
       "rows": 10,
@@ -7,28 +7,26 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-04-13T08:27:03.734Z",
-      "lastOkAt": "2026-04-13T08:27:03.734Z",
+      "checkedAt": "2026-04-13T10:59:23.712Z",
+      "lastOkAt": "2026-04-13T10:59:23.712Z",
       "fallbackApplied": false
     },
     "ziggo": {
-      "rows": 2738,
+      "rows": 2699,
       "errors": [],
       "minRows": 15,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-04-13T08:27:03.734Z",
-      "lastOkAt": "2026-04-13T08:27:03.734Z",
+      "checkedAt": "2026-04-13T10:59:23.712Z",
+      "lastOkAt": "2026-04-13T10:59:23.712Z",
       "fallbackApplied": false
     },
     "espn-schedule": {
-      "rows": 2120,
+      "rows": 2751,
       "errors": [
-        "ESPN schedule 20260417: HTTP 503",
         "ESPN schedule 20260418: HTTP 503",
         "ESPN schedule 20260419: HTTP 503",
         "ESPN schedule 20260421: HTTP 503",
-        "ESPN schedule 20260422: HTTP 503",
         "ESPN schedule 20260424: HTTP 503",
         "ESPN schedule 20260425: HTTP 503",
         "ESPN schedule 20260426: HTTP 503",
@@ -46,7 +44,7 @@
       "minRows": 12,
       "ok": false,
       "status": "degraded",
-      "checkedAt": "2026-04-13T08:27:03.734Z",
+      "checkedAt": "2026-04-13T10:59:23.712Z",
       "lastOkAt": "2026-04-09T18:13:33.107Z",
       "fallbackApplied": true
     },
@@ -56,8 +54,8 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-04-13T08:27:03.734Z",
-      "lastOkAt": "2026-04-13T08:27:03.734Z",
+      "checkedAt": "2026-04-13T10:59:23.712Z",
+      "lastOkAt": "2026-04-13T10:59:23.712Z",
       "fallbackApplied": false
     },
     "npo-guide": {
@@ -66,18 +64,18 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-04-13T08:27:03.734Z",
-      "lastOkAt": "2026-04-13T08:27:03.734Z",
+      "checkedAt": "2026-04-13T10:59:23.712Z",
+      "lastOkAt": "2026-04-13T10:59:23.712Z",
       "fallbackApplied": false
     },
     "hbo-max": {
-      "rows": 32,
+      "rows": 30,
       "errors": [],
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-04-13T08:27:03.734Z",
-      "lastOkAt": "2026-04-13T08:27:03.734Z",
+      "checkedAt": "2026-04-13T10:59:23.712Z",
+      "lastOkAt": "2026-04-13T10:59:23.712Z",
       "fallbackApplied": false
     }
   }
