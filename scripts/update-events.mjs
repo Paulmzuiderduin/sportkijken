@@ -2119,7 +2119,44 @@ function dedupeEvents(events) {
       sourceType: existing.sourceType === event.sourceType ? existing.sourceType : (event.sourceType || existing.sourceType || 'mixed')
     });
   });
-  return [...byId.values()].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+
+  const byFuzzyKey = new Map();
+  [...byId.values()].forEach((event) => {
+    const providerKey = [...new Set((event.channels || [])
+      .map((channel) => normalizeAsciiLower(channel?.name))
+      .filter(Boolean))]
+      .sort()
+      .join('|') || 'no-provider';
+    const key = [
+      normalizeAsciiLower(event.sport || ''),
+      normalizeAsciiLower(event.competition || ''),
+      normalizedTitleKey(event.title),
+      event.start,
+      providerKey
+    ].join('|');
+
+    const existing = byFuzzyKey.get(key);
+    if (!existing) {
+      byFuzzyKey.set(key, event);
+      return;
+    }
+
+    const existingTitleScore = String(existing.title || '').length;
+    const nextTitleScore = String(event.title || '').length;
+    const preferred = nextTitleScore > existingTitleScore ? event : existing;
+    const secondary = preferred === existing ? event : existing;
+
+    byFuzzyKey.set(key, {
+      ...preferred,
+      channels: mergeChannels(preferred.channels || [], secondary.channels || []),
+      sourceRefs: mergeSourceRefs(preferred.sourceRefs || [], secondary.sourceRefs || []),
+      sourceType: preferred.sourceType === secondary.sourceType
+        ? preferred.sourceType
+        : (preferred.sourceType || secondary.sourceType || 'mixed')
+    });
+  });
+
+  return [...byFuzzyKey.values()].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 }
 
 function slugify(value) {
