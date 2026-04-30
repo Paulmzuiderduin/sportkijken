@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-04-29T22:14:45.360Z",
+  "checkedAt": "2026-04-30T13:37:52.227Z",
   "providers": {
     "nos": {
       "rows": 10,
@@ -7,76 +7,72 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-04-29T22:14:45.360Z",
-      "lastOkAt": "2026-04-29T22:14:45.360Z",
+      "checkedAt": "2026-04-30T13:37:52.227Z",
+      "lastOkAt": "2026-04-30T13:37:52.227Z",
       "fallbackApplied": false
     },
     "ziggo": {
-      "rows": 2979,
-      "errors": [],
-      "minRows": 15,
-      "ok": true,
-      "status": "ok",
-      "checkedAt": "2026-04-29T22:14:45.360Z",
-      "lastOkAt": "2026-04-29T22:14:45.360Z",
-      "fallbackApplied": false
-    },
-    "espn-schedule": {
-      "rows": 2416,
+      "rows": 937,
       "errors": [
-        "ESPN schedule 20260501: HTTP 503",
-        "ESPN schedule 20260502: HTTP 503",
-        "ESPN schedule 20260503: HTTP 503",
-        "ESPN schedule 20260505: HTTP 503",
-        "ESPN schedule 20260508: HTTP 503",
-        "ESPN schedule 20260509: HTTP 503",
-        "ESPN schedule 20260510: HTTP 503",
-        "ESPN schedule 20260512: HTTP 503",
-        "ESPN schedule 20260514: HTTP 503",
-        "ESPN schedule 20260515: HTTP 503",
-        "ESPN schedule 20260516: HTTP 503",
-        "ESPN schedule 20260517: HTTP 503",
-        "ESPN schedule 20260520: HTTP 503",
-        "ESPN schedule 20260522: HTTP 503",
-        "ESPN schedule 20260523: HTTP 503",
-        "ESPN schedule 20260524: HTTP 503"
+        "Ziggo EPG 2026-04-30: fetch failed",
+        "Ziggo EPG 2026-05-01: fetch failed",
+        "Ziggo EPG 2026-05-02: fetch failed",
+        "Ziggo EPG 2026-05-03: fetch failed",
+        "Ziggo EPG 2026-05-04: fetch failed",
+        "Ziggo EPG 2026-05-06: fetch failed",
+        "Ziggo EPG 2026-05-08: fetch failed",
+        "Ziggo EPG 2026-05-10: fetch failed",
+        "Ziggo EPG 2026-05-11: fetch failed",
+        "Ziggo EPG 2026-05-13: fetch failed"
       ],
-      "minRows": 12,
+      "minRows": 15,
       "ok": false,
       "status": "degraded",
-      "checkedAt": "2026-04-29T22:14:45.360Z",
+      "checkedAt": "2026-04-30T13:37:52.227Z",
       "lastOkAt": "2026-04-15T17:37:28.429Z",
       "fallbackApplied": true
     },
+    "espn-schedule": {
+      "rows": 2888,
+      "errors": [],
+      "minRows": 12,
+      "ok": true,
+      "status": "ok",
+      "checkedAt": "2026-04-30T13:37:52.227Z",
+      "lastOkAt": "2026-04-30T13:37:52.227Z",
+      "fallbackApplied": false
+    },
     "viaplay": {
-      "rows": 43,
+      "rows": 47,
       "errors": [],
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-04-29T22:14:45.360Z",
-      "lastOkAt": "2026-04-29T22:14:45.360Z",
+      "checkedAt": "2026-04-30T13:37:52.227Z",
+      "lastOkAt": "2026-04-30T13:37:52.227Z",
       "fallbackApplied": false
     },
     "npo-guide": {
-      "rows": 22,
+      "rows": 23,
       "errors": [],
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-04-29T22:14:45.360Z",
-      "lastOkAt": "2026-04-29T22:14:45.360Z",
+      "checkedAt": "2026-04-30T13:37:52.227Z",
+      "lastOkAt": "2026-04-30T13:37:52.227Z",
       "fallbackApplied": false
     },
     "hbo-max": {
-      "rows": 26,
-      "errors": [],
+      "rows": 0,
+      "errors": [
+        "HBO Max sportagenda: fetch failed"
+      ],
       "minRows": 1,
-      "ok": true,
-      "status": "ok",
-      "checkedAt": "2026-04-29T22:14:45.360Z",
-      "lastOkAt": "2026-04-29T22:14:45.360Z",
-      "fallbackApplied": false
+      "ok": false,
+      "status": "down",
+      "checkedAt": "2026-04-30T13:37:52.227Z",
+      "lastOkAt": "2026-04-15T17:37:28.429Z",
+      "fallbackApplied": true
     }
   }
 }

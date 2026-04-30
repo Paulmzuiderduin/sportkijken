@@ -1369,6 +1369,10 @@ async function fetchEspnScheduleRows() {
       const html = await fetchText(url);
       const payload = parseEspnFittData(html);
       const extracted = extractEspnScheduleRows(payload, url);
+      if (!extracted.length) {
+        errors.push(`ESPN schedule ${startDate}: no usable rows`);
+        continue;
+      }
       extracted.forEach((row) => {
         const key = `${row.title}|${row.start}|${row.channels.join(',')}`;
         if (seen.has(key)) {
@@ -1380,6 +1384,10 @@ async function fetchEspnScheduleRows() {
     } catch (error) {
       errors.push(`ESPN schedule ${startDate}: ${error.message}`);
     }
+  }
+
+  if (!rows.length && !errors.length) {
+    errors.push('ESPN schedule: no usable rows');
   }
 
   return { rows, sources, errors };
