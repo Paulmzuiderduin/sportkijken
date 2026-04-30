@@ -1214,6 +1214,19 @@ function parseEspnFittData(rawHtml) {
   return safeParseJson(match[1]);
 }
 
+function inspectEspnPayload(payload) {
+  const root = payload?.page?.content?.watch;
+  return {
+    hasPayload: Boolean(payload),
+    hasPage: Boolean(payload?.page),
+    hasContent: Boolean(payload?.page?.content),
+    hasWatch: Boolean(root),
+    hasArngs: Array.isArray(root?.arngs),
+    arngsCount: Array.isArray(root?.arngs) ? root.arngs.length : 0,
+    topLevelKeys: payload && typeof payload === 'object' ? Object.keys(payload).slice(0, 12) : []
+  };
+}
+
 function extractEspnScheduleRows(payload, sourceUrl) {
   const root = payload?.page?.content?.watch?.arngs;
   const rows = [];
@@ -1370,6 +1383,14 @@ async function fetchEspnScheduleRows() {
       const payload = parseEspnFittData(html);
       const extracted = extractEspnScheduleRows(payload, url);
       if (!extracted.length) {
+        const diagnostics = inspectEspnPayload(payload);
+        errors.push(
+          `ESPN schedule ${startDate}: no usable rows (${
+            diagnostics.hasPayload
+              ? `payload ok, watch=${diagnostics.hasWatch}, arngs=${diagnostics.hasArngs}, count=${diagnostics.arngsCount}, keys=${diagnostics.topLevelKeys.join(',') || 'none'}`
+              : 'payload missing'
+          })`
+        );
         errors.push(`ESPN schedule ${startDate}: no usable rows`);
         continue;
       }
