@@ -1663,6 +1663,7 @@ function normalizedTitleKey(title) {
     .replace(/\b(first|second|third|fourth)\s+round\b/g, ' ')
     .replace(/\b(round\s+[0-9]+|round\s+i+|round\s+ii+|round\s+iii+|round\s+iv+)\b/g, ' ')
     .replace(/\bgame\s+[0-9]+(?:\s*\(if necessary\))?\b/g, ' ')
+    .replace(/\b(pair|dual)\s*#?\s*[0-9]+\b/g, ' ')
     .replace(/\ben espanol\b/g, ' ')
     .replace(/\bcuartos de final\b/g, ' ')
     .replace(/\bsemifinal\b/g, ' ')
@@ -2156,9 +2157,12 @@ function dedupeEvents(events) {
       .filter(Boolean))]
       .sort()
       .join('|') || 'no-provider';
+    const sourceType = normalizeAsciiLower(event.sourceType || '');
+    const isEspnRelated = sourceType.includes('espn') || providerKey.includes('espn');
+    const competitionKey = isEspnRelated ? '' : normalizeAsciiLower(event.competition || '');
     const key = [
       normalizeAsciiLower(event.sport || ''),
-      normalizeAsciiLower(event.competition || ''),
+      competitionKey,
       normalizedTitleKey(event.title),
       event.start,
       providerKey
