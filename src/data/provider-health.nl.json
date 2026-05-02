@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-05-02T08:00:50.087Z",
+  "checkedAt": "2026-05-02T10:12:01.374Z",
   "providers": {
     "nos": {
       "rows": 10,
@@ -7,18 +7,18 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-02T08:00:50.087Z",
-      "lastOkAt": "2026-05-02T08:00:50.087Z",
+      "checkedAt": "2026-05-02T10:12:01.374Z",
+      "lastOkAt": "2026-05-02T10:12:01.374Z",
       "fallbackApplied": false
     },
     "ziggo": {
-      "rows": 2923,
+      "rows": 2906,
       "errors": [],
       "minRows": 15,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-02T08:00:50.087Z",
-      "lastOkAt": "2026-05-02T08:00:50.087Z",
+      "checkedAt": "2026-05-02T10:12:01.374Z",
+      "lastOkAt": "2026-05-02T10:12:01.374Z",
       "fallbackApplied": false
     },
     "espn-schedule": {
@@ -86,7 +86,7 @@
       "minRows": 12,
       "ok": false,
       "status": "down",
-      "checkedAt": "2026-05-02T08:00:50.087Z",
+      "checkedAt": "2026-05-02T10:12:01.374Z",
       "lastOkAt": "2026-05-01T19:13:24.348Z",
       "fallbackApplied": true
     },
@@ -96,8 +96,8 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-02T08:00:50.087Z",
-      "lastOkAt": "2026-05-02T08:00:50.087Z",
+      "checkedAt": "2026-05-02T10:12:01.374Z",
+      "lastOkAt": "2026-05-02T10:12:01.374Z",
       "fallbackApplied": false
     },
     "npo-guide": {
@@ -106,8 +106,8 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-02T08:00:50.087Z",
-      "lastOkAt": "2026-05-02T08:00:50.087Z",
+      "checkedAt": "2026-05-02T10:12:01.374Z",
+      "lastOkAt": "2026-05-02T10:12:01.374Z",
       "fallbackApplied": false
     },
     "hbo-max": {
@@ -116,8 +116,8 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-02T08:00:50.087Z",
-      "lastOkAt": "2026-05-02T08:00:50.087Z",
+      "checkedAt": "2026-05-02T10:12:01.374Z",
+      "lastOkAt": "2026-05-02T10:12:01.374Z",
       "fallbackApplied": false
     }
   }
