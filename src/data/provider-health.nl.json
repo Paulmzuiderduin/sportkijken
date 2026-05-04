@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-05-04T04:12:44.025Z",
+  "checkedAt": "2026-05-04T08:42:42.679Z",
   "providers": {
     "nos": {
       "rows": 10,
@@ -7,8 +7,8 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-04T04:12:44.025Z",
-      "lastOkAt": "2026-05-04T04:12:44.025Z",
+      "checkedAt": "2026-05-04T08:42:42.679Z",
+      "lastOkAt": "2026-05-04T08:42:42.679Z",
       "fallbackApplied": false
     },
     "ziggo": {
@@ -17,8 +17,8 @@
       "minRows": 15,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-04T04:12:44.025Z",
-      "lastOkAt": "2026-05-04T04:12:44.025Z",
+      "checkedAt": "2026-05-04T08:42:42.679Z",
+      "lastOkAt": "2026-05-04T08:42:42.679Z",
       "fallbackApplied": false
     },
     "espn-schedule": {
@@ -86,7 +86,7 @@
       "minRows": 12,
       "ok": false,
       "status": "down",
-      "checkedAt": "2026-05-04T04:12:44.025Z",
+      "checkedAt": "2026-05-04T08:42:42.679Z",
       "lastOkAt": "2026-05-01T19:13:24.348Z",
       "fallbackApplied": true
     },
@@ -96,18 +96,18 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-04T04:12:44.025Z",
-      "lastOkAt": "2026-05-04T04:12:44.025Z",
+      "checkedAt": "2026-05-04T08:42:42.679Z",
+      "lastOkAt": "2026-05-04T08:42:42.679Z",
       "fallbackApplied": false
     },
     "npo-guide": {
-      "rows": 24,
+      "rows": 22,
       "errors": [],
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-04T04:12:44.025Z",
-      "lastOkAt": "2026-05-04T04:12:44.025Z",
+      "checkedAt": "2026-05-04T08:42:42.679Z",
+      "lastOkAt": "2026-05-04T08:42:42.679Z",
       "fallbackApplied": false
     },
     "hbo-max": {
@@ -116,8 +116,8 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-04T04:12:44.025Z",
-      "lastOkAt": "2026-05-04T04:12:44.025Z",
+      "checkedAt": "2026-05-04T08:42:42.679Z",
+      "lastOkAt": "2026-05-04T08:42:42.679Z",
       "fallbackApplied": false
     }
   }
