@@ -18,10 +18,11 @@ The application has recently undergone significant changes to improve **mobile r
 - **The Problem:** Grouping and rendering 30+ days of events at once resulted in thousands of React DOM nodes, causing the app to freeze/lag on mobile during scrolling and state updates.
 - **The Solution:** A basic form of pagination/lazy loading was introduced.
 - **Implementation in `App.jsx`:** 
-  - A `useState` hook called `visibleDaysCount` (defaults to 3) controls how many days are initially rendered.
+  - A `useState` hook called `visibleDaysCount` (defaults to 1) controls how many days are initially rendered.
   - The `groupedEvents` array is sliced: `groupedEvents.slice(0, visibleDaysCount).map(...)`.
   - A "Laad meer dagen" (Load more days) button at the bottom of the list increments `visibleDaysCount` by 7.
 - **Rule:** Do NOT remove `visibleDaysCount` or revert to rendering all `groupedEvents` at once, as this will break mobile performance.
+- **Rule:** Do NOT add heavy CSS animations (like `fade-slide`) to `.event-card` or other elements that are rendered in bulk. Animating 50+ elements simultaneously causes massive main thread freezing on mobile devices.
 
 ### 3. Ambient Background Performance
 - **The Problem:** The decorative background blur circles (`.ambient`) were causing massive scroll lag on mobile because they used `position: fixed` and `filter: blur()`.
