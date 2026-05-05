@@ -2341,7 +2341,7 @@ function App() {
               
               {groupedEvents.length > visibleDaysCount ? (
                 <button 
-                  onClick={() => setVisibleDaysCount((current) => current + 7)} 
+                  onClick={() => setVisibleDaysCount((current) => current + 2)} 
                   className="ghost" 
                   style={{ width: '100%', padding: '1.25rem', marginTop: '1rem', fontWeight: '700' }}
                 >
