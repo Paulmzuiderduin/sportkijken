@@ -775,7 +775,6 @@ h3,
   gap: 0.68rem;
   height: 100%;
   align-content: start;
-  animation: fade-slide 0.45s ease;
 }
 
 .event-meta {

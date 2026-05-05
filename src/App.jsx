@@ -897,7 +897,7 @@ function App() {
   const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
   const [filtersExpandedOnMobile, setFiltersExpandedOnMobile] = useState(false);
-  const [visibleDaysCount, setVisibleDaysCount] = useState(3);
+  const [visibleDaysCount, setVisibleDaysCount] = useState(1);
   const [datasetMeta, setDatasetMeta] = useState(EMPTY_RUNTIME_META);
   const shouldForceTopOnLoadRef = useRef(false);
   const datasetSnapshotRef = useRef(dataset);
