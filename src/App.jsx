@@ -897,6 +897,7 @@ function App() {
   const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
   const [filtersExpandedOnMobile, setFiltersExpandedOnMobile] = useState(false);
+  const [visibleDaysCount, setVisibleDaysCount] = useState(3);
   const [datasetMeta, setDatasetMeta] = useState(EMPTY_RUNTIME_META);
   const shouldForceTopOnLoadRef = useRef(false);
   const datasetSnapshotRef = useRef(dataset);
@@ -2310,8 +2311,9 @@ function App() {
               <p>Pas je sport-, aanbieder-, periode-, toegang- of grote-events-filter aan om resultaten te zien.</p>
             </article>
           ) : (
-            groupedEvents.map((group) => (
-              <article key={group.key} id={`day-${group.key}`} className="day-block">
+            <>
+              {groupedEvents.slice(0, visibleDaysCount).map((group) => (
+                <article key={group.key} id={`day-${group.key}`} className="day-block">
                 <header>
                   <p className="day-number">{group.dayNumber}</p>
                   <h2>{group.label}</h2>
@@ -2334,8 +2336,19 @@ function App() {
                     </div>
                   </section>
                 ) : null}
-              </article>
-            ))
+                </article>
+              ))}
+              
+              {groupedEvents.length > visibleDaysCount ? (
+                <button 
+                  onClick={() => setVisibleDaysCount((current) => current + 7)} 
+                  className="ghost" 
+                  style={{ width: '100%', padding: '1.25rem', marginTop: '1rem', fontWeight: '700' }}
+                >
+                  Laad meer dagen ({groupedEvents.length - visibleDaysCount} resterend)
+                </button>
+              ) : null}
+            </>
           )}
         </section>
 
