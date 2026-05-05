@@ -896,6 +896,7 @@ function App() {
   const [consentState, setConsentState] = useState(loadConsentState);
   const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
+  const [filtersExpandedOnMobile, setFiltersExpandedOnMobile] = useState(false);
   const [datasetMeta, setDatasetMeta] = useState(EMPTY_RUNTIME_META);
   const shouldForceTopOnLoadRef = useRef(false);
   const datasetSnapshotRef = useRef(dataset);
@@ -2014,7 +2015,15 @@ function App() {
           </div>
         ) : null}
 
-        <section className="panel filters-panel">
+        <button
+          type="button"
+          className="mobile-filter-toggle"
+          onClick={() => setFiltersExpandedOnMobile(!filtersExpandedOnMobile)}
+        >
+          {filtersExpandedOnMobile ? 'Filters verbergen' : 'Filters aanpassen'}
+        </button>
+
+        <section className={`panel filters-panel ${filtersExpandedOnMobile ? 'is-expanded-mobile' : ''}`}>
           <div className="filter-group">
             <p className="filter-title">Sporten</p>
             <div className="sport-grid">
