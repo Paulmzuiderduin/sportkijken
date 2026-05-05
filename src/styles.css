@@ -133,10 +133,11 @@ h3,
 }
 
 .ambient {
-  position: fixed;
+  position: absolute;
   filter: blur(40px);
   pointer-events: none;
   z-index: -1;
+  transform: translateZ(0);
 }
 
 .ambient-top {
@@ -918,9 +919,12 @@ h3,
   }
 }
 
-@media (min-width: 900px) {
+@media (min-width: 769px) {
   .filter-row {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .mobile-filter-toggle {
+    display: none;
   }
 }
 
@@ -1058,9 +1062,6 @@ h3,
   }
 }
 
-.mobile-filter-toggle {
-  display: none;
-}
 
 @media (max-width: 420px) {
   .sport-grid,
