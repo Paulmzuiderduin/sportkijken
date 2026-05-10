@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-05-10T10:40:36.980Z",
+  "checkedAt": "2026-05-10T13:57:19.791Z",
   "providers": {
     "nos": {
       "rows": 10,
@@ -7,18 +7,18 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-10T10:40:36.980Z",
-      "lastOkAt": "2026-05-10T10:40:36.980Z",
+      "checkedAt": "2026-05-10T13:57:19.791Z",
+      "lastOkAt": "2026-05-10T13:57:19.791Z",
       "fallbackApplied": false
     },
     "ziggo": {
-      "rows": 2695,
+      "rows": 2664,
       "errors": [],
       "minRows": 15,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-10T10:40:36.980Z",
-      "lastOkAt": "2026-05-10T10:40:36.980Z",
+      "checkedAt": "2026-05-10T13:57:19.791Z",
+      "lastOkAt": "2026-05-10T13:57:19.791Z",
       "fallbackApplied": false
     },
     "espn-schedule": {
@@ -86,7 +86,7 @@
       "minRows": 12,
       "ok": false,
       "status": "down",
-      "checkedAt": "2026-05-10T10:40:36.980Z",
+      "checkedAt": "2026-05-10T13:57:19.791Z",
       "lastOkAt": "2026-05-01T19:13:24.348Z",
       "fallbackApplied": true
     },
@@ -96,8 +96,8 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-10T10:40:36.980Z",
-      "lastOkAt": "2026-05-10T10:40:36.980Z",
+      "checkedAt": "2026-05-10T13:57:19.791Z",
+      "lastOkAt": "2026-05-10T13:57:19.791Z",
       "fallbackApplied": false
     },
     "npo-guide": {
@@ -106,18 +106,18 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-10T10:40:36.980Z",
-      "lastOkAt": "2026-05-10T10:40:36.980Z",
+      "checkedAt": "2026-05-10T13:57:19.791Z",
+      "lastOkAt": "2026-05-10T13:57:19.791Z",
       "fallbackApplied": false
     },
     "hbo-max": {
-      "rows": 29,
+      "rows": 30,
       "errors": [],
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-05-10T10:40:36.980Z",
-      "lastOkAt": "2026-05-10T10:40:36.980Z",
+      "checkedAt": "2026-05-10T13:57:19.791Z",
+      "lastOkAt": "2026-05-10T13:57:19.791Z",
       "fallbackApplied": false
     }
   }
