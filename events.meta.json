@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-08T10:50:16.606Z",
-  "lastChangedAt": "2026-05-08T10:50:16.606Z",
-  "checkedAt": "2026-05-08T10:50:16.000Z",
-  "eventCount": 1978,
+  "generatedAt": "2026-05-10T19:35:57.234Z",
+  "lastChangedAt": "2026-05-10T19:35:57.234Z",
+  "checkedAt": "2026-05-10T19:35:57.000Z",
+  "eventCount": 1909,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-05-08T10:50:15.301Z",
+    "checkedAt": "2026-05-10T19:35:56.012Z",
     "providers": {
       "nos": {
         "rows": 10,
@@ -13,27 +13,23 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-08T10:50:15.301Z",
-        "lastOkAt": "2026-05-08T10:50:15.301Z",
+        "checkedAt": "2026-05-10T19:35:56.012Z",
+        "lastOkAt": "2026-05-10T19:35:56.012Z",
         "fallbackApplied": false
       },
       "ziggo": {
-        "rows": 2710,
+        "rows": 2620,
         "errors": [],
         "minRows": 15,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-08T10:50:15.301Z",
-        "lastOkAt": "2026-05-08T10:50:15.301Z",
+        "checkedAt": "2026-05-10T19:35:56.012Z",
+        "lastOkAt": "2026-05-10T19:35:56.012Z",
         "fallbackApplied": false
       },
       "espn-schedule": {
         "rows": 0,
         "errors": [
-          "ESPN schedule 20260508: no usable rows (payload missing)",
-          "ESPN schedule 20260508: no usable rows",
-          "ESPN schedule 20260509: no usable rows (payload missing)",
-          "ESPN schedule 20260509: no usable rows",
           "ESPN schedule 20260510: no usable rows (payload missing)",
           "ESPN schedule 20260510: no usable rows",
           "ESPN schedule 20260511: no usable rows (payload missing)",
@@ -87,43 +83,47 @@
           "ESPN schedule 20260604: no usable rows (payload missing)",
           "ESPN schedule 20260604: no usable rows",
           "ESPN schedule 20260605: no usable rows (payload missing)",
-          "ESPN schedule 20260605: no usable rows"
+          "ESPN schedule 20260605: no usable rows",
+          "ESPN schedule 20260606: no usable rows (payload missing)",
+          "ESPN schedule 20260606: no usable rows",
+          "ESPN schedule 20260607: no usable rows (payload missing)",
+          "ESPN schedule 20260607: no usable rows"
         ],
         "minRows": 12,
         "ok": false,
         "status": "down",
-        "checkedAt": "2026-05-08T10:50:15.301Z",
+        "checkedAt": "2026-05-10T19:35:56.012Z",
         "lastOkAt": "2026-05-01T19:13:24.348Z",
         "fallbackApplied": true
       },
       "viaplay": {
-        "rows": 39,
+        "rows": 32,
         "errors": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-08T10:50:15.301Z",
-        "lastOkAt": "2026-05-08T10:50:15.301Z",
+        "checkedAt": "2026-05-10T19:35:56.012Z",
+        "lastOkAt": "2026-05-10T19:35:56.012Z",
         "fallbackApplied": false
       },
       "npo-guide": {
-        "rows": 26,
+        "rows": 30,
         "errors": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-08T10:50:15.301Z",
-        "lastOkAt": "2026-05-08T10:50:15.301Z",
+        "checkedAt": "2026-05-10T19:35:56.012Z",
+        "lastOkAt": "2026-05-10T19:35:56.012Z",
         "fallbackApplied": false
       },
       "hbo-max": {
-        "rows": 26,
+        "rows": 32,
         "errors": [],
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-08T10:50:15.301Z",
-        "lastOkAt": "2026-05-08T10:50:15.301Z",
+        "checkedAt": "2026-05-10T19:35:56.012Z",
+        "lastOkAt": "2026-05-10T19:35:56.012Z",
         "fallbackApplied": false
       }
     }
