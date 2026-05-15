@@ -8,7 +8,8 @@
     "build": "node scripts/sync-runtime-dataset.mjs && vite build",
     "preview": "vite preview",
     "data:update": "node scripts/update-events.mjs && node scripts/sync-runtime-dataset.mjs",
-    "data:normalize": "node scripts/normalize-events.mjs"
+    "data:normalize": "node scripts/normalize-events.mjs",
+    "test:data": "node --test scripts/update-events.test.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

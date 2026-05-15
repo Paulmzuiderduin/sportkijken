@@ -30,6 +30,9 @@ const ZIGGO_EPG_LOOKAHEAD_DAYS = 30;
 const ESPN_SCHEDULE_LOOKAHEAD_DAYS = 28;
 const NPO_GUIDE_LOOKAHEAD_DAYS = 7;
 const VERIFY_LEVELS = ['confirmed', 'likely', 'unverified'];
+const FETCH_RETRY_LIMIT = Number(process.env.FETCH_RETRY_LIMIT || 3);
+const FETCH_RETRY_BASE_MS = Number(process.env.FETCH_RETRY_BASE_MS || 700);
+const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const QUALITY_GATES_ENABLED = process.env.SKIP_QUALITY_GATES !== '1';
 const QA_MIN_TOTAL_EVENTS = Number(process.env.QA_MIN_TOTAL_EVENTS || 450);
 const QA_MIN_ROWS_BY_SOURCE = {
@@ -207,6 +210,94 @@ const DUTCH_CLUB_KEYWORDS = Array.isArray(PROVIDER_RULES.dutchClubKeywords) && P
   : DEFAULT_DUTCH_CLUB_KEYWORDS;
 const ZIGGO_RULES = PROVIDER_RULES.ziggo || {};
 const ESPN_RULES = PROVIDER_RULES.espn || {};
+
+function sleep(ms) {
+  return new Promise((resolvePromise) => {
+    setTimeout(resolvePromise, ms);
+  });
+}
+
+function retryDelayMs(attempt) {
+  const jitter = 0.8 + Math.random() * 0.4;
+  return Math.round(FETCH_RETRY_BASE_MS * (2 ** Math.max(0, attempt - 1)) * jitter);
+}
+
+function createFetchError(message, extras = {}) {
+  const error = new Error(message);
+  Object.assign(error, extras);
+  return error;
+}
+
+async function fetchWithRetry(url, { accept, parseAs, sourceLabel }) {
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= FETCH_RETRY_LIMIT; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'sportkijken-data-updater',
+          Accept: accept
+        }
+      });
+
+      if (!response.ok) {
+        const retryable = RETRYABLE_STATUS_CODES.has(response.status);
+        const error = createFetchError(`HTTP ${response.status}`, {
+          status: response.status,
+          retryable,
+          kind: 'http_error',
+          sourceLabel
+        });
+        if (!retryable || attempt === FETCH_RETRY_LIMIT) {
+          throw error;
+        }
+        lastError = error;
+      } else {
+        const parsed = parseAs === 'json'
+          ? await response.json()
+          : await response.text();
+        return {
+          ok: true,
+          value: parsed,
+          attempts: attempt
+        };
+      }
+    } catch (error) {
+      const normalizedError = error?.name === 'AbortError'
+        ? createFetchError('timeout', {
+            retryable: true,
+            kind: 'timeout',
+            sourceLabel
+          })
+        : createFetchError(error?.message || 'fetch failed', {
+            retryable: Boolean(error?.retryable || error?.name === 'TypeError'),
+            kind: error?.kind || (error?.name === 'TypeError' ? 'network_error' : 'fetch_error'),
+            status: error?.status,
+            sourceLabel
+          });
+
+      if (!normalizedError.retryable || attempt === FETCH_RETRY_LIMIT) {
+        throw normalizedError;
+      }
+
+      lastError = normalizedError;
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    await sleep(retryDelayMs(attempt));
+  }
+
+  throw lastError || createFetchError('fetch failed', {
+    retryable: false,
+    kind: 'fetch_error',
+    sourceLabel
+  });
+}
 
 const TITLE_NOISE_WORDS = new Set([
   'live',
@@ -1207,15 +1298,67 @@ function espnChannelFromName(channelName, watchUrl) {
 }
 
 function parseEspnFittData(rawHtml) {
-  const match = rawHtml.match(/window\['__espnfitt__'\]=(\{[\s\S]*?\});<\/script>/);
-  if (!match) {
-    return null;
+  const patterns = [
+    /window\['__espnfitt__'\]=(\{[\s\S]*?\});<\/script>/,
+    /window\["__espnfitt__"\]=(\{[\s\S]*?\});<\/script>/,
+    /__espnfitt__\s*=\s*(\{[\s\S]*?\});<\/script>/
+  ];
+
+  for (const pattern of patterns) {
+    const match = rawHtml.match(pattern);
+    if (!match) {
+      continue;
+    }
+    const parsed = safeParseJson(match[1]);
+    if (parsed) {
+      return parsed;
+    }
   }
-  return safeParseJson(match[1]);
+
+  return null;
+}
+
+function findEspnAiringRoot(payload) {
+  if (!payload || typeof payload !== 'object') {
+    return [];
+  }
+
+  const directRoot = payload?.page?.content?.watch?.arngs;
+  if (Array.isArray(directRoot)) {
+    return directRoot;
+  }
+
+  const queue = [payload];
+  const visited = new Set();
+
+  while (queue.length) {
+    const current = queue.shift();
+    if (!current || typeof current !== 'object') {
+      continue;
+    }
+
+    if (visited.has(current)) {
+      continue;
+    }
+    visited.add(current);
+
+    if (Array.isArray(current?.arngs)) {
+      return current.arngs;
+    }
+
+    Object.values(current).forEach((value) => {
+      if (value && typeof value === 'object') {
+        queue.push(value);
+      }
+    });
+  }
+
+  return [];
 }
 
 function inspectEspnPayload(payload) {
   const root = payload?.page?.content?.watch;
+  const derivedRoot = findEspnAiringRoot(payload);
   return {
     hasPayload: Boolean(payload),
     hasPage: Boolean(payload?.page),
@@ -1223,13 +1366,56 @@ function inspectEspnPayload(payload) {
     hasWatch: Boolean(root),
     hasArngs: Array.isArray(root?.arngs),
     arngsCount: Array.isArray(root?.arngs) ? root.arngs.length : 0,
+    derivedArngsCount: Array.isArray(derivedRoot) ? derivedRoot.length : 0,
     topLevelKeys: payload && typeof payload === 'object' ? Object.keys(payload).slice(0, 12) : []
   };
 }
 
 function extractEspnScheduleRows(payload, sourceUrl) {
-  const root = payload?.page?.content?.watch?.arngs;
+  const root = findEspnAiringRoot(payload);
   const rows = [];
+
+  const pushEspnAiringRow = (airing, nextPath) => {
+    const start = tryIso(airing?.stme || airing?.startTime);
+    if (!start || !isWithinWindow(start)) {
+      return;
+    }
+
+    const channels = (airing?.bcsts || airing?.broadcasts || [])
+      .map((broadcast) => broadcast?.nme || broadcast?.name)
+      .filter(Boolean);
+
+    if (!channels.length) {
+      return;
+    }
+
+    const hrf = airing?.hrf;
+    const watchUrl = hrf && hrf.startsWith('http')
+      ? hrf
+      : (hrf ? `https://www.espn.nl${hrf}` : 'https://www.espn.nl/watch/schedule');
+    const categories = [
+      ...nextPath,
+      ...((airing?.ctgys || []).map((category) => category?.name || category?.nme)),
+      ...((airing?.sctgys || []).map((category) => category?.name || category?.nme))
+    ]
+      .map((value) => String(value || '').trim())
+      .filter(Boolean);
+    const uniqueCategories = [...new Set(categories)];
+
+    rows.push({
+      title: airing?.nme || airing?.name || '',
+      description: airing?.fnme || '',
+      type: airing?.tp || '',
+      start,
+      startMs: new Date(start).getTime(),
+      end: tryIso(airing?.etme || airing?.endTime || airing?.endDate),
+      channels,
+      categories: uniqueCategories,
+      sectionName: nextPath[0] || '',
+      watchUrl,
+      sourceUrl
+    });
+  };
 
   const walk = (node, path = []) => {
     if (!node) return;
@@ -1241,48 +1427,16 @@ function extractEspnScheduleRows(payload, sourceUrl) {
     const nodeName = String(node?.nme || node?.name || '').trim();
     const nextPath = nodeName ? [...path, nodeName] : path;
 
+    if (
+      node
+      && (node?.stme || node?.startTime)
+      && (Array.isArray(node?.bcsts) || Array.isArray(node?.broadcasts))
+    ) {
+      pushEspnAiringRow(node, nextPath);
+    }
+
     if (Array.isArray(node.arngs)) {
-      node.arngs.forEach((airing) => {
-        const start = tryIso(airing?.stme || airing?.startTime);
-        if (!start || !isWithinWindow(start)) {
-          return;
-        }
-
-        const channels = (airing?.bcsts || airing?.broadcasts || [])
-          .map((broadcast) => broadcast?.nme || broadcast?.name)
-          .filter(Boolean);
-
-        if (!channels.length) {
-          return;
-        }
-
-        const hrf = airing?.hrf;
-        const watchUrl = hrf && hrf.startsWith('http')
-          ? hrf
-          : (hrf ? `https://www.espn.nl${hrf}` : 'https://www.espn.nl/watch/schedule');
-        const categories = [
-          ...nextPath,
-          ...((airing?.ctgys || []).map((category) => category?.name || category?.nme)),
-          ...((airing?.sctgys || []).map((category) => category?.name || category?.nme))
-        ]
-          .map((value) => String(value || '').trim())
-          .filter(Boolean);
-        const uniqueCategories = [...new Set(categories)];
-
-        rows.push({
-          title: airing?.nme || airing?.name || '',
-          description: airing?.fnme || '',
-          type: airing?.tp || '',
-          start,
-          startMs: new Date(start).getTime(),
-          end: tryIso(airing?.etme || airing?.endTime || airing?.endDate),
-          channels,
-          categories: uniqueCategories,
-          sectionName: nextPath[0] || '',
-          watchUrl,
-          sourceUrl
-        });
-      });
+      node.arngs.forEach((airing) => pushEspnAiringRow(airing, nextPath));
     }
 
     if (Array.isArray(node.sctgys)) {
@@ -1366,6 +1520,7 @@ async function fetchEspnScheduleRows() {
   const rows = [];
   const sources = [];
   const errors = [];
+  const diagnostics = [];
   const seen = new Set();
   const startDay = new Date(Date.UTC(windowStart.getUTCFullYear(), windowStart.getUTCMonth(), windowStart.getUTCDate()));
   const totalDays = Math.min(
@@ -1383,15 +1538,18 @@ async function fetchEspnScheduleRows() {
       const payload = parseEspnFittData(html);
       const extracted = extractEspnScheduleRows(payload, url);
       if (!extracted.length) {
-        const diagnostics = inspectEspnPayload(payload);
-        errors.push(
-          `ESPN schedule ${startDate}: no usable rows (${
-            diagnostics.hasPayload
-              ? `payload ok, watch=${diagnostics.hasWatch}, arngs=${diagnostics.hasArngs}, count=${diagnostics.arngsCount}, keys=${diagnostics.topLevelKeys.join(',') || 'none'}`
-              : 'payload missing'
-          })`
-        );
-        errors.push(`ESPN schedule ${startDate}: no usable rows`);
+        const payloadDiagnostics = inspectEspnPayload(payload);
+        const diagnosticSummary = payloadDiagnostics.hasPayload
+          ? `payload ok, watch=${payloadDiagnostics.hasWatch}, arngs=${payloadDiagnostics.hasArngs}, count=${payloadDiagnostics.arngsCount}, derivedCount=${payloadDiagnostics.derivedArngsCount}, keys=${payloadDiagnostics.topLevelKeys.join(',') || 'none'}`
+          : 'payload missing';
+        const statusKind = payloadDiagnostics.hasPayload ? 'parser_mismatch' : 'empty_payload';
+        const detail = `ESPN schedule ${startDate}: no usable rows (${diagnosticSummary})`;
+        errors.push(detail);
+        diagnostics.push({
+          date: startDate,
+          kind: statusKind,
+          detail
+        });
         continue;
       }
       extracted.forEach((row) => {
@@ -1404,14 +1562,31 @@ async function fetchEspnScheduleRows() {
       });
     } catch (error) {
       errors.push(`ESPN schedule ${startDate}: ${error.message}`);
+      diagnostics.push({
+        date: startDate,
+        kind: error?.status ? 'http_error' : (error?.kind || 'fetch_error'),
+        detail: `ESPN schedule ${startDate}: ${error.message}`
+      });
     }
   }
 
   if (!rows.length && !errors.length) {
-    errors.push('ESPN schedule: no usable rows');
+    const detail = 'ESPN schedule: no usable rows';
+    errors.push(detail);
+    diagnostics.push({
+      date: null,
+      kind: 'empty_payload',
+      detail
+    });
   }
 
-  return { rows, sources, errors };
+  const status = !rows.length
+    ? (diagnostics.some((item) => item.kind === 'parser_mismatch') ? 'empty' : 'down')
+    : errors.length
+      ? 'degraded'
+      : 'ok';
+
+  return { rows, sources, errors, diagnostics, status };
 }
 
 function scoreScheduleRow(event, row, maxLeadMinutes, maxLagMinutes) {
@@ -2061,49 +2236,21 @@ function buildScheduleOnlyEvents(existingEvents, ziggoRows, espnRows, hboMaxRows
 }
 
 async function fetchText(url) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-
-  try {
-    const response = await fetch(url, {
-      signal: controller.signal,
-      headers: {
-        'User-Agent': 'sportkijken-data-updater',
-        Accept: 'text/html,application/xhtml+xml'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    return await response.text();
-  } finally {
-    clearTimeout(timeout);
-  }
+  const result = await fetchWithRetry(url, {
+    accept: 'text/html,application/xhtml+xml',
+    parseAs: 'text',
+    sourceLabel: url
+  });
+  return result.value;
 }
 
 async function fetchJson(url) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-
-  try {
-    const response = await fetch(url, {
-      signal: controller.signal,
-      headers: {
-        'User-Agent': 'sportkijken-data-updater',
-        Accept: 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    return await response.json();
-  } finally {
-    clearTimeout(timeout);
-  }
+  const result = await fetchWithRetry(url, {
+    accept: 'application/json',
+    parseAs: 'json',
+    sourceLabel: url
+  });
+  return result.value;
 }
 
 function createSourceRef(label, url, type) {
@@ -3194,6 +3341,26 @@ async function readProviderHealth() {
   return safeParseJson(raw);
 }
 
+function deriveProviderStatus(health, minRows) {
+  const rows = Number(health?.rows || 0);
+  const errors = Array.isArray(health?.errors) ? health.errors : [];
+  const diagnostics = Array.isArray(health?.diagnostics) ? health.diagnostics : [];
+
+  if (health?.status) {
+    return health.status;
+  }
+  if (!rows && diagnostics.some((item) => item?.kind === 'parser_mismatch' || item?.kind === 'empty_payload')) {
+    return 'empty';
+  }
+  if (!rows && errors.length) {
+    return 'down';
+  }
+  if (rows < minRows || errors.length) {
+    return 'degraded';
+  }
+  return 'ok';
+}
+
 function buildProviderHealthReport(currentHealth, previousHealth, checkedAt) {
   const previousProviders = previousHealth?.providers || previousHealth || {};
   const providerKeys = new Set([
@@ -3204,21 +3371,28 @@ function buildProviderHealthReport(currentHealth, previousHealth, checkedAt) {
 
   const providers = {};
   providerKeys.forEach((key) => {
-    const rows = Number(currentHealth?.[key]?.rows || 0);
-    const errors = Array.isArray(currentHealth?.[key]?.errors) ? currentHealth[key].errors : [];
+    const sourceHealth = currentHealth?.[key] || {};
+    const rows = Number(sourceHealth.rows || 0);
+    const errors = Array.isArray(sourceHealth.errors) ? sourceHealth.errors : [];
+    const diagnostics = Array.isArray(sourceHealth.diagnostics) ? sourceHealth.diagnostics : [];
     const minRows = Number(QA_MIN_ROWS_BY_SOURCE[key] || 1);
-    const ok = errors.length === 0 && rows >= minRows;
+    const status = deriveProviderStatus(sourceHealth, minRows);
+    const ok = status === 'ok';
     const lastOkAt = ok ? checkedAt : (previousProviders?.[key]?.lastOkAt || null);
-    const status = ok ? 'ok' : rows === 0 ? 'down' : 'degraded';
+    const lastNonEmptyAt = rows > 0 ? checkedAt : (previousProviders?.[key]?.lastNonEmptyAt || null);
 
     providers[key] = {
       rows,
       errors,
+      diagnostics,
       minRows,
       ok,
       status,
       checkedAt,
       lastOkAt,
+      lastNonEmptyAt,
+      errorCount: errors.length,
+      diagnosticCount: diagnostics.length,
       fallbackApplied: false
     };
   });
@@ -3576,6 +3750,42 @@ function hasFetchErrorForSource(fetchErrors, sourceType) {
   return fetchErrors.some((error) => normalizeAsciiLower(error).includes(needle));
 }
 
+function qualityGateDuplicateKey(event) {
+  const providerKey = [...new Set((event.channels || [])
+    .map((channel) => normalizeAsciiLower(channel?.name))
+    .filter(Boolean))]
+    .sort()
+    .join('|') || 'no-provider';
+  const sourceType = normalizeAsciiLower(event.sourceType || '');
+  const isEspnRelated = sourceType.includes('espn') || providerKey.includes('espn');
+  const competitionKey = isEspnRelated ? '' : normalizeAsciiLower(event.competition || '');
+
+  return [
+    normalizeAsciiLower(event.sport || ''),
+    competitionKey,
+    normalizedTitleKey(event.title),
+    event.start,
+    providerKey
+  ].join('|');
+}
+
+function degradedCriticalProviders(providerHealth) {
+  return Object.entries(QA_MIN_ROWS_BY_SOURCE)
+    .map(([sourceType, minRows]) => {
+      const health = providerHealth[sourceType] || {};
+      const rows = Number(health.rows || 0);
+      const status = health.status || deriveProviderStatus(health, minRows);
+      return {
+        sourceType,
+        rows,
+        minRows,
+        status,
+        ok: status === 'ok'
+      };
+    })
+    .filter((provider) => !provider.ok);
+}
+
 function runQualityGates({
   events,
   previousEvents,
@@ -3626,18 +3836,7 @@ function runQualityGates({
     if (isPlaceholderMatchTitle(event.title)) {
       return;
     }
-    const providerKey = [...new Set((event.channels || [])
-      .map((channel) => normalizeAsciiLower(channel?.name))
-      .filter(Boolean))]
-      .sort()
-      .join('|') || 'no-provider';
-    const key = [
-      normalizeAsciiLower(event.sport || ''),
-      normalizeAsciiLower(event.competition || ''),
-      normalizedTitleKey(event.title),
-      event.start,
-      providerKey
-    ].join('|');
+    const key = qualityGateDuplicateKey(event);
     if (duplicateMap.has(key)) {
       duplicateExamples.push([duplicateMap.get(key), event]);
     } else {
@@ -3657,11 +3856,14 @@ function runQualityGates({
     const errorCount = Array.isArray(health.errors) ? health.errors.length : 0;
     const rows = Number(health.rows || 0);
     const hasFetchErrors = errorCount > 0 || hasFetchErrorForSource(fetchErrors, sourceType);
-    if (!hasFetchErrors && rows < minRows) {
-      errors.push(`Bron ${sourceType} levert te weinig rijen (${health.rows} < ${minRows}) zonder fetch-fouten.`);
-    }
-    if (hasFetchErrors && rows < minRows) {
-      warnings.push(`Bron ${sourceType} levert te weinig rijen (${rows} < ${minRows}) met fetch-fouten.`);
+    const status = health.status || deriveProviderStatus(health, minRows);
+    if (rows < minRows) {
+      const suffix = hasFetchErrors
+        ? 'met fetch-fouten'
+        : status === 'empty'
+          ? 'met lege payload'
+          : 'zonder fetch-fouten';
+      warnings.push(`Bron ${sourceType} levert te weinig rijen (${rows} < ${minRows}) ${suffix}.`);
     }
   });
 
@@ -3692,207 +3894,251 @@ function runQualityGates({
     });
   }
 
+  const degradedProviders = degradedCriticalProviders(providerHealth);
+  if (degradedProviders.length >= 3) {
+    const previousCount = Array.isArray(previousEvents) ? previousEvents.length : 0;
+    const collapseThreshold = previousCount > 0
+      ? Math.max(QA_MIN_TOTAL_EVENTS, Math.floor(previousCount * 0.65))
+      : QA_MIN_TOTAL_EVENTS;
+    if (events.length < collapseThreshold) {
+      errors.push(
+        `Meerdere kernbronnen gedegradeerd (${degradedProviders.map((provider) => provider.sourceType).join(', ')}) en eventvolume gedaald naar ${events.length}.`
+      );
+    } else {
+      warnings.push(
+        `Meerdere kernbronnen gedegradeerd: ${degradedProviders.map((provider) => provider.sourceType).join(', ')}. Publicatie gaat door omdat de dataset nog bruikbaar is.`
+      );
+    }
+  }
+
   return { errors, warnings };
 }
 
-const previousRaw = await readFile(datasetPath, 'utf8').catch(() => null);
-const previous = previousRaw ? safeParseJson(previousRaw) : null;
-const previousEvents = previous && Array.isArray(previous.events) ? previous.events : null;
-const previousProviderHealth = await readProviderHealth();
-const manualRaw = await readFile(majorEventsPath, 'utf8').catch(() => '[]');
-const manualParsed = safeParseJson(manualRaw);
-const manualEvents = normalizeManualEvents(manualParsed);
-const overridesRaw = await readFile(overridesPath, 'utf8').catch(() => '[]');
-const overrideRules = normalizeOverrideRules(safeParseJson(overridesRaw));
+async function main() {
+  const previousRaw = await readFile(datasetPath, 'utf8').catch(() => null);
+  const previous = previousRaw ? safeParseJson(previousRaw) : null;
+  const previousEvents = previous && Array.isArray(previous.events) ? previous.events : null;
+  const previousProviderHealth = await readProviderHealth();
+  const manualRaw = await readFile(majorEventsPath, 'utf8').catch(() => '[]');
+  const manualParsed = safeParseJson(manualRaw);
+  const manualEvents = normalizeManualEvents(manualParsed);
+  const overridesRaw = await readFile(overridesPath, 'utf8').catch(() => '[]');
+  const overrideRules = normalizeOverrideRules(safeParseJson(overridesRaw));
 
-const football = await fetchByFeeds(
-  soccerFeeds,
-  (feed) => `https://site.api.espn.com/apis/site/v2/sports/soccer/${feed.slug}/scoreboard?dates=${DATE_RANGE}`,
-  parseTeamEvent,
-  'Voetbal',
-  'voetbal'
-);
+  const football = await fetchByFeeds(
+    soccerFeeds,
+    (feed) => `https://site.api.espn.com/apis/site/v2/sports/soccer/${feed.slug}/scoreboard?dates=${DATE_RANGE}`,
+    parseTeamEvent,
+    'Voetbal',
+    'voetbal'
+  );
 
-const f1 = await fetchByFeeds(
-  f1Feeds,
-  (feed) => `https://site.api.espn.com/apis/site/v2/sports/racing/${feed.slug}/scoreboard?dates=${DATE_RANGE}`,
-  parseF1Event,
-  'Formule 1',
-  'formule-1'
-);
+  const f1 = await fetchByFeeds(
+    f1Feeds,
+    (feed) => `https://site.api.espn.com/apis/site/v2/sports/racing/${feed.slug}/scoreboard?dates=${DATE_RANGE}`,
+    parseF1Event,
+    'Formule 1',
+    'formule-1'
+  );
 
-const tennis = await fetchByFeeds(
-  tennisFeeds,
-  (feed) => `https://site.api.espn.com/apis/site/v2/sports/tennis/${feed.slug}/scoreboard?dates=${DATE_RANGE}`,
-  parseNamedEvent,
-  'Tennis',
-  'tennis'
-);
+  const tennis = await fetchByFeeds(
+    tennisFeeds,
+    (feed) => `https://site.api.espn.com/apis/site/v2/sports/tennis/${feed.slug}/scoreboard?dates=${DATE_RANGE}`,
+    parseNamedEvent,
+    'Tennis',
+    'tennis'
+  );
 
-const teamSports = await fetchByFeeds(
-  teamSportFeeds,
-  (feed) => `https://site.api.espn.com/apis/site/v2/sports/${feed.path}/scoreboard?dates=${DATE_RANGE}`,
-  parseTeamEvent,
-  'Teamsport',
-  'teamsport'
-);
+  const teamSports = await fetchByFeeds(
+    teamSportFeeds,
+    (feed) => `https://site.api.espn.com/apis/site/v2/sports/${feed.path}/scoreboard?dates=${DATE_RANGE}`,
+    parseTeamEvent,
+    'Teamsport',
+    'teamsport'
+  );
 
-const namedSports = await fetchByFeeds(
-  namedFeeds,
-  (feed) => `https://site.api.espn.com/apis/site/v2/sports/${feed.path}/scoreboard?dates=${DATE_RANGE}`,
-  parseNamedEvent,
-  'Evenement',
-  'event'
-);
+  const namedSports = await fetchByFeeds(
+    namedFeeds,
+    (feed) => `https://site.api.espn.com/apis/site/v2/sports/${feed.path}/scoreboard?dates=${DATE_RANGE}`,
+    parseNamedEvent,
+    'Evenement',
+    'event'
+  );
 
-const nosSportLivestreams = await fetchNosSportLivestreams();
-const hboMaxSchedule = await fetchHboMaxScheduleRows();
-const viaplaySchedule = await fetchViaplayScheduleRows();
-const npoGuide = await fetchNpoGuideRows();
-const ziggoEpg = await fetchZiggoEpgRows();
-const espnSchedule = await fetchEspnScheduleRows();
+  const nosSportLivestreams = await fetchNosSportLivestreams();
+  const hboMaxSchedule = await fetchHboMaxScheduleRows();
+  const viaplaySchedule = await fetchViaplayScheduleRows();
+  const npoGuide = await fetchNpoGuideRows();
+  const ziggoEpg = await fetchZiggoEpgRows();
+  const espnSchedule = await fetchEspnScheduleRows();
 
-const fetchErrors = [
-  ...football.errors,
-  ...f1.errors,
-  ...tennis.errors,
-  ...teamSports.errors,
-  ...namedSports.errors,
-  ...nosSportLivestreams.errors,
-  ...hboMaxSchedule.errors,
-  ...viaplaySchedule.errors,
-  ...npoGuide.errors,
-  ...ziggoEpg.errors,
-  ...espnSchedule.errors
-];
+  const fetchErrors = [
+    ...football.errors,
+    ...f1.errors,
+    ...tennis.errors,
+    ...teamSports.errors,
+    ...namedSports.errors,
+    ...nosSportLivestreams.errors,
+    ...hboMaxSchedule.errors,
+    ...viaplaySchedule.errors,
+    ...npoGuide.errors,
+    ...ziggoEpg.errors,
+    ...espnSchedule.errors
+  ];
 
-const providerHealth = {
-  nos: { rows: nosSportLivestreams.events.length, errors: nosSportLivestreams.errors },
-  'npo-guide': { rows: npoGuide.rows.length, errors: npoGuide.errors },
-  ziggo: { rows: ziggoEpg.rows.length, errors: ziggoEpg.errors },
-  'espn-schedule': { rows: espnSchedule.rows.length, errors: espnSchedule.errors },
-  viaplay: { rows: viaplaySchedule.rows.length, errors: viaplaySchedule.errors },
-  'hbo-max': { rows: hboMaxSchedule.rows.length, errors: hboMaxSchedule.errors }
-};
+  const providerHealth = {
+    nos: { rows: nosSportLivestreams.events.length, errors: nosSportLivestreams.errors, diagnostics: [], status: nosSportLivestreams.events.length ? (nosSportLivestreams.errors.length ? 'degraded' : 'ok') : (nosSportLivestreams.errors.length ? 'down' : 'empty') },
+    'npo-guide': { rows: npoGuide.rows.length, errors: npoGuide.errors, diagnostics: [], status: npoGuide.rows.length ? (npoGuide.errors.length ? 'degraded' : 'ok') : (npoGuide.errors.length ? 'down' : 'empty') },
+    ziggo: { rows: ziggoEpg.rows.length, errors: ziggoEpg.errors, diagnostics: [], status: ziggoEpg.rows.length ? (ziggoEpg.errors.length ? 'degraded' : 'ok') : (ziggoEpg.errors.length ? 'down' : 'empty') },
+    'espn-schedule': { rows: espnSchedule.rows.length, errors: espnSchedule.errors, diagnostics: espnSchedule.diagnostics || [], status: espnSchedule.status },
+    viaplay: { rows: viaplaySchedule.rows.length, errors: viaplaySchedule.errors, diagnostics: [], status: viaplaySchedule.rows.length ? (viaplaySchedule.errors.length ? 'degraded' : 'ok') : (viaplaySchedule.errors.length ? 'down' : 'empty') },
+    'hbo-max': { rows: hboMaxSchedule.rows.length, errors: hboMaxSchedule.errors, diagnostics: [], status: hboMaxSchedule.rows.length ? (hboMaxSchedule.errors.length ? 'degraded' : 'ok') : (hboMaxSchedule.errors.length ? 'down' : 'empty') }
+  };
 
-const providerHealthReport = buildProviderHealthReport(providerHealth, previousProviderHealth, new Date().toISOString());
+  const providerHealthReport = buildProviderHealthReport(providerHealth, previousProviderHealth, new Date().toISOString());
 
-Object.entries(PROVIDER_MISMATCH_COUNTS).forEach(([key, count]) => {
-  if (!providerHealthReport.providers[key]) {
-    providerHealthReport.providers[key] = {
-      rows: Number(providerHealth?.[key]?.rows || 0),
-      errors: Array.isArray(providerHealth?.[key]?.errors) ? providerHealth[key].errors : [],
-      minRows: Number(QA_MIN_ROWS_BY_SOURCE[key] || 1),
-      ok: false,
-      status: 'degraded',
-      checkedAt: providerHealthReport.checkedAt,
-      lastOkAt: null,
-      fallbackApplied: false
-    };
-  }
-  providerHealthReport.providers[key].unmatchedMatchups = count;
-});
-
-if (fetchErrors.length) {
-  console.warn(`Partial fetch issues: ${fetchErrors.join(' | ')}`);
-}
-
-const mergedEvents = dedupeEvents([
-  ...football.events,
-  ...f1.events,
-  ...tennis.events,
-  ...teamSports.events,
-  ...namedSports.events,
-  ...nosSportLivestreams.events,
-  ...manualEvents
-]);
-
-const scheduleOnlyEvents = buildScheduleOnlyEvents(
-  mergedEvents,
-  ziggoEpg.rows,
-  espnSchedule.rows,
-  hboMaxSchedule.rows,
-  viaplaySchedule.rows,
-  npoGuide.rows
-);
-const mergedWithScheduleOnly = dedupeEvents([...mergedEvents, ...scheduleOnlyEvents]);
-const enrichedEvents = enrichEventsWithSchedules(
-  mergedWithScheduleOnly,
-  ziggoEpg.rows,
-  espnSchedule.rows,
-  viaplaySchedule.rows,
-  npoGuide.rows,
-  providerHealthReport
-);
-const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
-const eventsWithMajorTags = applyMajorTags(overriddenEvents);
-const eventsWithFallbacks = applyProviderFallbacks(eventsWithMajorTags, previousEvents, providerHealthReport);
-await writeFile(providerHealthPath, `${JSON.stringify(providerHealthReport, null, 2)}\n`, 'utf8');
-const generatedAt = new Date().toISOString();
-const verifiedBeforeQuarantine = finalizeVerification(eventsWithFallbacks, generatedAt);
-const publishableSplit = splitPublishableEvents(verifiedBeforeQuarantine);
-const allVerifiedEvents = publishableSplit.publishable;
-
-if (QUALITY_GATES_ENABLED) {
-  const quality = runQualityGates({
-    events: allVerifiedEvents,
-    previousEvents,
-    providerHealth,
-    quarantinedEvents: publishableSplit.quarantined,
-    fetchErrors
+  Object.entries(PROVIDER_MISMATCH_COUNTS).forEach(([key, count]) => {
+    if (!providerHealthReport.providers[key]) {
+      providerHealthReport.providers[key] = {
+        rows: Number(providerHealth?.[key]?.rows || 0),
+        errors: Array.isArray(providerHealth?.[key]?.errors) ? providerHealth[key].errors : [],
+        diagnostics: Array.isArray(providerHealth?.[key]?.diagnostics) ? providerHealth[key].diagnostics : [],
+        minRows: Number(QA_MIN_ROWS_BY_SOURCE[key] || 1),
+        ok: false,
+        status: 'degraded',
+        checkedAt: providerHealthReport.checkedAt,
+        lastOkAt: null,
+        lastNonEmptyAt: null,
+        errorCount: Array.isArray(providerHealth?.[key]?.errors) ? providerHealth[key].errors.length : 0,
+        diagnosticCount: Array.isArray(providerHealth?.[key]?.diagnostics) ? providerHealth[key].diagnostics.length : 0,
+        fallbackApplied: false
+      };
+    }
+    providerHealthReport.providers[key].unmatchedMatchups = count;
   });
 
-  quality.warnings.forEach((warning) => {
-    console.warn(`Quality warning: ${warning}`);
-  });
-
-  if (quality.errors.length) {
-    throw new Error(`Quality gates failed:\n- ${quality.errors.join('\n- ')}`);
+  if (fetchErrors.length) {
+    console.warn(`Partial fetch issues: ${fetchErrors.join(' | ')}`);
   }
 
-  console.log(`Quality gates passed for ${allVerifiedEvents.length} events.`);
-}
+  const mergedEvents = dedupeEvents([
+    ...football.events,
+    ...f1.events,
+    ...tennis.events,
+    ...teamSports.events,
+    ...namedSports.events,
+    ...nosSportLivestreams.events,
+    ...manualEvents
+  ]);
 
-const verifiedEvents = MAX_EVENTS > 0 ? allVerifiedEvents.slice(0, MAX_EVENTS) : allVerifiedEvents;
+  const scheduleOnlyEvents = buildScheduleOnlyEvents(
+    mergedEvents,
+    ziggoEpg.rows,
+    espnSchedule.rows,
+    hboMaxSchedule.rows,
+    viaplaySchedule.rows,
+    npoGuide.rows
+  );
+  const mergedWithScheduleOnly = dedupeEvents([...mergedEvents, ...scheduleOnlyEvents]);
+  const enrichedEvents = enrichEventsWithSchedules(
+    mergedWithScheduleOnly,
+    ziggoEpg.rows,
+    espnSchedule.rows,
+    viaplaySchedule.rows,
+    npoGuide.rows,
+    providerHealthReport
+  );
+  const overriddenEvents = applyOverrides(enrichedEvents, overrideRules);
+  const eventsWithMajorTags = applyMajorTags(overriddenEvents);
+  const eventsWithFallbacks = applyProviderFallbacks(eventsWithMajorTags, previousEvents, providerHealthReport);
+  await writeFile(providerHealthPath, `${JSON.stringify(providerHealthReport, null, 2)}\n`, 'utf8');
+  const generatedAt = new Date().toISOString();
+  const verifiedBeforeQuarantine = finalizeVerification(eventsWithFallbacks, generatedAt);
+  const publishableSplit = splitPublishableEvents(verifiedBeforeQuarantine);
+  const allVerifiedEvents = publishableSplit.publishable;
 
-if (MAX_EVENTS > 0 && allVerifiedEvents.length > MAX_EVENTS) {
-  console.warn(`Event list truncated from ${allVerifiedEvents.length} to ${MAX_EVENTS}.`);
-}
+  if (QUALITY_GATES_ENABLED) {
+    const quality = runQualityGates({
+      events: allVerifiedEvents,
+      previousEvents,
+      providerHealth: providerHealthReport.providers,
+      quarantinedEvents: publishableSplit.quarantined,
+      fetchErrors
+    });
 
-if (!verifiedEvents.length) {
-  if (Array.isArray(previousEvents) && previousEvents.length) {
-    console.warn('No events fetched; keeping previous dataset.');
+    quality.warnings.forEach((warning) => {
+      console.warn(`Quality warning: ${warning}`);
+    });
+
+    if (quality.errors.length) {
+      throw new Error(`Quality gates failed:\n- ${quality.errors.join('\n- ')}`);
+    }
+
+    console.log(`Quality gates passed for ${allVerifiedEvents.length} events.`);
+  }
+
+  const verifiedEvents = MAX_EVENTS > 0 ? allVerifiedEvents.slice(0, MAX_EVENTS) : allVerifiedEvents;
+
+  if (MAX_EVENTS > 0 && allVerifiedEvents.length > MAX_EVENTS) {
+    console.warn(`Event list truncated from ${allVerifiedEvents.length} to ${MAX_EVENTS}.`);
+  }
+
+  if (!verifiedEvents.length) {
+    if (Array.isArray(previousEvents) && previousEvents.length) {
+      console.warn('No events fetched; keeping previous dataset.');
+      process.exit(0);
+    }
+    throw new Error('No events fetched; aborting dataset overwrite.');
+  }
+
+  const nextDataset = normalizeDataset({
+    generatedAt,
+    region: 'NL',
+    isDemo: false,
+    sources: [
+      ...football.sources,
+      ...f1.sources,
+      ...tennis.sources,
+      ...teamSports.sources,
+      ...namedSports.sources,
+      ...nosSportLivestreams.sources,
+      ...hboMaxSchedule.sources,
+      ...viaplaySchedule.sources,
+      ...npoGuide.sources,
+      ...ziggoEpg.sources,
+      ...espnSchedule.sources,
+      'manual:src/data/major-events.nl.json',
+      'manual:src/data/event-overrides.nl.json'
+    ],
+    events: verifiedEvents
+  });
+
+  if (previousEvents && JSON.stringify(previousEvents) === JSON.stringify(nextDataset.events)) {
+    console.log('No event changes detected; keeping current dataset.');
     process.exit(0);
   }
-  throw new Error('No events fetched; aborting dataset overwrite.');
+
+  await writeFile(datasetPath, `${JSON.stringify(nextDataset, null, 2)}\n`, 'utf8');
+  console.log(`Updated dataset with ${nextDataset.events.length} events.`);
 }
 
-const nextDataset = normalizeDataset({
-  generatedAt,
-  region: 'NL',
-  isDemo: false,
-  sources: [
-    ...football.sources,
-    ...f1.sources,
-    ...tennis.sources,
-    ...teamSports.sources,
-    ...namedSports.sources,
-    ...nosSportLivestreams.sources,
-    ...hboMaxSchedule.sources,
-    ...viaplaySchedule.sources,
-    ...npoGuide.sources,
-    ...ziggoEpg.sources,
-    ...espnSchedule.sources,
-    'manual:src/data/major-events.nl.json',
-    'manual:src/data/event-overrides.nl.json'
-  ],
-  events: verifiedEvents
-});
+const isDirectRun = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
-if (previousEvents && JSON.stringify(previousEvents) === JSON.stringify(nextDataset.events)) {
-  console.log('No event changes detected; keeping current dataset.');
-  process.exit(0);
+if (isDirectRun) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
 }
 
-await writeFile(datasetPath, `${JSON.stringify(nextDataset, null, 2)}\n`, 'utf8');
-console.log(`Updated dataset with ${nextDataset.events.length} events.`);
+export {
+  buildProviderHealthReport,
+  dedupeEvents,
+  deriveProviderStatus,
+  extractEspnScheduleRows,
+  inspectEspnPayload,
+  normalizedTitleKey,
+  parseEspnFittData,
+  qualityGateDuplicateKey,
+  runQualityGates
+};
