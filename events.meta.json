@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-27T10:35:04.920Z",
-  "lastChangedAt": "2026-05-27T10:35:04.920Z",
-  "checkedAt": "2026-05-27T10:35:05.000Z",
-  "eventCount": 1593,
+  "generatedAt": "2026-05-27T16:16:14.787Z",
+  "lastChangedAt": "2026-05-27T16:16:14.787Z",
+  "checkedAt": "2026-05-27T16:16:15.000Z",
+  "eventCount": 1585,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-05-27T10:35:00.981Z",
+    "checkedAt": "2026-05-27T16:16:10.359Z",
     "providers": {
       "nos": {
         "rows": 0,
@@ -14,7 +14,7 @@
         "minRows": 1,
         "ok": false,
         "status": "empty",
-        "checkedAt": "2026-05-27T10:35:00.981Z",
+        "checkedAt": "2026-05-27T16:16:10.359Z",
         "lastOkAt": "2026-05-05T19:53:51.669Z",
         "lastNonEmptyAt": null,
         "errorCount": 0,
@@ -22,69 +22,43 @@
         "fallbackApplied": true
       },
       "ziggo": {
-        "rows": 2737,
+        "rows": 2684,
         "errors": [],
         "diagnostics": [],
         "minRows": 15,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-27T10:35:00.981Z",
-        "lastOkAt": "2026-05-27T10:35:00.981Z",
-        "lastNonEmptyAt": "2026-05-27T10:35:00.981Z",
+        "checkedAt": "2026-05-27T16:16:10.359Z",
+        "lastOkAt": "2026-05-27T16:16:10.359Z",
+        "lastNonEmptyAt": "2026-05-27T16:16:10.359Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
       },
       "espn-schedule": {
-        "rows": 4734,
-        "errors": [
-          "ESPN schedule 20260605: HTTP 503",
-          "ESPN schedule 20260613: HTTP 503",
-          "ESPN schedule 20260616: HTTP 503",
-          "ESPN schedule 20260624: HTTP 503"
-        ],
-        "diagnostics": [
-          {
-            "date": "20260605",
-            "kind": "http_error",
-            "detail": "ESPN schedule 20260605: HTTP 503"
-          },
-          {
-            "date": "20260613",
-            "kind": "http_error",
-            "detail": "ESPN schedule 20260613: HTTP 503"
-          },
-          {
-            "date": "20260616",
-            "kind": "http_error",
-            "detail": "ESPN schedule 20260616: HTTP 503"
-          },
-          {
-            "date": "20260624",
-            "kind": "http_error",
-            "detail": "ESPN schedule 20260624: HTTP 503"
-          }
-        ],
+        "rows": 5471,
+        "errors": [],
+        "diagnostics": [],
         "minRows": 12,
-        "ok": false,
-        "status": "degraded",
-        "checkedAt": "2026-05-27T10:35:00.981Z",
-        "lastOkAt": "2026-05-26T20:27:51.501Z",
-        "lastNonEmptyAt": "2026-05-27T10:35:00.981Z",
-        "errorCount": 4,
-        "diagnosticCount": 4,
-        "fallbackApplied": true
+        "ok": true,
+        "status": "ok",
+        "checkedAt": "2026-05-27T16:16:10.359Z",
+        "lastOkAt": "2026-05-27T16:16:10.359Z",
+        "lastNonEmptyAt": "2026-05-27T16:16:10.359Z",
+        "errorCount": 0,
+        "diagnosticCount": 0,
+        "fallbackApplied": false
       },
       "viaplay": {
-        "rows": 15,
+        "rows": 12,
         "errors": [],
         "diagnostics": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-27T10:35:00.981Z",
-        "lastOkAt": "2026-05-27T10:35:00.981Z",
-        "lastNonEmptyAt": "2026-05-27T10:35:00.981Z",
+        "checkedAt": "2026-05-27T16:16:10.359Z",
+        "lastOkAt": "2026-05-27T16:16:10.359Z",
+        "lastNonEmptyAt": "2026-05-27T16:16:10.359Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
@@ -96,9 +70,9 @@
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-27T10:35:00.981Z",
-        "lastOkAt": "2026-05-27T10:35:00.981Z",
-        "lastNonEmptyAt": "2026-05-27T10:35:00.981Z",
+        "checkedAt": "2026-05-27T16:16:10.359Z",
+        "lastOkAt": "2026-05-27T16:16:10.359Z",
+        "lastNonEmptyAt": "2026-05-27T16:16:10.359Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
@@ -110,9 +84,9 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-27T10:35:00.981Z",
-        "lastOkAt": "2026-05-27T10:35:00.981Z",
-        "lastNonEmptyAt": "2026-05-27T10:35:00.981Z",
+        "checkedAt": "2026-05-27T16:16:10.359Z",
+        "lastOkAt": "2026-05-27T16:16:10.359Z",
+        "lastNonEmptyAt": "2026-05-27T16:16:10.359Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
