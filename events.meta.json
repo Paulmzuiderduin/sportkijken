@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-30T14:10:28.122Z",
-  "lastChangedAt": "2026-05-30T14:10:28.122Z",
-  "checkedAt": "2026-05-30T14:10:28.000Z",
-  "eventCount": 1578,
+  "generatedAt": "2026-05-30T16:18:50.140Z",
+  "lastChangedAt": "2026-05-30T16:18:50.140Z",
+  "checkedAt": "2026-05-30T16:18:50.000Z",
+  "eventCount": 1539,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-05-30T14:10:23.703Z",
+    "checkedAt": "2026-05-30T16:18:45.717Z",
     "providers": {
       "nos": {
         "rows": 0,
@@ -14,7 +14,7 @@
         "minRows": 1,
         "ok": false,
         "status": "empty",
-        "checkedAt": "2026-05-30T14:10:23.703Z",
+        "checkedAt": "2026-05-30T16:18:45.717Z",
         "lastOkAt": "2026-05-05T19:53:51.669Z",
         "lastNonEmptyAt": null,
         "errorCount": 0,
@@ -22,51 +22,43 @@
         "fallbackApplied": true
       },
       "ziggo": {
-        "rows": 2575,
+        "rows": 2562,
         "errors": [],
         "diagnostics": [],
         "minRows": 15,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-30T14:10:23.703Z",
-        "lastOkAt": "2026-05-30T14:10:23.703Z",
-        "lastNonEmptyAt": "2026-05-30T14:10:23.703Z",
+        "checkedAt": "2026-05-30T16:18:45.717Z",
+        "lastOkAt": "2026-05-30T16:18:45.717Z",
+        "lastNonEmptyAt": "2026-05-30T16:18:45.717Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
       },
       "espn-schedule": {
-        "rows": 5269,
-        "errors": [
-          "ESPN schedule 20260627: HTTP 503"
-        ],
-        "diagnostics": [
-          {
-            "date": "20260627",
-            "kind": "http_error",
-            "detail": "ESPN schedule 20260627: HTTP 503"
-          }
-        ],
+        "rows": 5419,
+        "errors": [],
+        "diagnostics": [],
         "minRows": 12,
-        "ok": false,
-        "status": "degraded",
-        "checkedAt": "2026-05-30T14:10:23.703Z",
-        "lastOkAt": "2026-05-30T04:30:09.524Z",
-        "lastNonEmptyAt": "2026-05-30T14:10:23.703Z",
-        "errorCount": 1,
-        "diagnosticCount": 1,
-        "fallbackApplied": true
+        "ok": true,
+        "status": "ok",
+        "checkedAt": "2026-05-30T16:18:45.717Z",
+        "lastOkAt": "2026-05-30T16:18:45.717Z",
+        "lastNonEmptyAt": "2026-05-30T16:18:45.717Z",
+        "errorCount": 0,
+        "diagnosticCount": 0,
+        "fallbackApplied": false
       },
       "viaplay": {
-        "rows": 33,
+        "rows": 28,
         "errors": [],
         "diagnostics": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-30T14:10:23.703Z",
-        "lastOkAt": "2026-05-30T14:10:23.703Z",
-        "lastNonEmptyAt": "2026-05-30T14:10:23.703Z",
+        "checkedAt": "2026-05-30T16:18:45.717Z",
+        "lastOkAt": "2026-05-30T16:18:45.717Z",
+        "lastNonEmptyAt": "2026-05-30T16:18:45.717Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
@@ -78,23 +70,23 @@
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-30T14:10:23.703Z",
-        "lastOkAt": "2026-05-30T14:10:23.703Z",
-        "lastNonEmptyAt": "2026-05-30T14:10:23.703Z",
+        "checkedAt": "2026-05-30T16:18:45.717Z",
+        "lastOkAt": "2026-05-30T16:18:45.717Z",
+        "lastNonEmptyAt": "2026-05-30T16:18:45.717Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
       },
       "hbo-max": {
-        "rows": 29,
+        "rows": 32,
         "errors": [],
         "diagnostics": [],
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-05-30T14:10:23.703Z",
-        "lastOkAt": "2026-05-30T14:10:23.703Z",
-        "lastNonEmptyAt": "2026-05-30T14:10:23.703Z",
+        "checkedAt": "2026-05-30T16:18:45.717Z",
+        "lastOkAt": "2026-05-30T16:18:45.717Z",
+        "lastNonEmptyAt": "2026-05-30T16:18:45.717Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
