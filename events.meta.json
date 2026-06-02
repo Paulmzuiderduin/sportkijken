@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-01T21:45:51.930Z",
-  "lastChangedAt": "2026-06-01T21:45:51.930Z",
-  "checkedAt": "2026-06-01T21:45:52.000Z",
-  "eventCount": 1496,
+  "generatedAt": "2026-06-02T05:04:27.218Z",
+  "lastChangedAt": "2026-06-02T05:04:27.218Z",
+  "checkedAt": "2026-06-02T05:04:27.000Z",
+  "eventCount": 1505,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-06-01T21:45:50.829Z",
+    "checkedAt": "2026-06-02T05:04:27.103Z",
     "providers": {
       "nos": {
         "rows": 0,
@@ -14,7 +14,7 @@
         "minRows": 1,
         "ok": false,
         "status": "empty",
-        "checkedAt": "2026-06-01T21:45:50.829Z",
+        "checkedAt": "2026-06-02T05:04:27.103Z",
         "lastOkAt": "2026-05-05T19:53:51.669Z",
         "lastNonEmptyAt": null,
         "errorCount": 0,
@@ -22,23 +22,54 @@
         "fallbackApplied": true
       },
       "ziggo": {
-        "rows": 2479,
-        "errors": [],
+        "rows": 0,
+        "errors": [
+          "Ziggo EPG 2026-06-02: fetch failed",
+          "Ziggo EPG 2026-06-03: fetch failed",
+          "Ziggo EPG 2026-06-04: fetch failed",
+          "Ziggo EPG 2026-06-05: fetch failed",
+          "Ziggo EPG 2026-06-06: fetch failed",
+          "Ziggo EPG 2026-06-07: fetch failed",
+          "Ziggo EPG 2026-06-08: fetch failed",
+          "Ziggo EPG 2026-06-09: fetch failed",
+          "Ziggo EPG 2026-06-10: fetch failed",
+          "Ziggo EPG 2026-06-11: fetch failed",
+          "Ziggo EPG 2026-06-12: fetch failed",
+          "Ziggo EPG 2026-06-13: fetch failed",
+          "Ziggo EPG 2026-06-14: fetch failed",
+          "Ziggo EPG 2026-06-15: fetch failed",
+          "Ziggo EPG 2026-06-16: fetch failed",
+          "Ziggo EPG 2026-06-17: fetch failed",
+          "Ziggo EPG 2026-06-18: fetch failed",
+          "Ziggo EPG 2026-06-19: fetch failed",
+          "Ziggo EPG 2026-06-20: fetch failed",
+          "Ziggo EPG 2026-06-21: fetch failed",
+          "Ziggo EPG 2026-06-22: fetch failed",
+          "Ziggo EPG 2026-06-23: fetch failed",
+          "Ziggo EPG 2026-06-24: fetch failed",
+          "Ziggo EPG 2026-06-25: fetch failed",
+          "Ziggo EPG 2026-06-26: fetch failed",
+          "Ziggo EPG 2026-06-27: fetch failed",
+          "Ziggo EPG 2026-06-28: fetch failed",
+          "Ziggo EPG 2026-06-29: fetch failed",
+          "Ziggo EPG 2026-06-30: fetch failed",
+          "Ziggo EPG 2026-07-01: fetch failed",
+          "Ziggo EPG 2026-07-02: fetch failed"
+        ],
         "diagnostics": [],
         "minRows": 15,
-        "ok": true,
-        "status": "ok",
-        "checkedAt": "2026-06-01T21:45:50.829Z",
+        "ok": false,
+        "status": "down",
+        "checkedAt": "2026-06-02T05:04:27.103Z",
         "lastOkAt": "2026-06-01T21:45:50.829Z",
         "lastNonEmptyAt": "2026-06-01T21:45:50.829Z",
-        "errorCount": 0,
+        "errorCount": 31,
         "diagnosticCount": 0,
-        "fallbackApplied": false
+        "fallbackApplied": true
       },
       "espn-schedule": {
         "rows": 0,
         "errors": [
-          "ESPN schedule 20260601: no usable rows (payload missing)",
           "ESPN schedule 20260602: no usable rows (payload missing)",
           "ESPN schedule 20260603: no usable rows (payload missing)",
           "ESPN schedule 20260604: no usable rows (payload missing)",
@@ -66,14 +97,10 @@
           "ESPN schedule 20260626: no usable rows (payload missing)",
           "ESPN schedule 20260627: no usable rows (payload missing)",
           "ESPN schedule 20260628: no usable rows (payload missing)",
-          "ESPN schedule 20260629: no usable rows (payload missing)"
+          "ESPN schedule 20260629: no usable rows (payload missing)",
+          "ESPN schedule 20260630: no usable rows (payload missing)"
         ],
         "diagnostics": [
-          {
-            "date": "20260601",
-            "kind": "empty_payload",
-            "detail": "ESPN schedule 20260601: no usable rows (payload missing)"
-          },
           {
             "date": "20260602",
             "kind": "empty_payload",
@@ -213,12 +240,17 @@
             "date": "20260629",
             "kind": "empty_payload",
             "detail": "ESPN schedule 20260629: no usable rows (payload missing)"
+          },
+          {
+            "date": "20260630",
+            "kind": "empty_payload",
+            "detail": "ESPN schedule 20260630: no usable rows (payload missing)"
           }
         ],
         "minRows": 12,
         "ok": false,
         "status": "down",
-        "checkedAt": "2026-06-01T21:45:50.829Z",
+        "checkedAt": "2026-06-02T05:04:27.103Z",
         "lastOkAt": "2026-06-01T18:18:56.464Z",
         "lastNonEmptyAt": "2026-06-01T18:18:56.464Z",
         "errorCount": 29,
@@ -232,23 +264,23 @@
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-06-01T21:45:50.829Z",
-        "lastOkAt": "2026-06-01T21:45:50.829Z",
-        "lastNonEmptyAt": "2026-06-01T21:45:50.829Z",
+        "checkedAt": "2026-06-02T05:04:27.103Z",
+        "lastOkAt": "2026-06-02T05:04:27.103Z",
+        "lastNonEmptyAt": "2026-06-02T05:04:27.103Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
       },
       "npo-guide": {
-        "rows": 32,
+        "rows": 41,
         "errors": [],
         "diagnostics": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-06-01T21:45:50.829Z",
-        "lastOkAt": "2026-06-01T21:45:50.829Z",
-        "lastNonEmptyAt": "2026-06-01T21:45:50.829Z",
+        "checkedAt": "2026-06-02T05:04:27.103Z",
+        "lastOkAt": "2026-06-02T05:04:27.103Z",
+        "lastNonEmptyAt": "2026-06-02T05:04:27.103Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
@@ -260,9 +292,9 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-06-01T21:45:50.829Z",
-        "lastOkAt": "2026-06-01T21:45:50.829Z",
-        "lastNonEmptyAt": "2026-06-01T21:45:50.829Z",
+        "checkedAt": "2026-06-02T05:04:27.103Z",
+        "lastOkAt": "2026-06-02T05:04:27.103Z",
+        "lastNonEmptyAt": "2026-06-02T05:04:27.103Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
