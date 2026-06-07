@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-07T14:22:20.617Z",
-  "checkedAt": "2026-06-07T14:22:20.000Z",
-  "eventCount": 1633,
+  "generatedAt": "2026-06-07T22:31:27.421Z",
+  "checkedAt": "2026-06-07T22:31:27.000Z",
+  "eventCount": 1615,
   "buckets": [
     {
       "id": "2026-05",
@@ -15,7 +15,7 @@
       "path": "/datasets/events-2026-06.json",
       "start": "2026-06-06T19:55:00.000Z",
       "end": "2026-06-30T22:30:00.000Z",
-      "eventCount": 1137
+      "eventCount": 1119
     },
     {
       "id": "2026-07",
