@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-06-11T16:30:46.015Z",
+  "checkedAt": "2026-06-11T20:38:26.409Z",
   "providers": {
     "nos": {
       "rows": 0,
@@ -8,7 +8,7 @@
       "minRows": 1,
       "ok": false,
       "status": "empty",
-      "checkedAt": "2026-06-11T16:30:46.015Z",
+      "checkedAt": "2026-06-11T20:38:26.409Z",
       "lastOkAt": "2026-05-05T19:53:51.669Z",
       "lastNonEmptyAt": null,
       "errorCount": 0,
@@ -16,15 +16,15 @@
       "fallbackApplied": true
     },
     "ziggo": {
-      "rows": 2548,
+      "rows": 2538,
       "errors": [],
       "diagnostics": [],
       "minRows": 15,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-06-11T16:30:46.015Z",
-      "lastOkAt": "2026-06-11T16:30:46.015Z",
-      "lastNonEmptyAt": "2026-06-11T16:30:46.015Z",
+      "checkedAt": "2026-06-11T20:38:26.409Z",
+      "lastOkAt": "2026-06-11T20:38:26.409Z",
+      "lastNonEmptyAt": "2026-06-11T20:38:26.409Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
@@ -212,7 +212,7 @@
       "minRows": 12,
       "ok": false,
       "status": "down",
-      "checkedAt": "2026-06-11T16:30:46.015Z",
+      "checkedAt": "2026-06-11T20:38:26.409Z",
       "lastOkAt": "2026-06-10T16:11:41.860Z",
       "lastNonEmptyAt": "2026-06-10T16:11:41.860Z",
       "errorCount": 29,
@@ -220,15 +220,15 @@
       "fallbackApplied": true
     },
     "viaplay": {
-      "rows": 24,
+      "rows": 23,
       "errors": [],
       "diagnostics": [],
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-06-11T16:30:46.015Z",
-      "lastOkAt": "2026-06-11T16:30:46.015Z",
-      "lastNonEmptyAt": "2026-06-11T16:30:46.015Z",
+      "checkedAt": "2026-06-11T20:38:26.409Z",
+      "lastOkAt": "2026-06-11T20:38:26.409Z",
+      "lastNonEmptyAt": "2026-06-11T20:38:26.409Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
@@ -240,9 +240,9 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-06-11T16:30:46.015Z",
-      "lastOkAt": "2026-06-11T16:30:46.015Z",
-      "lastNonEmptyAt": "2026-06-11T16:30:46.015Z",
+      "checkedAt": "2026-06-11T20:38:26.409Z",
+      "lastOkAt": "2026-06-11T20:38:26.409Z",
+      "lastNonEmptyAt": "2026-06-11T20:38:26.409Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
@@ -254,9 +254,9 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-06-11T16:30:46.015Z",
-      "lastOkAt": "2026-06-11T16:30:46.015Z",
-      "lastNonEmptyAt": "2026-06-11T16:30:46.015Z",
+      "checkedAt": "2026-06-11T20:38:26.409Z",
+      "lastOkAt": "2026-06-11T20:38:26.409Z",
+      "lastNonEmptyAt": "2026-06-11T20:38:26.409Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
