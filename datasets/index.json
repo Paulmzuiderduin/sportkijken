@@ -1,63 +1,49 @@
 {
-  "generatedAt": "2026-06-18T23:14:34.354Z",
-  "checkedAt": "2026-06-18T23:14:34.000Z",
-  "eventCount": 1953,
+  "generatedAt": "2026-06-19T10:59:44.919Z",
+  "checkedAt": "2026-06-19T10:59:45.000Z",
+  "eventCount": 2000,
   "buckets": [
-    {
-      "id": "2026-05",
-      "path": "/datasets/events-2026-05.json",
-      "start": "2026-05-09T16:00:00.000Z",
-      "end": "2026-05-23T10:30:00.000Z",
-      "eventCount": 10
-    },
     {
       "id": "2026-06",
       "path": "/datasets/events-2026-06.json",
-      "start": "2026-06-18T19:15:00.000Z",
+      "start": "2026-06-19T07:00:00.000Z",
       "end": "2026-06-30T23:50:00.000Z",
-      "eventCount": 750
+      "eventCount": 730
     },
     {
       "id": "2026-07",
       "path": "/datasets/events-2026-07.json",
       "start": "2026-07-01T00:00:00.000Z",
       "end": "2026-07-31T04:00:00.000Z",
-      "eventCount": 517
+      "eventCount": 537
     },
     {
       "id": "2026-08",
       "path": "/datasets/events-2026-08.json",
       "start": "2026-08-01T04:00:00.000Z",
       "end": "2026-08-31T18:00:00.000Z",
-      "eventCount": 179
+      "eventCount": 199
     },
     {
       "id": "2026-09",
       "path": "/datasets/events-2026-09.json",
       "start": "2026-09-04T10:30:00.000Z",
       "end": "2026-09-29T18:45:00.000Z",
-      "eventCount": 245
+      "eventCount": 275
     },
     {
       "id": "2026-10",
       "path": "/datasets/events-2026-10.json",
       "start": "2026-10-01T04:00:00.000Z",
       "end": "2026-10-31T20:00:00.000Z",
-      "eventCount": 202
+      "eventCount": 242
     },
     {
       "id": "2026-11",
       "path": "/datasets/events-2026-11.json",
       "start": "2026-11-01T11:15:00.000Z",
-      "end": "2026-11-28T20:00:00.000Z",
-      "eventCount": 47
-    },
-    {
-      "id": "2026-12",
-      "path": "/datasets/events-2026-12.json",
-      "start": "2026-12-03T05:00:00.000Z",
-      "end": "2026-12-08T05:00:00.000Z",
-      "eventCount": 3
+      "end": "2026-11-06T05:00:00.000Z",
+      "eventCount": 17
     }
   ]
 }
