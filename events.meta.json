@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-22T22:57:06.279Z",
-  "lastChangedAt": "2026-06-22T22:57:06.279Z",
-  "checkedAt": "2026-06-22T22:57:06.000Z",
+  "generatedAt": "2026-06-23T04:32:21.136Z",
+  "lastChangedAt": "2026-06-23T04:32:21.136Z",
+  "checkedAt": "2026-06-23T04:32:21.000Z",
   "eventCount": 2000,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-06-22T22:57:04.583Z",
+    "checkedAt": "2026-06-23T04:32:19.566Z",
     "providers": {
       "nos": {
         "rows": 0,
@@ -14,7 +14,7 @@
         "minRows": 1,
         "ok": false,
         "status": "empty",
-        "checkedAt": "2026-06-22T22:57:04.583Z",
+        "checkedAt": "2026-06-23T04:32:19.566Z",
         "lastOkAt": "2026-05-05T19:53:51.669Z",
         "lastNonEmptyAt": null,
         "errorCount": 0,
@@ -22,15 +22,15 @@
         "fallbackApplied": false
       },
       "ziggo": {
-        "rows": 2662,
+        "rows": 2580,
         "errors": [],
         "diagnostics": [],
         "minRows": 15,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-06-22T22:57:04.583Z",
-        "lastOkAt": "2026-06-22T22:57:04.583Z",
-        "lastNonEmptyAt": "2026-06-22T22:57:04.583Z",
+        "checkedAt": "2026-06-23T04:32:19.566Z",
+        "lastOkAt": "2026-06-23T04:32:19.566Z",
+        "lastNonEmptyAt": "2026-06-23T04:32:19.566Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
@@ -38,7 +38,6 @@
       "espn-schedule": {
         "rows": 0,
         "errors": [
-          "ESPN schedule 20260622: no usable rows (payload missing)",
           "ESPN schedule 20260623: no usable rows (payload missing)",
           "ESPN schedule 20260624: no usable rows (payload missing)",
           "ESPN schedule 20260625: no usable rows (payload missing)",
@@ -66,14 +65,10 @@
           "ESPN schedule 20260717: no usable rows (payload missing)",
           "ESPN schedule 20260718: no usable rows (payload missing)",
           "ESPN schedule 20260719: no usable rows (payload missing)",
-          "ESPN schedule 20260720: no usable rows (payload missing)"
+          "ESPN schedule 20260720: no usable rows (payload missing)",
+          "ESPN schedule 20260721: no usable rows (payload missing)"
         ],
         "diagnostics": [
-          {
-            "date": "20260622",
-            "kind": "empty_payload",
-            "detail": "ESPN schedule 20260622: no usable rows (payload missing)"
-          },
           {
             "date": "20260623",
             "kind": "empty_payload",
@@ -213,12 +208,17 @@
             "date": "20260720",
             "kind": "empty_payload",
             "detail": "ESPN schedule 20260720: no usable rows (payload missing)"
+          },
+          {
+            "date": "20260721",
+            "kind": "empty_payload",
+            "detail": "ESPN schedule 20260721: no usable rows (payload missing)"
           }
         ],
         "minRows": 12,
         "ok": false,
         "status": "down",
-        "checkedAt": "2026-06-22T22:57:04.583Z",
+        "checkedAt": "2026-06-23T04:32:19.566Z",
         "lastOkAt": "2026-06-22T12:28:40.813Z",
         "lastNonEmptyAt": "2026-06-22T12:28:40.813Z",
         "errorCount": 29,
@@ -226,29 +226,29 @@
         "fallbackApplied": true
       },
       "viaplay": {
-        "rows": 21,
+        "rows": 26,
         "errors": [],
         "diagnostics": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-06-22T22:57:04.583Z",
-        "lastOkAt": "2026-06-22T22:57:04.583Z",
-        "lastNonEmptyAt": "2026-06-22T22:57:04.583Z",
+        "checkedAt": "2026-06-23T04:32:19.566Z",
+        "lastOkAt": "2026-06-23T04:32:19.566Z",
+        "lastNonEmptyAt": "2026-06-23T04:32:19.566Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
       },
       "npo-guide": {
-        "rows": 239,
+        "rows": 260,
         "errors": [],
         "diagnostics": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-06-22T22:57:04.583Z",
-        "lastOkAt": "2026-06-22T22:57:04.583Z",
-        "lastNonEmptyAt": "2026-06-22T22:57:04.583Z",
+        "checkedAt": "2026-06-23T04:32:19.566Z",
+        "lastOkAt": "2026-06-23T04:32:19.566Z",
+        "lastNonEmptyAt": "2026-06-23T04:32:19.566Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
@@ -260,9 +260,9 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-06-22T22:57:04.583Z",
-        "lastOkAt": "2026-06-22T22:57:04.583Z",
-        "lastNonEmptyAt": "2026-06-22T22:57:04.583Z",
+        "checkedAt": "2026-06-23T04:32:19.566Z",
+        "lastOkAt": "2026-06-23T04:32:19.566Z",
+        "lastNonEmptyAt": "2026-06-23T04:32:19.566Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
