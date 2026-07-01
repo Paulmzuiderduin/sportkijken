@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-01T10:17:14.964Z",
-  "lastChangedAt": "2026-07-01T10:17:14.964Z",
-  "checkedAt": "2026-07-01T10:17:15.000Z",
-  "eventCount": 2000,
+  "generatedAt": "2026-07-01T15:14:17.624Z",
+  "lastChangedAt": "2026-07-01T15:14:17.624Z",
+  "checkedAt": "2026-07-01T15:14:17.000Z",
+  "eventCount": 1984,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-07-01T10:17:13.307Z",
+    "checkedAt": "2026-07-01T15:14:16.070Z",
     "providers": {
       "nos": {
         "rows": 0,
@@ -14,7 +14,7 @@
         "minRows": 1,
         "ok": false,
         "status": "empty",
-        "checkedAt": "2026-07-01T10:17:13.307Z",
+        "checkedAt": "2026-07-01T15:14:16.070Z",
         "lastOkAt": "2026-05-05T19:53:51.669Z",
         "lastNonEmptyAt": null,
         "errorCount": 0,
@@ -22,15 +22,15 @@
         "fallbackApplied": false
       },
       "ziggo": {
-        "rows": 2440,
+        "rows": 2399,
         "errors": [],
         "diagnostics": [],
         "minRows": 15,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-07-01T10:17:13.307Z",
-        "lastOkAt": "2026-07-01T10:17:13.307Z",
-        "lastNonEmptyAt": "2026-07-01T10:17:13.307Z",
+        "checkedAt": "2026-07-01T15:14:16.070Z",
+        "lastOkAt": "2026-07-01T15:14:16.070Z",
+        "lastNonEmptyAt": "2026-07-01T15:14:16.070Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
@@ -218,7 +218,7 @@
         "minRows": 12,
         "ok": false,
         "status": "down",
-        "checkedAt": "2026-07-01T10:17:13.307Z",
+        "checkedAt": "2026-07-01T15:14:16.070Z",
         "lastOkAt": "2026-07-01T04:56:48.611Z",
         "lastNonEmptyAt": "2026-07-01T04:56:48.611Z",
         "errorCount": 29,
@@ -226,29 +226,31 @@
         "fallbackApplied": true
       },
       "viaplay": {
-        "rows": 31,
-        "errors": [],
+        "rows": 0,
+        "errors": [
+          "Viaplay sportagenda: HTTP 403"
+        ],
         "diagnostics": [],
         "minRows": 5,
-        "ok": true,
-        "status": "ok",
-        "checkedAt": "2026-07-01T10:17:13.307Z",
+        "ok": false,
+        "status": "down",
+        "checkedAt": "2026-07-01T15:14:16.070Z",
         "lastOkAt": "2026-07-01T10:17:13.307Z",
         "lastNonEmptyAt": "2026-07-01T10:17:13.307Z",
-        "errorCount": 0,
+        "errorCount": 1,
         "diagnosticCount": 0,
-        "fallbackApplied": false
+        "fallbackApplied": true
       },
       "npo-guide": {
-        "rows": 177,
+        "rows": 174,
         "errors": [],
         "diagnostics": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-07-01T10:17:13.307Z",
-        "lastOkAt": "2026-07-01T10:17:13.307Z",
-        "lastNonEmptyAt": "2026-07-01T10:17:13.307Z",
+        "checkedAt": "2026-07-01T15:14:16.070Z",
+        "lastOkAt": "2026-07-01T15:14:16.070Z",
+        "lastNonEmptyAt": "2026-07-01T15:14:16.070Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
@@ -260,9 +262,9 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-07-01T10:17:13.307Z",
-        "lastOkAt": "2026-07-01T10:17:13.307Z",
-        "lastNonEmptyAt": "2026-07-01T10:17:13.307Z",
+        "checkedAt": "2026-07-01T15:14:16.070Z",
+        "lastOkAt": "2026-07-01T15:14:16.070Z",
+        "lastNonEmptyAt": "2026-07-01T15:14:16.070Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
