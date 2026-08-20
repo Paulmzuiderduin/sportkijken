@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-08-20T01:54:17.525Z",
+  "checkedAt": "2026-08-20T04:02:17.082Z",
   "providers": {
     "nos": {
       "rows": 0,
@@ -8,7 +8,7 @@
       "minRows": 1,
       "ok": false,
       "status": "empty",
-      "checkedAt": "2026-08-20T01:54:17.525Z",
+      "checkedAt": "2026-08-20T04:02:17.082Z",
       "lastOkAt": "2026-05-05T19:53:51.669Z",
       "lastNonEmptyAt": null,
       "errorCount": 0,
@@ -16,15 +16,15 @@
       "fallbackApplied": false
     },
     "ziggo": {
-      "rows": 2965,
+      "rows": 2914,
       "errors": [],
       "diagnostics": [],
       "minRows": 15,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-08-20T01:54:17.525Z",
-      "lastOkAt": "2026-08-20T01:54:17.525Z",
-      "lastNonEmptyAt": "2026-08-20T01:54:17.525Z",
+      "checkedAt": "2026-08-20T04:02:17.082Z",
+      "lastOkAt": "2026-08-20T04:02:17.082Z",
+      "lastNonEmptyAt": "2026-08-20T04:02:17.082Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
@@ -32,7 +32,6 @@
     "espn-schedule": {
       "rows": 0,
       "errors": [
-        "ESPN schedule 20260819: no usable rows (payload missing)",
         "ESPN schedule 20260820: no usable rows (payload missing)",
         "ESPN schedule 20260821: no usable rows (payload missing)",
         "ESPN schedule 20260822: no usable rows (payload missing)",
@@ -60,14 +59,10 @@
         "ESPN schedule 20260913: no usable rows (payload missing)",
         "ESPN schedule 20260914: no usable rows (payload missing)",
         "ESPN schedule 20260915: no usable rows (payload missing)",
-        "ESPN schedule 20260916: no usable rows (payload missing)"
+        "ESPN schedule 20260916: no usable rows (payload missing)",
+        "ESPN schedule 20260917: no usable rows (payload missing)"
       ],
       "diagnostics": [
-        {
-          "date": "20260819",
-          "kind": "empty_payload",
-          "detail": "ESPN schedule 20260819: no usable rows (payload missing)"
-        },
         {
           "date": "20260820",
           "kind": "empty_payload",
@@ -207,12 +202,17 @@
           "date": "20260916",
           "kind": "empty_payload",
           "detail": "ESPN schedule 20260916: no usable rows (payload missing)"
+        },
+        {
+          "date": "20260917",
+          "kind": "empty_payload",
+          "detail": "ESPN schedule 20260917: no usable rows (payload missing)"
         }
       ],
       "minRows": 12,
       "ok": false,
       "status": "down",
-      "checkedAt": "2026-08-20T01:54:17.525Z",
+      "checkedAt": "2026-08-20T04:02:17.082Z",
       "lastOkAt": "2026-07-15T19:40:25.642Z",
       "lastNonEmptyAt": "2026-07-15T19:40:25.642Z",
       "errorCount": 29,
@@ -226,9 +226,9 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-08-20T01:54:17.525Z",
-      "lastOkAt": "2026-08-20T01:54:17.525Z",
-      "lastNonEmptyAt": "2026-08-20T01:54:17.525Z",
+      "checkedAt": "2026-08-20T04:02:17.082Z",
+      "lastOkAt": "2026-08-20T04:02:17.082Z",
+      "lastNonEmptyAt": "2026-08-20T04:02:17.082Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
@@ -240,9 +240,9 @@
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-08-20T01:54:17.525Z",
-      "lastOkAt": "2026-08-20T01:54:17.525Z",
-      "lastNonEmptyAt": "2026-08-20T01:54:17.525Z",
+      "checkedAt": "2026-08-20T04:02:17.082Z",
+      "lastOkAt": "2026-08-20T04:02:17.082Z",
+      "lastNonEmptyAt": "2026-08-20T04:02:17.082Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
@@ -254,9 +254,9 @@
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-08-20T01:54:17.525Z",
-      "lastOkAt": "2026-08-20T01:54:17.525Z",
-      "lastNonEmptyAt": "2026-08-20T01:54:17.525Z",
+      "checkedAt": "2026-08-20T04:02:17.082Z",
+      "lastOkAt": "2026-08-20T04:02:17.082Z",
+      "lastNonEmptyAt": "2026-08-20T04:02:17.082Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
