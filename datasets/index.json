@@ -1,21 +1,21 @@
 {
-  "generatedAt": "2026-08-26T02:00:53.353Z",
-  "checkedAt": "2026-08-26T02:00:53.000Z",
+  "generatedAt": "2026-08-26T07:11:32.390Z",
+  "checkedAt": "2026-08-26T07:11:32.000Z",
   "eventCount": 2000,
   "buckets": [
     {
       "id": "2026-08",
       "path": "/datasets/events-2026-08.json",
-      "start": "2026-08-25T22:35:00.000Z",
+      "start": "2026-08-26T05:00:00.000Z",
       "end": "2026-08-31T23:40:00.000Z",
-      "eventCount": 358
+      "eventCount": 338
     },
     {
       "id": "2026-09",
       "path": "/datasets/events-2026-09.json",
       "start": "2026-09-01T00:05:00.000Z",
       "end": "2026-09-30T23:30:00.000Z",
-      "eventCount": 629
+      "eventCount": 644
     },
     {
       "id": "2026-10",
@@ -28,8 +28,8 @@
       "id": "2026-11",
       "path": "/datasets/events-2026-11.json",
       "start": "2026-11-01T00:00:00.000Z",
-      "end": "2026-11-26T02:40:00.000Z",
-      "eventCount": 313
+      "end": "2026-11-27T18:00:00.000Z",
+      "eventCount": 318
     }
   ]
 }
