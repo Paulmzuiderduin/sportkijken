@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-27T14:18:40.142Z",
-  "lastChangedAt": "2026-08-27T14:18:40.142Z",
-  "checkedAt": "2026-08-27T14:18:40.000Z",
+  "generatedAt": "2026-08-28T00:26:55.349Z",
+  "lastChangedAt": "2026-08-28T00:26:55.349Z",
+  "checkedAt": "2026-08-28T00:26:55.000Z",
   "eventCount": 2000,
   "shardStrategy": "month",
   "providerHealth": {
-    "checkedAt": "2026-08-27T14:18:39.258Z",
+    "checkedAt": "2026-08-28T00:26:53.690Z",
     "providers": {
       "nos": {
         "rows": 0,
@@ -14,7 +14,7 @@
         "minRows": 1,
         "ok": false,
         "status": "empty",
-        "checkedAt": "2026-08-27T14:18:39.258Z",
+        "checkedAt": "2026-08-28T00:26:53.690Z",
         "lastOkAt": "2026-05-05T19:53:51.669Z",
         "lastNonEmptyAt": null,
         "errorCount": 0,
@@ -22,15 +22,15 @@
         "fallbackApplied": false
       },
       "ziggo": {
-        "rows": 2890,
+        "rows": 3000,
         "errors": [],
         "diagnostics": [],
         "minRows": 15,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-08-27T14:18:39.258Z",
-        "lastOkAt": "2026-08-27T14:18:39.258Z",
-        "lastNonEmptyAt": "2026-08-27T14:18:39.258Z",
+        "checkedAt": "2026-08-28T00:26:53.690Z",
+        "lastOkAt": "2026-08-28T00:26:53.690Z",
+        "lastNonEmptyAt": "2026-08-28T00:26:53.690Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
@@ -218,7 +218,7 @@
         "minRows": 12,
         "ok": false,
         "status": "down",
-        "checkedAt": "2026-08-27T14:18:39.258Z",
+        "checkedAt": "2026-08-28T00:26:53.690Z",
         "lastOkAt": "2026-07-15T19:40:25.642Z",
         "lastNonEmptyAt": "2026-07-15T19:40:25.642Z",
         "errorCount": 29,
@@ -226,31 +226,31 @@
         "fallbackApplied": false
       },
       "viaplay": {
-        "rows": 35,
+        "rows": 37,
         "errors": [],
         "diagnostics": [],
         "minRows": 5,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-08-27T14:18:39.258Z",
-        "lastOkAt": "2026-08-27T14:18:39.258Z",
-        "lastNonEmptyAt": "2026-08-27T14:18:39.258Z",
+        "checkedAt": "2026-08-28T00:26:53.690Z",
+        "lastOkAt": "2026-08-28T00:26:53.690Z",
+        "lastNonEmptyAt": "2026-08-28T00:26:53.690Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
       },
       "npo-guide": {
-        "rows": 29,
+        "rows": 26,
         "errors": [
-          "NPO gids 30-08-2026 NPO 2: HTTP 503"
+          "NPO gids 31-08-2026 NPO 3: HTTP 503"
         ],
         "diagnostics": [],
         "minRows": 5,
         "ok": false,
         "status": "degraded",
-        "checkedAt": "2026-08-27T14:18:39.258Z",
+        "checkedAt": "2026-08-28T00:26:53.690Z",
         "lastOkAt": "2026-08-27T00:51:09.234Z",
-        "lastNonEmptyAt": "2026-08-27T14:18:39.258Z",
+        "lastNonEmptyAt": "2026-08-28T00:26:53.690Z",
         "errorCount": 1,
         "diagnosticCount": 0,
         "fallbackApplied": true
@@ -262,9 +262,9 @@
         "minRows": 1,
         "ok": true,
         "status": "ok",
-        "checkedAt": "2026-08-27T14:18:39.258Z",
-        "lastOkAt": "2026-08-27T14:18:39.258Z",
-        "lastNonEmptyAt": "2026-08-27T14:18:39.258Z",
+        "checkedAt": "2026-08-28T00:26:53.690Z",
+        "lastOkAt": "2026-08-28T00:26:53.690Z",
+        "lastNonEmptyAt": "2026-08-28T00:26:53.690Z",
         "errorCount": 0,
         "diagnosticCount": 0,
         "fallbackApplied": false
