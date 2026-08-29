@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-08-29T10:11:23.524Z",
+  "checkedAt": "2026-08-29T16:47:15.451Z",
   "providers": {
     "nos": {
       "rows": 0,
@@ -8,7 +8,7 @@
       "minRows": 1,
       "ok": false,
       "status": "empty",
-      "checkedAt": "2026-08-29T10:11:23.524Z",
+      "checkedAt": "2026-08-29T16:47:15.451Z",
       "lastOkAt": "2026-05-05T19:53:51.669Z",
       "lastNonEmptyAt": null,
       "errorCount": 0,
@@ -16,18 +16,20 @@
       "fallbackApplied": false
     },
     "ziggo": {
-      "rows": 2888,
-      "errors": [],
+      "rows": 2820,
+      "errors": [
+        "Ziggo EPG 2026-09-13: timeout"
+      ],
       "diagnostics": [],
       "minRows": 15,
-      "ok": true,
-      "status": "ok",
-      "checkedAt": "2026-08-29T10:11:23.524Z",
+      "ok": false,
+      "status": "degraded",
+      "checkedAt": "2026-08-29T16:47:15.451Z",
       "lastOkAt": "2026-08-29T10:11:23.524Z",
-      "lastNonEmptyAt": "2026-08-29T10:11:23.524Z",
-      "errorCount": 0,
+      "lastNonEmptyAt": "2026-08-29T16:47:15.451Z",
+      "errorCount": 1,
       "diagnosticCount": 0,
-      "fallbackApplied": false
+      "fallbackApplied": true
     },
     "espn-schedule": {
       "rows": 0,
@@ -212,7 +214,7 @@
       "minRows": 12,
       "ok": false,
       "status": "down",
-      "checkedAt": "2026-08-29T10:11:23.524Z",
+      "checkedAt": "2026-08-29T16:47:15.451Z",
       "lastOkAt": "2026-07-15T19:40:25.642Z",
       "lastNonEmptyAt": "2026-07-15T19:40:25.642Z",
       "errorCount": 29,
@@ -220,43 +222,43 @@
       "fallbackApplied": false
     },
     "viaplay": {
-      "rows": 61,
+      "rows": 56,
       "errors": [],
       "diagnostics": [],
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-08-29T10:11:23.524Z",
-      "lastOkAt": "2026-08-29T10:11:23.524Z",
-      "lastNonEmptyAt": "2026-08-29T10:11:23.524Z",
+      "checkedAt": "2026-08-29T16:47:15.451Z",
+      "lastOkAt": "2026-08-29T16:47:15.451Z",
+      "lastNonEmptyAt": "2026-08-29T16:47:15.451Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
     },
     "npo-guide": {
-      "rows": 24,
+      "rows": 22,
       "errors": [],
       "diagnostics": [],
       "minRows": 5,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-08-29T10:11:23.524Z",
-      "lastOkAt": "2026-08-29T10:11:23.524Z",
-      "lastNonEmptyAt": "2026-08-29T10:11:23.524Z",
+      "checkedAt": "2026-08-29T16:47:15.451Z",
+      "lastOkAt": "2026-08-29T16:47:15.451Z",
+      "lastNonEmptyAt": "2026-08-29T16:47:15.451Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
     },
     "hbo-max": {
-      "rows": 29,
+      "rows": 28,
       "errors": [],
       "diagnostics": [],
       "minRows": 1,
       "ok": true,
       "status": "ok",
-      "checkedAt": "2026-08-29T10:11:23.524Z",
-      "lastOkAt": "2026-08-29T10:11:23.524Z",
-      "lastNonEmptyAt": "2026-08-29T10:11:23.524Z",
+      "checkedAt": "2026-08-29T16:47:15.451Z",
+      "lastOkAt": "2026-08-29T16:47:15.451Z",
+      "lastNonEmptyAt": "2026-08-29T16:47:15.451Z",
       "errorCount": 0,
       "diagnosticCount": 0,
       "fallbackApplied": false
