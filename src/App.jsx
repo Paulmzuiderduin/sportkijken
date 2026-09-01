@@ -1903,19 +1903,6 @@ function App() {
                   : 'Exporteer selectie als .ics'}
               </button>
               <span className="export-scope">Periode: {selectedRangeLabel.toLowerCase()}</span>
-              <a className="ghost support-cta" href="https://ko-fi.com/Y8Y41QY1SE" target="_blank" rel="noreferrer">
-                Support op Ko-fi
-              </a>
-              <a
-                className="ghost contact-cta"
-                href={CONTACT_MAILTO_URL}
-              >
-                Contact: {CONTACT_EMAIL}
-              </a>
-              <button type="button" className="ghost contact-cta" onClick={copyContactEmail}>
-                {emailCopied ? 'E-mailadres gekopieerd' : 'Kopieer e-mailadres'}
-              </button>
-              <p className="beta-note">Met live-updates elke ~3 uur en aanbiederfilters, inclusief NOS-livestreams.</p>
             </div>
           </div>
           <aside className="summary-card">
@@ -1987,12 +1974,14 @@ function App() {
         <button
           type="button"
           className="mobile-filter-toggle"
+          aria-expanded={filtersExpandedOnMobile}
+          aria-controls="filters-panel"
           onClick={() => setFiltersExpandedOnMobile(!filtersExpandedOnMobile)}
         >
           {filtersExpandedOnMobile ? 'Filters verbergen' : 'Filters aanpassen'}
         </button>
 
-        <section className={`panel filters-panel ${filtersExpandedOnMobile ? 'is-expanded-mobile' : ''}`}>
+        <section id="filters-panel" className={`panel filters-panel ${filtersExpandedOnMobile ? 'is-expanded-mobile' : ''}`}>
           <div className={`filter-section filter-group ${openFilterSections.sports ? 'is-open' : ''}`}>
             <div className="filter-section-header">
               <p className="filter-title" id="filter-sports-title">Sporten</p>
@@ -2388,6 +2377,9 @@ function App() {
           <a href="/privacy-policy.html">Privacy</a>
           <a href={CONTACT_MAILTO_URL}>Contact</a>
           <a href="https://ko-fi.com/Y8Y41QY1SE" target="_blank" rel="noreferrer">Support op Ko-fi</a>
+          <button type="button" onClick={copyContactEmail}>
+            {emailCopied ? 'E-mailadres gekopieerd' : 'Kopieer e-mailadres'}
+          </button>
         </footer>
       </main>
     </div>
