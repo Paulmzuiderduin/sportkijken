@@ -238,7 +238,7 @@ function defaultPreferences(sportOptions = FALLBACK_SPORT_OPTIONS, providerOptio
     tvProvider: 'all',
     accessFilter: 'all',
     majorFilter: 'all',
-    rangeFilter: '30d',
+    rangeFilter: '7d',
     searchText: '',
     providerSearchText: '',
     providerSelectedOnly: false
@@ -816,6 +816,26 @@ function getEventAccessTone(event, tvProvider = 'all') {
   return label === 'Gratis' ? 'free' : label === 'Betaald' ? 'paid' : 'mixed';
 }
 
+function compactChannelCondition(condition) {
+  const value = String(condition || '').trim();
+  const replacements = [
+    ['Gratis voor Ziggo-klanten met geschikt tv-pakket.', 'Ziggo-abonnement met geschikt pakket.'],
+    ['Kanaal vereist aanvullend Ziggo Sport-pakket of inloggen via Ziggo GO.', 'Aanvullend Ziggo Sport-pakket of Ziggo GO.'],
+    ['Kanaal vereist aanvullend Ziggo Sport-pakket of inloggen via Ziggo GO', 'Aanvullend Ziggo Sport-pakket of Ziggo GO.'],
+    ['Streaming via ESPN Watch met geschikt abonnement.', 'ESPN Watch-abonnement.'],
+    ['Alleen met ESPN Compleet of geschikt tv-pakket.', 'ESPN Compleet of geschikt tv-pakket.'],
+    ['Bij Ziggo zijn Eurosport 1 en 2 vaak inbegrepen; bij KPN meestal alleen Eurosport 1.', 'Bij Ziggo vaak inbegrepen; bij KPN meestal alleen Eurosport 1.']
+  ];
+
+  for (const [longText, shortText] of replacements) {
+    if (value === longText) {
+      return shortText;
+    }
+  }
+
+  return value;
+}
+
 const MAJOR_TAG_LABELS = {
   paralympics: 'Paralympische Spelen',
   olympics: 'Olympische Spelen',
@@ -900,6 +920,11 @@ function App() {
   const [preferences, setPreferences] = useState(() => loadPreferences(FALLBACK_SPORT_OPTIONS, FALLBACK_PROVIDER_OPTIONS));
   const [providersExpanded, setProvidersExpanded] = useState(false);
   const [tvProviderInfoOpen, setTvProviderInfoOpen] = useState(false);
+  const [openFilterSections, setOpenFilterSections] = useState({
+    sports: true,
+    providers: false,
+    more: false
+  });
   const [jumpDay, setJumpDay] = useState('');
   const [consentState, setConsentState] = useState(loadConsentState);
   const [, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
@@ -1540,6 +1565,8 @@ function App() {
     };
   }, [filteredEvents, preferences.tvProvider]);
 
+  const selectedRangeLabel = RANGE_OPTIONS.find((option) => option.id === preferences.rangeFilter)?.label || 'Alles gepland';
+
   const providerOptionsForView = useMemo(() => {
     const query = preferences.providerSearchText.trim().toLowerCase();
     const selectedSet = new Set(preferences.selectedProviders);
@@ -1652,6 +1679,13 @@ function App() {
   const setMajorFilter = (majorId) => {
     trackAnalyticsEvent('filter_major_change', { major: majorId });
     setPreferences((current) => ({ ...current, majorFilter: majorId }));
+  };
+
+  const toggleFilterSection = (sectionId) => {
+    setOpenFilterSections((current) => ({
+      ...current,
+      [sectionId]: !current[sectionId]
+    }));
   };
 
   const setConsent = (nextState) => {
@@ -1803,7 +1837,11 @@ function App() {
                 ) : (
                   <span>{channel.name} ({channel.platform})</span>
                 )}
-                {channel.conditions ? <small className="channel-condition">{channel.conditions}</small> : null}
+                {channel.conditions ? (
+                  <small className="channel-condition" title={channel.conditions}>
+                    {compactChannelCondition(channel.conditions)}
+                  </small>
+                ) : null}
               </div>
               <span className={`access ${effectiveChannelAccess(channel, preferences.tvProvider)}`}>
                 {accessLabelText(effectiveChannelAccess(channel, preferences.tvProvider))}
@@ -1853,12 +1891,18 @@ function App() {
                 className="primary"
                 onClick={exportVisibleEventsAsIcs}
                 disabled={!filteredEvents.length}
-                title={!filteredEvents.length ? 'Geen events in huidige selectie' : undefined}
+                title={filteredEvents.length
+                  ? `Huidige selectie: ${selectedRangeLabel.toLowerCase()}.`
+                  : 'Geen events in huidige selectie'}
+                aria-label={filteredEvents.length
+                  ? `Exporteer ${filteredEvents.length} events voor ${selectedRangeLabel.toLowerCase()} als agenda-bestand`
+                  : 'Exporteer selectie als agenda-bestand'}
               >
                 {filteredEvents.length
                   ? `Exporteer ${filteredEvents.length} events als .ics`
                   : 'Exporteer selectie als .ics'}
               </button>
+              <span className="export-scope">Periode: {selectedRangeLabel.toLowerCase()}</span>
               <a className="ghost support-cta" href="https://ko-fi.com/Y8Y41QY1SE" target="_blank" rel="noreferrer">
                 Support op Ko-fi
               </a>
@@ -1882,14 +1926,15 @@ function App() {
                 <strong>{counters.total}</strong>
               </div>
               <div>
-                <span>Gratis</span>
+                <span>Gratis optie</span>
                 <strong>{counters.free}</strong>
               </div>
               <div>
-                <span>Betaald</span>
+                <span>Betaalde optie</span>
                 <strong>{counters.paid}</strong>
               </div>
             </div>
+            <p className="summary-note">Een event kan beide opties hebben.</p>
             <div className="next-event">
               <span>Volgende event</span>
               {counters.nextEvent ? (
@@ -1948,9 +1993,22 @@ function App() {
         </button>
 
         <section className={`panel filters-panel ${filtersExpandedOnMobile ? 'is-expanded-mobile' : ''}`}>
-          <div className="filter-group">
-            <p className="filter-title">Sporten</p>
-            <div className="sport-grid">
+          <div className={`filter-section filter-group ${openFilterSections.sports ? 'is-open' : ''}`}>
+            <div className="filter-section-header">
+              <p className="filter-title" id="filter-sports-title">Sporten</p>
+              <button
+                type="button"
+                className="filter-section-toggle"
+                aria-expanded={openFilterSections.sports}
+                aria-controls="filter-sports-content"
+                onClick={() => toggleFilterSection('sports')}
+              >
+                <span aria-hidden="true">{openFilterSections.sports ? '-' : '+'}</span>
+                <span className="sr-only">Sportfilters {openFilterSections.sports ? 'verbergen' : 'tonen'}</span>
+              </button>
+            </div>
+            <div className="filter-section-content" id="filter-sports-content" aria-labelledby="filter-sports-title">
+              <div className="sport-grid">
               {sportOptions.map((sport) => {
                 const selected = preferences.selectedSports.includes(sport.id);
                 return (
@@ -1966,16 +2024,30 @@ function App() {
                   </button>
                 );
               })}
-            </div>
-            <div className="chip-actions">
-              <button type="button" className="ghost" onClick={selectAllSports}>Alles</button>
-              <button type="button" className="ghost" onClick={clearSports}>Geen</button>
+              </div>
+              <div className="chip-actions">
+                <button type="button" className="ghost" onClick={selectAllSports}>Alles</button>
+                <button type="button" className="ghost" onClick={clearSports}>Geen</button>
+              </div>
             </div>
           </div>
 
-          <div className="filter-group">
-            <p className="filter-title">Aanbieders</p>
-            <div className="provider-tools">
+          <div className={`filter-section filter-group ${openFilterSections.providers ? 'is-open' : ''}`}>
+            <div className="filter-section-header">
+              <p className="filter-title" id="filter-providers-title">Aanbieders</p>
+              <button
+                type="button"
+                className="filter-section-toggle"
+                aria-expanded={openFilterSections.providers}
+                aria-controls="filter-providers-content"
+                onClick={() => toggleFilterSection('providers')}
+              >
+                <span aria-hidden="true">{openFilterSections.providers ? '-' : '+'}</span>
+                <span className="sr-only">Aanbieders {openFilterSections.providers ? 'verbergen' : 'tonen'}</span>
+              </button>
+            </div>
+            <div className="filter-section-content" id="filter-providers-content" aria-labelledby="filter-providers-title">
+              <div className="provider-tools">
               <input
                 type="search"
                 value={preferences.providerSearchText}
@@ -2061,7 +2133,23 @@ function App() {
               <button type="button" className="ghost" onClick={clearProviders}>Geen</button>
             </div>
           </div>
+          </div>
 
+          <div className={`filter-section filter-section-more ${openFilterSections.more ? 'is-open' : ''}`}>
+            <div className="filter-section-header">
+              <p className="filter-title" id="filter-more-title">Meer filters</p>
+              <button
+                type="button"
+                className="filter-section-toggle"
+                aria-expanded={openFilterSections.more}
+                aria-controls="filter-more-content"
+                onClick={() => toggleFilterSection('more')}
+              >
+                <span aria-hidden="true">{openFilterSections.more ? '-' : '+'}</span>
+                <span className="sr-only">Meer filters {openFilterSections.more ? 'verbergen' : 'tonen'}</span>
+              </button>
+            </div>
+            <div className="filter-section-content" id="filter-more-content" aria-labelledby="filter-more-title">
           <div className="filter-row">
             <div className="filter-group inline-group">
               <p className="filter-title">Periode</p>
@@ -2163,7 +2251,10 @@ function App() {
                   trackAnalyticsEvent('search_used', { query_length: value.length });
                 }}
                 placeholder="team, toernooi, aanbieder of locatie"
+                aria-label="Zoek in sportevents"
               />
+            </div>
+          </div>
             </div>
           </div>
         </section>
@@ -2179,25 +2270,28 @@ function App() {
             </span>
           </div>
           {consentState !== 'unknown' ? (
-            <div className="notice-actions">
-              <span>Optionele analytics:</span>
-              <button
-                type="button"
-                className={`ghost compact ${consentState === 'granted' ? 'is-active' : ''}`}
-                onClick={() => setConsent('granted')}
-                aria-pressed={consentState === 'granted'}
-              >
-                Analytics aan
-              </button>
-              <button
-                type="button"
-                className={`ghost compact ${consentState === 'denied' ? 'is-active' : ''}`}
-                onClick={() => setConsent('denied')}
-                aria-pressed={consentState === 'denied'}
-              >
-                Analytics uit
-              </button>
-            </div>
+            <details className="analytics-settings">
+              <summary>Privacyinstellingen</summary>
+              <div className="notice-actions">
+                <span>Optionele analytics:</span>
+                <button
+                  type="button"
+                  className={`ghost compact ${consentState === 'granted' ? 'is-active' : ''}`}
+                  onClick={() => setConsent('granted')}
+                  aria-pressed={consentState === 'granted'}
+                >
+                  Analytics aan
+                </button>
+                <button
+                  type="button"
+                  className={`ghost compact ${consentState === 'denied' ? 'is-active' : ''}`}
+                  onClick={() => setConsent('denied')}
+                  aria-pressed={consentState === 'denied'}
+                >
+                  Analytics uit
+                </button>
+              </div>
+            </details>
           ) : null}
         </section>
 
