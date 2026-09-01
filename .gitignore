@@ -3,4 +3,5 @@ dist
 .DS_Store
 public/events.nl.json
 public/events.meta.json
+public/provider-health.json
 public/datasets

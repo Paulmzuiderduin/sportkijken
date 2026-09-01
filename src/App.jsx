@@ -118,8 +118,7 @@ const DEFAULT_ANALYTICS_RUNTIME = {
 const CONTACT_EMAIL = 'info@paulzuiderduin.com';
 const CONTACT_MAILTO_URL = `mailto:${CONTACT_EMAIL}`;
 const DATASET_CACHE_STORAGE_KEY = 'sportkijken-runtime-dataset-v1';
-const DATA_BASE_URL = import.meta.env.VITE_DATA_BASE_URL
-  || (import.meta.env.PROD ? 'https://raw.githubusercontent.com/Paulmzuiderduin/sportkijken/data' : '');
+const DATA_BASE_URL = import.meta.env.VITE_DATA_BASE_URL || '';
 
 function withDataBaseUrl(path) {
   if (!DATA_BASE_URL) {
@@ -135,6 +134,7 @@ const RUNTIME_DATASET_URL = withDataBaseUrl('/events.nl.json');
 const RUNTIME_DATASET_META_URL = withDataBaseUrl('/events.meta.json');
 const RUNTIME_DATASET_INDEX_URL = withDataBaseUrl('/datasets/index.json');
 const RUNTIME_DATASET_POLL_MS = 5 * 60 * 1000;
+const MOBILE_DATASET_EVENT_LIMIT = 700;
 const SEO_BASE_URL = 'https://sportkijken.paulzuiderduin.com/';
 const SEO_BASE_TITLE = 'Waar Kan Ik Sport Kijken? | Sportkijken Nederland';
 const SEO_BASE_DESCRIPTION = 'Waar kan ik voetbal, Formule 1, tennis en andere sport kijken? Sportkijken geeft per wedstrijd een NL-overzicht met zender/stream, tijd en gratis of betaald.';
@@ -287,9 +287,17 @@ function normalizeRuntimeDataset(candidate) {
     return null;
   }
 
+  const isMobile = typeof window !== 'undefined'
+    && window.matchMedia('(max-width: 768px)').matches;
+  const events = isMobile && candidate.events.length > MOBILE_DATASET_EVENT_LIMIT
+    ? [...candidate.events]
+        .sort((a, b) => new Date(a?.start || 0).getTime() - new Date(b?.start || 0).getTime())
+        .slice(0, MOBILE_DATASET_EVENT_LIMIT)
+    : candidate.events;
+
   return {
     ...candidate,
-    events: candidate.events
+    events
   };
 }
 
@@ -528,7 +536,7 @@ function buildSeoMeta(query) {
   return {
     title: `${capitalizeFirst(question)}? | Sportkijken`,
     description: `Bekijk direct waar je ${descriptionIntent} in Nederland kunt kijken: zender/stream, starttijd en gratis of betaald.`,
-    url: `${SEO_BASE_URL}?q=${encodeURIComponent(normalizedQuery)}`,
+    url: SEO_BASE_URL,
     keywords: [
       `waar kan ik ${descriptionIntent} kijken`,
       `${descriptionIntent} kijken`,
@@ -894,7 +902,7 @@ function App() {
   const [tvProviderInfoOpen, setTvProviderInfoOpen] = useState(false);
   const [jumpDay, setJumpDay] = useState('');
   const [consentState, setConsentState] = useState(loadConsentState);
-  const [analyticsRuntime, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
+  const [, setAnalyticsRuntime] = useState(loadAnalyticsRuntime);
   const [emailCopied, setEmailCopied] = useState(false);
   const [filtersExpandedOnMobile, setFiltersExpandedOnMobile] = useState(false);
   const [visibleDaysCount, setVisibleDaysCount] = useState(1);
@@ -1011,7 +1019,7 @@ function App() {
 
     const fetchRuntimeDataset = async () => {
       try {
-        const response = await fetch(RUNTIME_DATASET_URL, { cache: 'no-cache' });
+        const response = await fetch(`${RUNTIME_DATASET_URL}?v=${Date.now()}`, { cache: 'no-store' });
         if (!response.ok) {
           return false;
         }
@@ -1200,9 +1208,7 @@ function App() {
 
       const metaGeneratedAt = normalizeIsoDateTime(meta.lastChangedAt || meta.generatedAt);
       const generatedChanged = Boolean(metaGeneratedAt && metaGeneratedAt !== currentGeneratedAt);
-      const countChanged = Number.isFinite(meta.eventCount) && meta.eventCount !== currentCount;
-
-      if (generatedChanged || countChanged || (!currentGeneratedAt && !currentCount)) {
+      if (generatedChanged || (!currentGeneratedAt && !currentCount)) {
         const updatedByRange = await fetchRuntimeDatasetByRange();
         if (updatedByRange) {
           return;
@@ -1317,23 +1323,6 @@ function App() {
   }, [consentState]);
 
   useEffect(() => {
-    if (typeof document === 'undefined') {
-      return undefined;
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    if (consentState === 'unknown') {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = previousOverflow || '';
-    }
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [consentState]);
-
-  useEffect(() => {
     const seo = buildSeoMeta(preferences.searchText);
     if (typeof document === 'undefined') {
       return;
@@ -1392,60 +1381,19 @@ function App() {
     const datasetAgeMinutes = Number.isFinite(changedMs) && changedMs > 0
       ? Math.max(0, Math.round((Date.now() - changedMs) / 60000))
       : null;
-    const checkedAt = new Date(datasetMeta.checkedAt || 0);
-    const checkedMs = checkedAt.getTime();
-    const checkedAgeMinutes = Number.isFinite(checkedMs) && checkedMs > 0
-      ? Math.max(0, Math.round((Date.now() - checkedMs) / 60000))
-      : null;
 
-    if (checkedAgeMinutes === null && datasetAgeMinutes === null) {
+    if (datasetAgeMinutes === null) {
       return {
         level: 'notice',
-        message: 'Dataset wordt geladen...'
-      };
-    }
-
-    if (checkedAgeMinutes === null) {
-      if (datasetAgeMinutes !== null && datasetAgeMinutes > 240) {
-        return {
-          level: 'notice',
-          message: `Laatste datasetwijziging is ${formatAgeLabel(datasetAgeMinutes)} geleden; controlemoment tijdelijk onbekend.`
-        };
-      }
-
-      return {
-        level: 'notice',
-        message: 'Controlemoment tijdelijk onbekend; toon laatste datasetwijziging.'
-      };
-    }
-
-    if (checkedAgeMinutes > 240) {
-      return {
-        level: 'warning',
-        message: `Laatste broncontrole is ${formatAgeLabel(checkedAgeMinutes)} geleden.`
-      };
-    }
-    if (checkedAgeMinutes > 120) {
-      return {
-        level: 'notice',
-        message: `Laatste broncontrole: ${formatAgeLabel(checkedAgeMinutes)} geleden.`
-      };
-    }
-
-    if (datasetAgeMinutes !== null && datasetAgeMinutes > 180) {
-      return {
-        level: 'ok',
-        message: `Bronnen gecontroleerd ${formatAgeLabel(checkedAgeMinutes)} geleden; geen nieuwe datasetwijziging sinds ${formatAgeLabel(datasetAgeMinutes)}.`
+        message: 'Sportgegevens worden geladen...'
       };
     }
 
     return {
       level: 'ok',
-      message: datasetAgeMinutes !== null
-        ? `Bronnen gecontroleerd ${formatAgeLabel(checkedAgeMinutes)} geleden; dataset gewijzigd ${formatAgeLabel(datasetAgeMinutes)} geleden.`
-        : `Bronnen gecontroleerd ${formatAgeLabel(checkedAgeMinutes)} geleden.`
+      message: `Nieuwe sportgegevens ontvangen ${formatAgeLabel(datasetAgeMinutes)} geleden.`
     };
-  }, [dataset.generatedAt, datasetMeta.checkedAt, datasetMeta.lastChangedAt]);
+  }, [dataset.generatedAt, datasetMeta.lastChangedAt]);
 
   const filteredEvents = useMemo(() => {
     const now = new Date();
@@ -1738,26 +1686,6 @@ function App() {
     }));
   };
 
-  const analyticsStatus = useMemo(() => {
-    if (consentState !== 'granted') {
-      return { level: 'off', message: 'Analytics is disabled.' };
-    }
-
-    if (analyticsRuntime.lastError === 'script_load_failed' || analyticsRuntime.lastError === 'script_load_timeout') {
-      return { level: 'warning', message: 'Analytics blocked by browser/privacy settings.' };
-    }
-
-    if (analyticsRuntime.configured || analyticsRuntime.scriptReady) {
-      return { level: 'on', message: 'Analytics active.' };
-    }
-
-    if (analyticsRuntime.scriptRequested) {
-      return { level: 'notice', message: 'Connecting analytics...' };
-    }
-
-    return { level: 'notice', message: 'Waiting for analytics startup...' };
-  }, [analyticsRuntime, consentState]);
-
   const copyContactEmail = async () => {
     try {
       await navigator.clipboard.writeText(CONTACT_EMAIL);
@@ -1931,7 +1859,7 @@ function App() {
                   ? `Exporteer ${filteredEvents.length} events als .ics`
                   : 'Exporteer selectie als .ics'}
               </button>
-              <a className="ghost contact-cta" href="https://ko-fi.com/Y8Y41QY1SE" target="_blank" rel="noreferrer">
+              <a className="ghost support-cta" href="https://ko-fi.com/Y8Y41QY1SE" target="_blank" rel="noreferrer">
                 Support op Ko-fi
               </a>
               <a
@@ -1977,17 +1905,12 @@ function App() {
 
         {consentState === 'unknown' ? (
           <div className="consent-modal" role="presentation">
-            <section className="consent-dialog" role="dialog" aria-modal="true" aria-labelledby="sportkijken-consent-title" aria-describedby="sportkijken-consent-copy">
-              <p className="kicker">Analytics preferences</p>
-              <h2 id="sportkijken-consent-title">Help improve Sportkijken</h2>
+            <section className="consent-dialog" aria-labelledby="sportkijken-consent-title" aria-describedby="sportkijken-consent-copy">
+              <p className="kicker">Privacy</p>
+              <h2 id="sportkijken-consent-title">Optionele analytics</h2>
               <p id="sportkijken-consent-copy">
-                We gebruiken Umami voor privacyvriendelijke basisstatistieken. Optionele analytics via Google Analytics 4 starten alleen met jouw toestemming.
+                Umami meet privacyvriendelijke basisstatistieken. Google Analytics start alleen met jouw toestemming.
               </p>
-              <div className="consent-note">
-                <span>• Google Analytics 4 blijft uit totdat je toestemt.</span>
-                <span>• We blokkeren geen functies als je weigert.</span>
-                <span>• Je kunt dit later aanpassen via de privacyknoppen onderaan de pagina.</span>
-              </div>
               <div className="consent-actions">
                 <button
                   type="button"
@@ -2189,7 +2112,7 @@ function App() {
                 ))}
               </div>
               <p className="filter-help">
-                Beinvloedt voorwaardelijke zenders.
+                Beïnvloedt voorwaardelijke zenders.
               </p>
             </div>
 
@@ -2247,42 +2170,35 @@ function App() {
 
         <section className="panel notice-panel">
           <div className="notice-meta">
-            <span className="dataset-label">Dataset</span>
-            <span>
-              {dataset.isDemo
-                ? 'Handmatige demo-dataset.'
-                : 'Automatisch ververst (~3 uur) via NOS, Ziggo, ESPN, Viaplay en HBO Max.'}
-            </span>
-            <span>
-              Laatste broncontrole: {datasetMeta.checkedAt
-                ? formatDatasetDateTime(datasetMeta.checkedAt)
-                : 'Tijdelijk onbekend'}
-            </span>
-            <span>
-              Laatste datasetwijziging: {formatDatasetDateTime(datasetMeta.lastChangedAt || dataset.generatedAt)}
-            </span>
-            <span className={`dataset-status ${datasetStatus.level}`}>{datasetStatus.message}</span>
-          </div>
-          <div className="notice-actions">
-            <span>Privacy:</span>
-            <button
-              type="button"
-              className={`ghost compact ${consentState === 'granted' ? 'is-active' : ''}`}
-              onClick={() => setConsent('granted')}
-              aria-pressed={consentState === 'granted'}
+            <span className="dataset-label">Sportgegevens</span>
+            <span
+              className={`dataset-status ${datasetStatus.level}`}
+              title={`Laatste wijziging: ${formatDatasetDateTime(datasetMeta.lastChangedAt || dataset.generatedAt)}`}
             >
-              Analytics aan
-            </button>
-            <button
-              type="button"
-              className={`ghost compact ${consentState === 'denied' ? 'is-active' : ''}`}
-              onClick={() => setConsent('denied')}
-              aria-pressed={consentState === 'denied'}
-            >
-              Analytics uit
-            </button>
-            <span className={`analytics-runtime ${analyticsStatus.level}`}>{analyticsStatus.message}</span>
+              {datasetStatus.message}
+            </span>
           </div>
+          {consentState !== 'unknown' ? (
+            <div className="notice-actions">
+              <span>Optionele analytics:</span>
+              <button
+                type="button"
+                className={`ghost compact ${consentState === 'granted' ? 'is-active' : ''}`}
+                onClick={() => setConsent('granted')}
+                aria-pressed={consentState === 'granted'}
+              >
+                Analytics aan
+              </button>
+              <button
+                type="button"
+                className={`ghost compact ${consentState === 'denied' ? 'is-active' : ''}`}
+                onClick={() => setConsent('denied')}
+                aria-pressed={consentState === 'denied'}
+              >
+                Analytics uit
+              </button>
+            </div>
+          ) : null}
         </section>
 
         <section className="agenda">
@@ -2374,6 +2290,11 @@ function App() {
             <a href="/?q=champions%20league%20kijken">Waar kan ik Champions League kijken?</a>
           </div>
         </section>
+        <footer className="site-footer">
+          <a href="/privacy-policy.html">Privacy</a>
+          <a href={CONTACT_MAILTO_URL}>Contact</a>
+          <a href="https://ko-fi.com/Y8Y41QY1SE" target="_blank" rel="noreferrer">Support op Ko-fi</a>
+        </footer>
       </main>
     </div>
   );

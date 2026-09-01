@@ -5,106 +5,61 @@ on:
     - cron: '17 */3 * * *'
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: sports-data-refresh
+  group: pages
   cancel-in-progress: true
 
 jobs:
-  update_dataset:
-    name: Build and publish latest sports events
+  build:
+    name: Refresh, test and build sports events
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-          token: ${{ github.token }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
+          cache: npm
 
-      - name: Refresh events dataset + runtime metadata
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test data pipeline
+        run: npm run test:data
+
+      - name: Load last deployed dataset as fallback
+        run: npm run data:hydrate
+
+      - name: Refresh events dataset
         run: npm run data:update
 
-      - name: Stamp source-check timestamp
+      - name: Stamp successful source check
         run: |
-          mkdir -p src/data
           printf '{\n  "checkedAt": "%s"\n}\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > src/data/source-check.nl.json
 
-      - name: Regenerate runtime metadata after source-check update
-        run: node scripts/sync-runtime-dataset.mjs
+      - name: Build deployable site
+        run: npm run build
 
-      - name: Publish runtime dataset to data branch
-        run: |
-          DATA_BRANCH="data"
-          WORKTREE="/tmp/sportkijken-data"
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
 
-          rm -rf "${WORKTREE}"
-          git fetch origin "${DATA_BRANCH}" || true
-
-          if git show-ref --verify --quiet "refs/remotes/origin/${DATA_BRANCH}"; then
-            git worktree add "${WORKTREE}" "origin/${DATA_BRANCH}"
-          else
-            git worktree add "${WORKTREE}" -b "${DATA_BRANCH}"
-          fi
-
-          rsync -a --delete public/events.meta.json public/events.nl.json public/datasets "${WORKTREE}/"
-
-          if [ -f src/data/provider-health.nl.json ]; then
-            cp src/data/provider-health.nl.json "${WORKTREE}/provider-health.json"
-          fi
-
-          cd "${WORKTREE}"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-
-          if git diff --cached --quiet; then
-            echo "No runtime data changes to publish."
-            exit 0
-          fi
-
-          git commit -m "chore(data): publish runtime dataset"
-          git push origin "HEAD:${DATA_BRANCH}" --force
-
-      - name: Commit and push when changed
-        run: |
-          if git diff --quiet -- src/data/events.nl.json public/sitemap.xml src/data/source-check.nl.json src/data/provider-health.nl.json; then
-            echo "No tracked data changes to commit."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/data/events.nl.json public/sitemap.xml src/data/source-check.nl.json src/data/provider-health.nl.json
-
-          if git diff --quiet --cached -- src/data/events.nl.json; then
-            git commit -m "chore(data): refresh source-check timestamp"
-          else
-            git commit -m "chore(data): refresh sports schedule"
-          fi
-
-          TARGET_BRANCH="${GITHUB_REF_NAME:-main}"
-
-          for attempt in 1 2 3; do
-            echo "Push attempt ${attempt} to ${TARGET_BRANCH}..."
-            if git push origin "HEAD:${TARGET_BRANCH}"; then
-              echo "Push succeeded."
-              exit 0
-            fi
-
-            echo "Push rejected. Rebasing onto latest ${TARGET_BRANCH} and retrying."
-            if ! git pull --rebase --autostash origin "${TARGET_BRANCH}"; then
-              echo "Rebase failed (likely concurrent edit conflict on dataset). Skipping this run."
-              exit 0
-            fi
-          done
-
-          echo "Could not push after retries due to concurrent updates. Skipping without failure."
-          exit 0
+  deploy:
+    name: Deploy refreshed site
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 10
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

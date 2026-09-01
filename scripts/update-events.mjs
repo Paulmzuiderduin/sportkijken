@@ -50,6 +50,11 @@ const QA_TITLE_BLOCKLIST_PATTERNS = [
   /\bthe rich eisen show\b/i,
   /\bahora o nunca\b/i,
   /\bsportscenter\b/i,
+  /\bnos sportjournaal\b/i,
+  /\bstudio sport\b/i,
+  /\blaliga nations\b/i,
+  /\bin their own words\b/i,
+  /\bclassic\s+(?:19|20)\d{2}\b/i,
   /\bdocumentary\b/i,
   /\boriginals?\b/i,
   /\bop zoek naar\b/i,
@@ -386,6 +391,9 @@ const SCHEDULE_ONLY_SKIP_KEYWORDS = [
   'voor de kwalificatie',
   'voor de race',
   'dossier',
+  'een terugblik',
+  'terugblik op',
+  'in their own words',
   'vandaag',
   'espn vandaag',
   'top 25 goals',
@@ -515,7 +523,10 @@ const NPO_SPORT_BLOCKLIST_KEYWORDS = [
   'zappsport',
   'zappelin go',
   'dans mee met',
-  'dierendokter in het wild'
+  'dierendokter in het wild',
+  'nos sportjournaal',
+  'studio sport',
+  'sportnieuws'
 ];
 
 const MAJOR_TAGS = {
@@ -1495,6 +1506,8 @@ async function fetchZiggoEpgRows() {
             end: tryIso(program?.dateEnd || program?.endDate || program?.dateStop),
             description: String(program?.description || program?.subTitle || program?.subtitle || '').trim(),
             live: program?.live === true || program?.isLive === true,
+            sportName: String(program?.sportName || '').trim(),
+            sportId: program?.sportId || null,
             channelName: channelName,
             channels: [channelName],
             sourceUrl: url
@@ -1912,13 +1925,13 @@ function inferEspnScheduleSport(row) {
 }
 
 function inferZiggoScheduleSport(row) {
-  const detected = detectSportFromCandidates([row.title, row.description, row.channelName]);
+  const detected = detectSportFromCandidates([row.sportName, row.title, row.description, row.channelName]);
   if (detected) {
     return detected;
   }
 
   const titlePrefix = row.title.includes(':') ? row.title.split(':')[0] : '';
-  return inferSportFromCandidates([titlePrefix], 'overig');
+  return inferSportFromCandidates([row.sportName, titlePrefix], 'overig');
 }
 
 function scheduleOnlyLikelyDuplicate(candidate, existingEvents) {
@@ -3708,6 +3721,10 @@ function formatQaEvent(event) {
 function quarantineReasonForEvent(event) {
   const title = String(event?.title || '');
 
+  if (/^\s*(?:-|–|—|vs\.?\b)|(?:-|–|—|vs\.?)\s*$/i.test(title)) {
+    return 'malformed_match_title';
+  }
+
   if (QA_TITLE_BLOCKLIST_PATTERNS.some((pattern) => pattern.test(title))) {
     return 'blocklisted_title';
   }
@@ -3880,15 +3897,17 @@ function runQualityGates({
         : 0.4;
       const threshold = Math.max(1, Math.floor(previousCount * dropRatio));
       const health = providerHealth[sourceType] || { errors: [] };
-      const hasSourceErrors = (Array.isArray(health.errors) && health.errors.length > 0)
+      const sourceStatus = health.status || deriveProviderStatus(health, QA_MIN_ROWS_BY_SOURCE[sourceType] || 1);
+      const sourceIsDegraded = sourceStatus !== 'ok'
+        || (Array.isArray(health.errors) && health.errors.length > 0)
         || hasFetchErrorForSource(fetchErrors, sourceType);
-      if (!hasSourceErrors && currentCount < threshold) {
+      if (!sourceIsDegraded && currentCount < threshold) {
         errors.push(
           `Kwaliteitsval voor ${sourceType}: ${currentCount} events (vorige dataset: ${previousCount}, drempel: ${threshold}).`
         );
-      } else if (hasSourceErrors && currentCount < threshold) {
+      } else if (sourceIsDegraded && currentCount < threshold) {
         warnings.push(
-          `Mogelijke daling voor ${sourceType} met fetch-fouten: ${currentCount} events (vorige: ${previousCount}).`
+          `Mogelijke daling voor ${sourceType} bij bronstatus ${sourceStatus}: ${currentCount} events (vorige: ${previousCount}).`
         );
       }
     });
@@ -4053,7 +4072,9 @@ async function main() {
   const eventsWithFallbacks = applyProviderFallbacks(eventsWithMajorTags, previousEvents, providerHealthReport);
   await writeFile(providerHealthPath, `${JSON.stringify(providerHealthReport, null, 2)}\n`, 'utf8');
   const generatedAt = new Date().toISOString();
-  const verifiedBeforeQuarantine = finalizeVerification(eventsWithFallbacks, generatedAt);
+  // Fallback rows and overrides can reintroduce variants after the first merge.
+  const finalDedupedEvents = dedupeEvents(eventsWithFallbacks);
+  const verifiedBeforeQuarantine = finalizeVerification(finalDedupedEvents, generatedAt);
   const publishableSplit = splitPublishableEvents(verifiedBeforeQuarantine);
   const allVerifiedEvents = publishableSplit.publishable;
 
@@ -4136,9 +4157,11 @@ export {
   dedupeEvents,
   deriveProviderStatus,
   extractEspnScheduleRows,
+  inferZiggoScheduleSport,
   inspectEspnPayload,
   normalizedTitleKey,
   parseEspnFittData,
   qualityGateDuplicateKey,
+  quarantineReasonForEvent,
   runQualityGates
 };

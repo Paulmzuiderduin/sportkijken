@@ -8,29 +8,14 @@ const sourceCheckPath = resolve(__dirname, '../src/data/source-check.nl.json');
 const providerHealthPath = resolve(__dirname, '../src/data/provider-health.nl.json');
 const targetPath = resolve(__dirname, '../public/events.nl.json');
 const targetMetaPath = resolve(__dirname, '../public/events.meta.json');
+const targetProviderHealthPath = resolve(__dirname, '../public/provider-health.json');
 const targetSitemapPath = resolve(__dirname, '../public/sitemap.xml');
 const datasetDir = resolve(__dirname, '../public/datasets');
 const datasetIndexPath = resolve(datasetDir, 'index.json');
 
 const SITEMAP_ENTRIES = [
   { url: 'https://sportkijken.paulzuiderduin.com/', priority: '1.0' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20voetbal%20kijken', priority: '0.95' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20formule%201%20kijken', priority: '0.95' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20tennis%20kijken', priority: '0.92' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20basketbal%20kijken', priority: '0.9' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20darts%20kijken', priority: '0.9' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20eredivisie%20kijken', priority: '0.88' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20premier%20league%20kijken', priority: '0.88' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20champions%20league%20kijken', priority: '0.88' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20nba%20kijken', priority: '0.85' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20nfl%20kijken', priority: '0.85' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20nhl%20kijken', priority: '0.83' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=waar%20kan%20ik%20ufc%20kijken', priority: '0.82' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=sport%20op%20tv%20vandaag', priority: '0.82' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=nos%20livestream%20sport', priority: '0.8' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=ziggo%20sport%20gratis%20kijken', priority: '0.8' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=espn%20tv%20gids', priority: '0.8' },
-  { url: 'https://sportkijken.paulzuiderduin.com/?q=viaplay%20sport%20programma', priority: '0.78' }
+  { url: 'https://sportkijken.paulzuiderduin.com/privacy-policy.html', priority: '0.2' }
 ];
 
 function normalizeIso(value) {
@@ -116,13 +101,15 @@ const datasetMeta = {
   lastChangedAt,
   checkedAt,
   eventCount,
-  shardStrategy: 'month',
-  ...(providerHealth ? { providerHealth } : {})
+  shardStrategy: 'month'
 };
 
 await mkdir(dirname(targetPath), { recursive: true });
 await writeFile(targetPath, dataset, 'utf8');
 await writeFile(targetMetaPath, `${JSON.stringify(datasetMeta, null, 2)}\n`, 'utf8');
+if (providerHealth) {
+  await writeFile(targetProviderHealthPath, `${JSON.stringify(providerHealth, null, 2)}\n`, 'utf8');
+}
 await writeFile(targetSitemapPath, buildSitemapXml(lastmodDate), 'utf8');
 
 const buckets = new Map();

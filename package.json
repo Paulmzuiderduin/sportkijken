@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "node scripts/sync-runtime-dataset.mjs && vite build",
     "preview": "vite preview",
+    "data:hydrate": "node scripts/hydrate-runtime-fallback.mjs",
     "data:update": "node scripts/update-events.mjs && node scripts/sync-runtime-dataset.mjs",
     "data:normalize": "node scripts/normalize-events.mjs",
     "test:data": "node --test scripts/update-events.test.mjs"
