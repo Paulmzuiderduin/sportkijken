@@ -750,10 +750,6 @@ function buildReportIncorrectListingLink(event, sportLabel, tvProvider = 'all') 
   return buildContactComposeLink(subject, body);
 }
 
-function eventContentType(event) {
-  return event.contentType === 'broadcast' ? 'broadcast' : 'match';
-}
-
 function hasProvider(event, selectedProviders) {
   if (!selectedProviders.length) {
     return false;
@@ -1340,8 +1336,7 @@ function App() {
 
   const filteredEvents = useMemo(() => {
     const now = new Date();
-    const matchThreshold = new Date(now.getTime() - 3 * 60 * 60 * 1000);
-    const broadcastThreshold = new Date(now.getTime() - 6 * 60 * 60 * 1000);
+    const recentThreshold = new Date(now.getTime() - 30 * 60 * 1000);
 
     let rangeMax = null;
     if (preferences.rangeFilter === '7d') {
@@ -1365,8 +1360,7 @@ function App() {
         return false;
       }
 
-      const eventThreshold = eventContentType(event) === 'broadcast' ? broadcastThreshold : matchThreshold;
-      if (event.startDate < eventThreshold) {
+      if (event.endDate < recentThreshold) {
         return false;
       }
 
@@ -1494,11 +1488,17 @@ function App() {
       event.channels.some((channel) => effectiveChannelAccess(channel, preferences.tvProvider) === 'paid')
     ).length;
 
+    const now = new Date();
+    const liveEvent = filteredEvents.find((event) => (
+      event.startDate <= now && event.endDate >= now
+    )) || null;
+
     return {
       total: filteredEvents.length,
       free,
       paid,
-      nextEvent: filteredEvents[0] || null
+      nextEvent: liveEvent || filteredEvents.find((event) => event.startDate > now) || null,
+      nextEventIsLive: Boolean(liveEvent)
     };
   }, [filteredEvents, preferences.tvProvider]);
 
@@ -1795,7 +1795,7 @@ function App() {
             </div>
             <p className="summary-note">Gratis kan afhangen van je tv-provider; een event kan beide opties hebben.</p>
             <div className="next-event">
-              <span>Volgende event</span>
+              <span>{counters.nextEventIsLive ? 'Nu bezig' : 'Volgende event'}</span>
               {counters.nextEvent ? (
                 <strong>
                   {sportMetaFor(counters.nextEvent.sport, sportLookup).label} • {TIME_FORMATTER.format(counters.nextEvent.startDate)}
