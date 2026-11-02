@@ -447,11 +447,18 @@ function formatAgeLabel(totalMinutes) {
   }
 
   const hours = Math.floor(minutes / 60);
-  const restMinutes = minutes % 60;
-  if (restMinutes === 0) {
-    return `${hours} uur`;
+  if (hours < 48) {
+    const restMinutes = minutes % 60;
+    return restMinutes === 0 ? `${hours} uur` : `${hours} uur ${restMinutes} min`;
   }
-  return `${hours} uur ${restMinutes} min`;
+
+  const days = Math.floor(hours / 24);
+  if (days < 60) {
+    return `${days} ${days === 1 ? 'dag' : 'dagen'}`;
+  }
+
+  const months = Math.floor(days / 30);
+  return `${months} ${months === 1 ? 'maand' : 'maanden'}`;
 }
 
 function searchTextFromUrl() {
@@ -802,7 +809,19 @@ function getEventAccessLabel(event, tvProvider = 'all') {
   const hasPaid = event.channels.some((channel) => effectiveChannelAccess(channel, tvProvider) === 'paid');
   const hasMixed = event.channels.some((channel) => effectiveChannelAccess(channel, tvProvider) === 'mixed');
 
-  if (hasMixed || (hasFree && hasPaid)) {
+  if (hasMixed) {
+    if (hasFree && hasPaid) {
+      return 'Gratis + betaald';
+    }
+    if (hasPaid) {
+      return 'Voorwaardelijk + betaald';
+    }
+    if (hasFree) {
+      return 'Gratis + voorwaardelijk';
+    }
+    return 'Voorwaardelijk';
+  }
+  if (hasFree && hasPaid) {
     return 'Gratis + betaald';
   }
   if (hasFree) {
@@ -1414,6 +1433,13 @@ function App() {
       };
     }
 
+    if (datasetAgeMinutes >= 12 * 60) {
+      return {
+        level: 'warning',
+        message: `Sportgegevens zijn ${formatAgeLabel(datasetAgeMinutes)} oud. De automatische verversing lijkt te haperen; controleer de zender op de wedstrijddag.`
+      };
+    }
+
     return {
       level: 'ok',
       message: `Nieuwe sportgegevens ontvangen ${formatAgeLabel(datasetAgeMinutes)} geleden.`
@@ -1551,7 +1577,10 @@ function App() {
 
   const counters = useMemo(() => {
     const free = filteredEvents.filter((event) =>
-      event.channels.some((channel) => effectiveChannelAccess(channel, preferences.tvProvider) === 'free')
+      event.channels.some((channel) => {
+        const access = effectiveChannelAccess(channel, preferences.tvProvider);
+        return access === 'free' || access === 'mixed';
+      })
     ).length;
     const paid = filteredEvents.filter((event) =>
       event.channels.some((channel) => effectiveChannelAccess(channel, preferences.tvProvider) === 'paid')
@@ -1883,24 +1912,22 @@ function App() {
             <p className="kicker">Sportkijken Nederland</p>
             <h1>Wanneer en waar sport kijken, zonder eindeloos zoeken.</h1>
             <p className="intro">
-              Kies je sporten en aanbieders voor Nederland: starttijd, zender/stream en gratis of betaald in een overzicht.
+              Kies je sporten en aanbieders voor Nederland: starttijd, zender/stream en of je gratis, met je tv-abonnement of betaald kunt kijken.
             </p>
             <div className="hero-actions">
+              <a className="primary" href="#agenda">Bekijk het schema</a>
               <button
                 type="button"
-                className="primary"
+                className="ghost"
                 onClick={exportVisibleEventsAsIcs}
                 disabled={!filteredEvents.length}
                 title={filteredEvents.length
                   ? `Huidige selectie: ${selectedRangeLabel.toLowerCase()}.`
                   : 'Geen events in huidige selectie'}
-                aria-label={filteredEvents.length
-                  ? `Exporteer ${filteredEvents.length} events voor ${selectedRangeLabel.toLowerCase()} als agenda-bestand`
-                  : 'Exporteer selectie als agenda-bestand'}
               >
                 {filteredEvents.length
-                  ? `Exporteer ${filteredEvents.length} events als .ics`
-                  : 'Exporteer selectie als .ics'}
+                  ? `Exporteer ${filteredEvents.length} events (.ics)`
+                  : 'Exporteer selectie (.ics)'}
               </button>
               <span className="export-scope">Periode: {selectedRangeLabel.toLowerCase()}</span>
             </div>
@@ -1921,7 +1948,7 @@ function App() {
                 <strong>{counters.paid}</strong>
               </div>
             </div>
-            <p className="summary-note">Een event kan beide opties hebben.</p>
+            <p className="summary-note">Gratis kan afhangen van je tv-provider; een event kan beide opties hebben.</p>
             <div className="next-event">
               <span>Volgende event</span>
               {counters.nextEvent ? (
@@ -1941,7 +1968,8 @@ function App() {
               <p className="kicker">Privacy</p>
               <h2 id="sportkijken-consent-title">Optionele analytics</h2>
               <p id="sportkijken-consent-copy">
-                Umami meet privacyvriendelijke basisstatistieken. Google Analytics start alleen met jouw toestemming.
+                We gebruiken optionele, geanonimiseerde Google Analytics-statistieken om te zien welke sporten en
+                zenders het meest worden bekeken. Analytics start alleen als je toestemming geeft.
               </p>
               <div className="consent-actions">
                 <button
@@ -1980,6 +2008,10 @@ function App() {
         >
           {filtersExpandedOnMobile ? 'Filters verbergen' : 'Filters aanpassen'}
         </button>
+
+        {datasetStatus.level === 'warning' ? (
+          <p className="dataset-alert" role="status">{datasetStatus.message}</p>
+        ) : null}
 
         <section id="filters-panel" className={`panel filters-panel ${filtersExpandedOnMobile ? 'is-expanded-mobile' : ''}`}>
           <div className={`filter-section filter-group ${openFilterSections.sports ? 'is-open' : ''}`}>
@@ -2248,43 +2280,7 @@ function App() {
           </div>
         </section>
 
-        <section className="panel notice-panel">
-          <div className="notice-meta">
-            <span className="dataset-label">Sportgegevens</span>
-            <span
-              className={`dataset-status ${datasetStatus.level}`}
-              title={`Laatste wijziging: ${formatDatasetDateTime(datasetMeta.lastChangedAt || dataset.generatedAt)}`}
-            >
-              {datasetStatus.message}
-            </span>
-          </div>
-          {consentState !== 'unknown' ? (
-            <details className="analytics-settings">
-              <summary>Privacyinstellingen</summary>
-              <div className="notice-actions">
-                <span>Optionele analytics:</span>
-                <button
-                  type="button"
-                  className={`ghost compact ${consentState === 'granted' ? 'is-active' : ''}`}
-                  onClick={() => setConsent('granted')}
-                  aria-pressed={consentState === 'granted'}
-                >
-                  Analytics aan
-                </button>
-                <button
-                  type="button"
-                  className={`ghost compact ${consentState === 'denied' ? 'is-active' : ''}`}
-                  onClick={() => setConsent('denied')}
-                  aria-pressed={consentState === 'denied'}
-                >
-                  Analytics uit
-                </button>
-              </div>
-            </details>
-          ) : null}
-        </section>
-
-        <section className="agenda">
+        <section className="agenda" id="agenda">
           {dayJumpOptions.length ? (
             <div className="agenda-tools">
               <label className="agenda-label" htmlFor="jump-day">Spring naar datum</label>
@@ -2349,6 +2345,42 @@ function App() {
               ) : null}
             </>
           )}
+        </section>
+
+        <section className="panel notice-panel">
+          <div className="notice-meta">
+            <span className="dataset-label">Sportgegevens</span>
+            <span
+              className={`dataset-status ${datasetStatus.level}`}
+              title={`Laatste wijziging: ${formatDatasetDateTime(datasetMeta.lastChangedAt || dataset.generatedAt)}`}
+            >
+              {datasetStatus.message}
+            </span>
+          </div>
+          {consentState !== 'unknown' ? (
+            <details className="analytics-settings">
+              <summary>Privacyinstellingen</summary>
+              <div className="notice-actions">
+                <span>Optionele analytics:</span>
+                <button
+                  type="button"
+                  className={`ghost compact ${consentState === 'granted' ? 'is-active' : ''}`}
+                  onClick={() => setConsent('granted')}
+                  aria-pressed={consentState === 'granted'}
+                >
+                  Analytics aan
+                </button>
+                <button
+                  type="button"
+                  className={`ghost compact ${consentState === 'denied' ? 'is-active' : ''}`}
+                  onClick={() => setConsent('denied')}
+                  aria-pressed={consentState === 'denied'}
+                >
+                  Analytics uit
+                </button>
+              </div>
+            </details>
+          ) : null}
         </section>
 
         <section className="panel seo-landing" aria-label="SEO landingsinformatie">

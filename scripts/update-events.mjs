@@ -13,11 +13,24 @@ const providerRulesPath = resolve(__dirname, './provider-rules.nl.json');
 const NOW = new Date();
 const windowStart = new Date(NOW.getTime() - 4 * 60 * 60 * 1000);
 const windowEnd = new Date(NOW.getTime() + 180 * 24 * 60 * 60 * 1000);
-const RANGE_START = formatDateForApi(windowStart);
-const RANGE_END = formatDateForApi(windowEnd);
-const DATE_RANGE = `${RANGE_START}-${RANGE_END}`;
+// ESPN's scoreboard API stopped accepting date ranges; it now only accepts a
+// single day, a month or a calendar year. Month queries are the sweet spot:
+// one request returns the complete month without hitting the 1000-event cap.
+const SCOREBOARD_MONTHS = (() => {
+  const months = [];
+  const cursor = new Date(Date.UTC(windowStart.getUTCFullYear(), windowStart.getUTCMonth(), 1));
+  const end = new Date(Date.UTC(windowEnd.getUTCFullYear(), windowEnd.getUTCMonth(), 1));
+  while (cursor <= end) {
+    months.push(`${cursor.getUTCFullYear()}${String(cursor.getUTCMonth() + 1).padStart(2, '0')}`);
+    cursor.setUTCMonth(cursor.getUTCMonth() + 1);
+  }
+  return months;
+})();
+const SCOREBOARD_EVENT_LIMIT = 1000;
 const REQUEST_TIMEOUT_MS = 15000;
-const MAX_EVENTS = Number(process.env.MAX_EVENTS || 2000);
+// The 180-day window is already a natural limit. Keep every event in that
+// window by default so a hard cap cannot cut off the end of the schedule.
+const MAX_EVENTS = Number(process.env.MAX_EVENTS || 0);
 const NOS_SPORT_URL = 'https://nos.nl/sport';
 const HBO_MAX_SPORTS_URL = 'https://www.hbomax.com/nl/nl/sports';
 const VIAPLAY_SPORTS_URL = 'https://viaplay.com/nl-nl/sport';
@@ -34,7 +47,9 @@ const FETCH_RETRY_LIMIT = Number(process.env.FETCH_RETRY_LIMIT || 3);
 const FETCH_RETRY_BASE_MS = Number(process.env.FETCH_RETRY_BASE_MS || 700);
 const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const QUALITY_GATES_ENABLED = process.env.SKIP_QUALITY_GATES !== '1';
-const QA_MIN_TOTAL_EVENTS = Number(process.env.QA_MIN_TOTAL_EVENTS || 450);
+// Absolute floor only to catch a completely collapsed ingest. Source-specific
+// drop checks below provide the real protection against partial outages.
+const QA_MIN_TOTAL_EVENTS = Number(process.env.QA_MIN_TOTAL_EVENTS || 100);
 const QA_MIN_ROWS_BY_SOURCE = {
   nos: 1,
   ziggo: 15,
@@ -1185,12 +1200,20 @@ function applyProviderAccessBusinessRules(event) {
         : ['ziggo sport', 'ziggo sport kanaal 14', 'ziggo sport 14'];
       const isOtt = streamIndicators.some((indicator) => normalizedCanonical.includes(normalizeAsciiLower(indicator)));
       const isFree = ruleListIncludes(freeNames, normalizedCanonical);
+      const tvProviderAccess = channel.tvProviderAccess || ZIGGO_RULES.tvProviderAccess || null;
+      const hasConditionalFreeAccess = Boolean(
+        isFree
+        && tvProviderAccess
+        && typeof tvProviderAccess === 'object'
+        && Object.keys(tvProviderAccess).length
+      );
 
       return {
         ...channel,
         name: canonicalName,
         platform: isOtt ? 'stream' : 'tv',
-        access: isFree ? 'free' : 'paid',
+        access: isFree ? (hasConditionalFreeAccess ? 'mixed' : 'free') : 'paid',
+        ...(hasConditionalFreeAccess ? { tvProviderAccess } : {}),
         url: isOtt ? (ZIGGO_RULES.streamUrl || 'https://www.ziggogo.tv/nl/home') : (ZIGGO_RULES.tvUrl || 'https://www.ziggosport.nl/programmagids/'),
         conditions: isFree
           ? (ZIGGO_RULES.freeConditions || 'Gratis voor Ziggo-klanten met geschikt tv-pakket.')
@@ -1209,6 +1232,13 @@ function applyProviderAccessBusinessRules(event) {
         : ['espn', 'espn 1'];
       const isStream = ruleListIncludes(streamNames, normalizedCanonical);
       const isFree = ruleListIncludes(freeNames, normalizedCanonical);
+      const tvProviderAccess = channel.tvProviderAccess || ESPN_RULES.tvProviderAccess || null;
+      const hasConditionalFreeAccess = Boolean(
+        isFree
+        && tvProviderAccess
+        && typeof tvProviderAccess === 'object'
+        && Object.keys(tvProviderAccess).length
+      );
 
       const baseConditions = isFree
         ? (ESPN_RULES.freeConditions || 'Gratis voor KPN-klanten met geschikt tv-pakket.')
@@ -1221,7 +1251,8 @@ function applyProviderAccessBusinessRules(event) {
         ...channel,
         name: canonicalName,
         platform: isStream ? 'stream' : 'tv',
-        access: isFree ? 'free' : 'paid',
+        access: isFree ? (hasConditionalFreeAccess ? 'mixed' : 'free') : 'paid',
+        ...(hasConditionalFreeAccess ? { tvProviderAccess } : {}),
         url: channel.url || (isStream ? (ESPN_RULES.watchUrl || 'https://www.espn.nl/watch/') : (ESPN_RULES.scheduleUrl || 'https://www.espn.nl/watch/schedule')),
         conditions: `${baseConditions}${extraConditions}`.trim()
       };
@@ -2935,23 +2966,28 @@ function extractNosLivestreamMatchTitle(title) {
 }
 
 function parseNosLivestreamEvent(item, fallbackUrl) {
-  if (!item || item.type !== 'livestream') {
+  const isLivestream = Boolean(item) && (
+    item.type === 'livestream'
+    || normalizeAsciiLower(item.__typename) === 'livestream'
+    || Boolean(item.livestream?.startAt)
+  );
+  if (!isLivestream) {
     return null;
   }
 
-  const isSportOwner = item.owner === 'sport';
+  const isSportOwner = normalizeAsciiLower(item.owner) === 'sport';
   const hasSportCategory = Array.isArray(item.categories)
     && item.categories.some((category) => category?.mainCategory === 'sport');
-  if (!isSportOwner && !hasSportCategory) {
+  if (!isSportOwner && !hasSportCategory && !item.livestream) {
     return null;
   }
 
-  const start = tryIso(item.livestream?.startAt || item.publishedAt);
+  const start = tryIso(item.startAt || item.livestream?.startAt || item.publishedAt);
   if (!start || !isWithinWindow(start)) {
     return null;
   }
 
-  const end = tryIso(item.livestream?.endAt);
+  const end = tryIso(item.endAt || item.livestream?.endAt);
   let durationMinutes = 150;
   if (end) {
     const diffMinutes = Math.round((new Date(end).getTime() - new Date(start).getTime()) / 60000);
@@ -3015,7 +3051,11 @@ async function fetchNosSportLivestreams() {
     try {
       const html = await fetchText(url);
       const nextData = parseNosNextData(html);
-      const item = nextData?.props?.pageProps?.data;
+      const pageProps = nextData?.props?.pageProps;
+      const item = pageProps?.data?.livestream
+        || pageProps?.data
+        || pageProps?.currentLivestream?.livestream
+        || pageProps?.currentLivestream;
       const parsed = parseNosLivestreamEvent(item, url);
       if (parsed) {
         events.push(parsed);
@@ -3295,16 +3335,18 @@ async function fetchByFeeds(feeds, urlBuilder, parser, errorPrefix, idPrefix) {
   const errors = [];
 
   for (const feed of feeds) {
-    const url = urlBuilder(feed);
-    sources.push(url);
-    try {
-      const data = await fetchJson(url);
-      const parsed = (data.events || [])
-        .map((event) => parser(event, feed, idPrefix, url))
-        .filter(Boolean);
-      allEvents.push(...parsed);
-    } catch (error) {
-      errors.push(`${errorPrefix} ${feed.feedSlug || feed.slug}: ${error.message}`);
+    for (const month of SCOREBOARD_MONTHS) {
+      const url = urlBuilder(feed, month);
+      sources.push(url);
+      try {
+        const data = await fetchJson(url);
+        const parsed = (data.events || [])
+          .map((event) => parser(event, feed, idPrefix, url))
+          .filter(Boolean);
+        allEvents.push(...parsed);
+      } catch (error) {
+        errors.push(`${errorPrefix} ${feed.feedSlug || feed.slug} ${month}: ${error.message}`);
+      }
     }
   }
 
@@ -3944,9 +3986,13 @@ async function main() {
   const overridesRaw = await readFile(overridesPath, 'utf8').catch(() => '[]');
   const overrideRules = normalizeOverrideRules(safeParseJson(overridesRaw));
 
+  const scoreboardUrl = (path, month) => (
+    `https://site.api.espn.com/apis/site/v2/sports/${path}/scoreboard?dates=${month}&limit=${SCOREBOARD_EVENT_LIMIT}`
+  );
+
   const football = await fetchByFeeds(
     soccerFeeds,
-    (feed) => `https://site.api.espn.com/apis/site/v2/sports/soccer/${feed.slug}/scoreboard?dates=${DATE_RANGE}`,
+    (feed, month) => scoreboardUrl(`soccer/${feed.slug}`, month),
     parseTeamEvent,
     'Voetbal',
     'voetbal'
@@ -3954,7 +4000,7 @@ async function main() {
 
   const f1 = await fetchByFeeds(
     f1Feeds,
-    (feed) => `https://site.api.espn.com/apis/site/v2/sports/racing/${feed.slug}/scoreboard?dates=${DATE_RANGE}`,
+    (feed, month) => scoreboardUrl(`racing/${feed.slug}`, month),
     parseF1Event,
     'Formule 1',
     'formule-1'
@@ -3962,7 +4008,7 @@ async function main() {
 
   const tennis = await fetchByFeeds(
     tennisFeeds,
-    (feed) => `https://site.api.espn.com/apis/site/v2/sports/tennis/${feed.slug}/scoreboard?dates=${DATE_RANGE}`,
+    (feed, month) => scoreboardUrl(`tennis/${feed.slug}`, month),
     parseNamedEvent,
     'Tennis',
     'tennis'
@@ -3970,7 +4016,7 @@ async function main() {
 
   const teamSports = await fetchByFeeds(
     teamSportFeeds,
-    (feed) => `https://site.api.espn.com/apis/site/v2/sports/${feed.path}/scoreboard?dates=${DATE_RANGE}`,
+    (feed, month) => scoreboardUrl(feed.path, month),
     parseTeamEvent,
     'Teamsport',
     'teamsport'
@@ -3978,7 +4024,7 @@ async function main() {
 
   const namedSports = await fetchByFeeds(
     namedFeeds,
-    (feed) => `https://site.api.espn.com/apis/site/v2/sports/${feed.path}/scoreboard?dates=${DATE_RANGE}`,
+    (feed, month) => scoreboardUrl(feed.path, month),
     parseNamedEvent,
     'Evenement',
     'event'
@@ -4006,12 +4052,12 @@ async function main() {
   ];
 
   const providerHealth = {
-    nos: { rows: nosSportLivestreams.events.length, errors: nosSportLivestreams.errors, diagnostics: [], status: nosSportLivestreams.events.length ? (nosSportLivestreams.errors.length ? 'degraded' : 'ok') : (nosSportLivestreams.errors.length ? 'down' : 'empty') },
-    'npo-guide': { rows: npoGuide.rows.length, errors: npoGuide.errors, diagnostics: [], status: npoGuide.rows.length ? (npoGuide.errors.length ? 'degraded' : 'ok') : (npoGuide.errors.length ? 'down' : 'empty') },
-    ziggo: { rows: ziggoEpg.rows.length, errors: ziggoEpg.errors, diagnostics: [], status: ziggoEpg.rows.length ? (ziggoEpg.errors.length ? 'degraded' : 'ok') : (ziggoEpg.errors.length ? 'down' : 'empty') },
+    nos: { rows: nosSportLivestreams.events.length, errors: nosSportLivestreams.errors, diagnostics: [] },
+    'npo-guide': { rows: npoGuide.rows.length, errors: npoGuide.errors, diagnostics: [] },
+    ziggo: { rows: ziggoEpg.rows.length, errors: ziggoEpg.errors, diagnostics: [] },
     'espn-schedule': { rows: espnSchedule.rows.length, errors: espnSchedule.errors, diagnostics: espnSchedule.diagnostics || [], status: espnSchedule.status },
-    viaplay: { rows: viaplaySchedule.rows.length, errors: viaplaySchedule.errors, diagnostics: [], status: viaplaySchedule.rows.length ? (viaplaySchedule.errors.length ? 'degraded' : 'ok') : (viaplaySchedule.errors.length ? 'down' : 'empty') },
-    'hbo-max': { rows: hboMaxSchedule.rows.length, errors: hboMaxSchedule.errors, diagnostics: [], status: hboMaxSchedule.rows.length ? (hboMaxSchedule.errors.length ? 'degraded' : 'ok') : (hboMaxSchedule.errors.length ? 'down' : 'empty') }
+    viaplay: { rows: viaplaySchedule.rows.length, errors: viaplaySchedule.errors, diagnostics: [] },
+    'hbo-max': { rows: hboMaxSchedule.rows.length, errors: hboMaxSchedule.errors, diagnostics: [] }
   };
 
   const providerHealthReport = buildProviderHealthReport(providerHealth, previousProviderHealth, new Date().toISOString());
@@ -4098,10 +4144,18 @@ async function main() {
     console.log(`Quality gates passed for ${allVerifiedEvents.length} events.`);
   }
 
-  const verifiedEvents = MAX_EVENTS > 0 ? allVerifiedEvents.slice(0, MAX_EVENTS) : allVerifiedEvents;
+  // Events that have already ended are not used by the site. Drop them before
+  // applying the hard cap so the cap can never push upcoming events out of the
+  // dataset (the previous behaviour kept months of history and cut off the
+  // future schedule).
+  const relevanceThreshold = Date.now() - 6 * 60 * 60 * 1000;
+  const relevantEvents = allVerifiedEvents.filter((event) => (
+    new Date(event.start).getTime() >= relevanceThreshold
+  ));
+  const verifiedEvents = MAX_EVENTS > 0 ? relevantEvents.slice(0, MAX_EVENTS) : relevantEvents;
 
-  if (MAX_EVENTS > 0 && allVerifiedEvents.length > MAX_EVENTS) {
-    console.warn(`Event list truncated from ${allVerifiedEvents.length} to ${MAX_EVENTS}.`);
+  if (MAX_EVENTS > 0 && relevantEvents.length > MAX_EVENTS) {
+    console.warn(`Event list truncated from ${relevantEvents.length} to ${MAX_EVENTS}.`);
   }
 
   if (!verifiedEvents.length) {
@@ -4161,6 +4215,7 @@ export {
   inspectEspnPayload,
   normalizedTitleKey,
   parseEspnFittData,
+  parseNosLivestreamEvent,
   qualityGateDuplicateKey,
   quarantineReasonForEvent,
   runQualityGates

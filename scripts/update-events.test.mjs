@@ -8,6 +8,7 @@ import {
   inferZiggoScheduleSport,
   normalizedTitleKey,
   parseEspnFittData,
+  parseNosLivestreamEvent,
   quarantineReasonForEvent,
   runQualityGates
 } from './update-events.mjs';
@@ -51,6 +52,24 @@ test('normalizedTitleKey collapses ESPN pair and dual variants', () => {
   const a = normalizedTitleKey('Long Beach State vs. California (Dual #4)');
   const b = normalizedTitleKey('Long Beach State vs. California (Pair #5, Dual #4)');
   assert.equal(a, b);
+});
+
+test('parseNosLivestreamEvent supports the current NOS page payload', () => {
+  const start = new Date(Date.now() + 60 * 60 * 1000);
+  const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+  const event = parseNosLivestreamEvent({
+    __typename: 'Livestream',
+    id: '2629093',
+    title: 'Futsal: WK-kwalificatie Nederland - Andorra (m)',
+    startAt: start.toISOString(),
+    endAt: end.toISOString(),
+    owner: 'SPORT'
+  }, 'https://nos.nl/livestream/2629093-futsal');
+
+  assert.ok(event);
+  assert.equal(event.sourceType, 'nos');
+  assert.equal(event.channels[0].name, 'NOS.nl Live');
+  assert.equal(event.channels[0].access, 'free');
 });
 
 test('parseEspnFittData supports alternative assignment variants', () => {

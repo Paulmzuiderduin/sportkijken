@@ -62,8 +62,9 @@ npm run data:normalize
 ## Automatische updates
 
 - Workflow: `.github/workflows/update-data.yml`
-- Frequentie: elk uur (`cron: 17 * * * *`, UTC)
-- Bij gewijzigde data commit + push naar `main`, waarna de Pages deploy-workflow automatisch draait.
+- Frequentie: elke 3 uur (`cron: 17 */3 * * *`, UTC)
+- De workflow test de datapipeline, haalt de laatste gedeployde dataset op als fallback, ververst de bronnen en deployt rechtstreeks naar GitHub Pages. Er worden geen dataset-commits naar `main` gepusht.
+- De normale Pages-workflow hydratet voor een code-deploy eerst de laatste live dataset, zodat een codewijziging de sportdata niet terugzet naar de meegebundelde snapshot.
 
 ## Deploy-doel
 

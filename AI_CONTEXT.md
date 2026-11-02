@@ -6,13 +6,14 @@
 
 The application has recently undergone significant changes to improve **mobile responsiveness** and **scroll performance**. If you are modifying `App.jsx` or `styles.css`, please keep the following constraints and features in mind:
 
-### 1. Mobile Responsiveness & Collapsible Filters
-- **The Problem:** The filter panel took up too much vertical space on mobile devices, pushing the actual events out of view.
-- **The Solution:** The filter panel is now collapsible on mobile (`max-width: 768px`).
-- **Implementation in `App.jsx`:** We use a `useState` hook called `filtersExpandedOnMobile`. A button (`.mobile-filter-toggle`) is rendered before the filters panel. When clicked, it toggles the `is-expanded-mobile` class on the `.filters-panel`.
-- **Implementation in `styles.css`:** 
-  - `.mobile-filter-toggle` has `display: none` on desktop (`min-width: 769px`).
-  - `.filters-panel` has `display: none` on mobile by default and switches to `display: grid` when the `is-expanded-mobile` class is present.
+### 1. Responsive Filters (collapsed by default)
+- **The Problem:** The filter panel took up too much vertical space, pushing the actual events below the fold on both mobile and desktop.
+- **The Solution:** The filter panel is now collapsible on every screen size.
+- **Implementation in `App.jsx`:** We use the `filtersExpandedOnMobile` state. A button (`.mobile-filter-toggle`) is rendered before the filters panel. When clicked, it toggles the `is-expanded-mobile` class on the `.filters-panel`.
+- **Implementation in `styles.css`:**
+  - `.filters-panel` has `display: none` by default and switches to `display: grid` when `is-expanded-mobile` is present.
+  - `.mobile-filter-toggle` is visible on all screen sizes.
+  - Keep the event list above the filters in the visual hierarchy; the main CTA links to `#agenda`.
 
 ### 2. Scroll Performance (Lazy Loading / Pagination)
 - **The Problem:** Grouping and rendering 30+ days of events at once resulted in thousands of React DOM nodes, causing the app to freeze/lag on mobile during scrolling and state updates.
@@ -20,7 +21,7 @@ The application has recently undergone significant changes to improve **mobile r
 - **Implementation in `App.jsx`:** 
   - A `useState` hook called `visibleDaysCount` (defaults to 1) controls how many days are initially rendered.
   - The `groupedEvents` array is sliced: `groupedEvents.slice(0, visibleDaysCount).map(...)`.
-  - A "Laad meer dagen" (Load more days) button at the bottom of the list increments `visibleDaysCount` by 7.
+  - A "Laad meer dagen" (Load more days) button at the bottom of the list increments `visibleDaysCount` by 2.
 - **Rule:** Do NOT remove `visibleDaysCount` or revert to rendering all `groupedEvents` at once, as this will break mobile performance.
 - **Rule:** Do NOT add heavy CSS animations (like `fade-slide`) to `.event-card` or other elements that are rendered in bulk. Animating 50+ elements simultaneously causes massive main thread freezing on mobile devices.
 
@@ -31,3 +32,5 @@ The application has recently undergone significant changes to improve **mobile r
 ## General Guidelines
 - Do not use Tailwind classes in this project; all styling relies on Vanilla CSS in `styles.css`.
 - The dataset fetching logic (`loadCachedDataset`) and SEO routing should remain intact.
+- ESPN's scoreboard API no longer accepts date ranges (`YYYYMMDD-YYYYMMDD`). `scripts/update-events.mjs` queries whole months (`YYYYMM`) instead; keep that behaviour and the per-month 1000-event limit.
+- Past events are pruned before the (now optional) `MAX_EVENTS` cap. Do not reintroduce a cap that can cut off the end of the 180-day schedule.
