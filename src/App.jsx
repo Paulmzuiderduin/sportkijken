@@ -1,4 +1,31 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
+import {
+  ACCESS_OPTIONS,
+  MAJOR_FILTER_OPTIONS,
+  POPULAR_SPORT_IDS,
+  PROVIDER_VISIBLE_LIMIT,
+  RANGE_OPTIONS,
+  SPORT_VISIBLE_LIMIT,
+  TV_PROVIDER_OPTIONS
+} from './lib/filter-options.js';
+import {
+  accessLabelText,
+  effectiveChannelAccess,
+  hasAccess
+} from './lib/access.js';
+import {
+  DATE_FORMATTER,
+  DAY_KEY_FORMATTER,
+  DAY_NUMBER_FORMATTER,
+  TIME_FORMATTER,
+  WEEKDAY_SHORT_FORMATTER
+} from './lib/format.js';
+import { trackAnalyticsEvent } from './lib/analytics.js';
+import EventCard from './components/EventCard.jsx';
+import ConsentDialog from './components/ConsentDialog.jsx';
+import SiteFooter from './components/SiteFooter.jsx';
+import Agenda from './components/Agenda.jsx';
+import FiltersPanel from './components/FiltersPanel.jsx';
 
 const STORAGE_KEY = 'sportkijken-preferences-v2';
 
@@ -34,62 +61,6 @@ const KNOWN_SPORT_META = {
 };
 
 const FALLBACK_ACCENTS = ['#0a7b52', '#2f67cf', '#c7351b', '#7e3af2', '#0f6a8f', '#7f1d1d', '#b45309'];
-
-const RANGE_OPTIONS = [
-  { id: '7d', label: 'Komende 7 dagen' },
-  { id: '30d', label: 'Komende 30 dagen' },
-  { id: '90d', label: 'Komende 90 dagen' },
-  { id: '180d', label: 'Komende 6 maanden' },
-  { id: 'all', label: 'Alles gepland' }
-];
-
-const ACCESS_OPTIONS = [
-  { id: 'all', label: 'Alles' },
-  { id: 'free', label: 'Alleen gratis' },
-  { id: 'paid', label: 'Alleen betaald' }
-];
-
-const TV_PROVIDER_OPTIONS = [
-  { id: 'all', label: 'Geen voorkeur' },
-  { id: 'ziggo', label: 'Ziggo' },
-  { id: 'kpn', label: 'KPN' },
-  { id: 'odido', label: 'Odido' },
-  { id: 'delta', label: 'DELTA' },
-  { id: 'caiway', label: 'Caiway' },
-  { id: 'canal-digitaal', label: 'Canal Digitaal' }
-];
-
-const MAJOR_FILTER_OPTIONS = [
-  { id: 'all', label: 'Alles' },
-  { id: 'major', label: 'Alleen grote events' },
-  { id: 'regular', label: 'Zonder grote events' }
-];
-
-const DATE_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
-  weekday: 'long',
-  day: '2-digit',
-  month: 'long',
-  timeZone: 'Europe/Amsterdam'
-});
-
-const TIME_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
-  hour: '2-digit',
-  minute: '2-digit',
-  timeZone: 'Europe/Amsterdam'
-});
-
-const DAY_KEY_FORMATTER = new Intl.DateTimeFormat('sv-SE', {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-  timeZone: 'Europe/Amsterdam'
-});
-
-const DAY_NUMBER_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
-  day: '2-digit',
-  month: 'short',
-  timeZone: 'Europe/Amsterdam'
-});
 
 const EMPTY_DATASET = {
   generatedAt: null,
@@ -134,7 +105,7 @@ const RUNTIME_DATASET_URL = withDataBaseUrl('/events.nl.json');
 const RUNTIME_DATASET_META_URL = withDataBaseUrl('/events.meta.json');
 const RUNTIME_DATASET_INDEX_URL = withDataBaseUrl('/datasets/index.json');
 const RUNTIME_DATASET_POLL_MS = 5 * 60 * 1000;
-const MOBILE_DATASET_EVENT_LIMIT = 700;
+
 const SEO_BASE_URL = 'https://sportkijken.paulzuiderduin.com/';
 const SEO_BASE_TITLE = 'Waar Kan Ik Sport Kijken? | Sportkijken Nederland';
 const SEO_BASE_DESCRIPTION = 'Waar kan ik voetbal, Formule 1, tennis en andere sport kijken? Sportkijken geeft per wedstrijd een NL-overzicht met zender/stream, tijd en gratis of betaald.';
@@ -221,8 +192,6 @@ function buildProviderOptions(events) {
 const FALLBACK_SPORT_OPTIONS = buildSportOptions(FALLBACK_EVENTS);
 const FALLBACK_PROVIDER_OPTIONS = buildProviderOptions(FALLBACK_EVENTS);
 
-const PROVIDER_VISIBLE_LIMIT = 24;
-
 function sportMetaFor(id, sportLookup) {
   return sportLookup[id] || {
     id,
@@ -287,17 +256,9 @@ function normalizeRuntimeDataset(candidate) {
     return null;
   }
 
-  const isMobile = typeof window !== 'undefined'
-    && window.matchMedia('(max-width: 768px)').matches;
-  const events = isMobile && candidate.events.length > MOBILE_DATASET_EVENT_LIMIT
-    ? [...candidate.events]
-        .sort((a, b) => new Date(a?.start || 0).getTime() - new Date(b?.start || 0).getTime())
-        .slice(0, MOBILE_DATASET_EVENT_LIMIT)
-    : candidate.events;
-
   return {
     ...candidate,
-    events
+    events: candidate.events
   };
 }
 
@@ -426,7 +387,17 @@ function persistCachedDataset(dataset) {
   }
 
   try {
-    window.localStorage.setItem(DATASET_CACHE_STORAGE_KEY, JSON.stringify(dataset));
+    const now = Date.now();
+    const cacheStart = now - 6 * 60 * 60 * 1000;
+    const cacheEnd = now + 14 * 24 * 60 * 60 * 1000;
+    const events = (Array.isArray(dataset.events) ? dataset.events : []).filter((event) => {
+      const start = new Date(event?.start || 0).getTime();
+      return Number.isFinite(start) && start >= cacheStart && start <= cacheEnd;
+    });
+    window.localStorage.setItem(DATASET_CACHE_STORAGE_KEY, JSON.stringify({
+      ...dataset,
+      events
+    }));
   } catch (error) {
     // Ignore storage limit errors.
   }
@@ -459,6 +430,45 @@ function formatAgeLabel(totalMinutes) {
 
   const months = Math.floor(days / 30);
   return `${months} ${months === 1 ? 'maand' : 'maanden'}`;
+}
+
+function addDays(date, days) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function quickDayKeysFor(filterId, now = new Date()) {
+  if (filterId === 'all') {
+    return null;
+  }
+
+  const keys = new Set();
+  if (filterId === 'today') {
+    keys.add(DAY_KEY_FORMATTER.format(now));
+    return keys;
+  }
+
+  if (filterId === 'tomorrow') {
+    keys.add(DAY_KEY_FORMATTER.format(addDays(now, 1)));
+    return keys;
+  }
+
+  if (filterId === 'weekend') {
+    const weekday = WEEKDAY_SHORT_FORMATTER.format(now);
+    const offsets = {
+      Sat: [0, 1],
+      Sun: [0],
+      Fri: [1, 2],
+      Mon: [5, 6],
+      Tue: [4, 5],
+      Wed: [3, 4],
+      Thu: [2, 3]
+    }[weekday] || [0, 1];
+    offsets.forEach((offset) => keys.add(DAY_KEY_FORMATTER.format(addDays(now, offset))));
+  }
+
+  return keys;
 }
 
 function searchTextFromUrl() {
@@ -740,58 +750,6 @@ function buildReportIncorrectListingLink(event, sportLabel, tvProvider = 'all') 
   return buildContactComposeLink(subject, body);
 }
 
-function trackAnalyticsEvent(eventName, params = {}) {
-  if (typeof window === 'undefined' || !eventName) {
-    return;
-  }
-
-  if (typeof window.trackSportkijkenEvent === 'function') {
-    window.trackSportkijkenEvent(eventName, params);
-    return;
-  }
-
-  if (typeof window.gtag === 'function') {
-    window.gtag('event', eventName, params);
-  }
-}
-
-function accessLabelText(access) {
-  if (access === 'free') {
-    return 'Gratis';
-  }
-  if (access === 'mixed') {
-    return 'Voorwaardelijk';
-  }
-  return 'Betaald';
-}
-
-function effectiveChannelAccess(channel, tvProvider = 'all') {
-  const providerKey = typeof tvProvider === 'string' ? tvProvider : 'all';
-  const byProvider = channel?.tvProviderAccess;
-  if (
-    providerKey !== 'all'
-    && byProvider
-    && typeof byProvider === 'object'
-    && typeof byProvider[providerKey] === 'string'
-  ) {
-    return byProvider[providerKey];
-  }
-  return channel?.access || 'paid';
-}
-
-function hasAccess(event, accessFilter, tvProvider = 'all') {
-  if (accessFilter === 'all') {
-    return true;
-  }
-  return event.channels.some((channel) => {
-    const access = effectiveChannelAccess(channel, tvProvider);
-    if (access === accessFilter) {
-      return true;
-    }
-    return access === 'mixed' && (accessFilter === 'free' || accessFilter === 'paid');
-  });
-}
-
 function eventContentType(event) {
   return event.contentType === 'broadcast' ? 'broadcast' : 'match';
 }
@@ -802,57 +760,6 @@ function hasProvider(event, selectedProviders) {
   }
   const selected = expandedProviderSelection(selectedProviders);
   return event.channels.some((channel) => selected.has(normalizeProviderName(channel.name)));
-}
-
-function getEventAccessLabel(event, tvProvider = 'all') {
-  const hasFree = event.channels.some((channel) => effectiveChannelAccess(channel, tvProvider) === 'free');
-  const hasPaid = event.channels.some((channel) => effectiveChannelAccess(channel, tvProvider) === 'paid');
-  const hasMixed = event.channels.some((channel) => effectiveChannelAccess(channel, tvProvider) === 'mixed');
-
-  if (hasMixed) {
-    if (hasFree && hasPaid) {
-      return 'Gratis + betaald';
-    }
-    if (hasPaid) {
-      return 'Voorwaardelijk + betaald';
-    }
-    if (hasFree) {
-      return 'Gratis + voorwaardelijk';
-    }
-    return 'Voorwaardelijk';
-  }
-  if (hasFree && hasPaid) {
-    return 'Gratis + betaald';
-  }
-  if (hasFree) {
-    return 'Gratis';
-  }
-  return 'Betaald';
-}
-
-function getEventAccessTone(event, tvProvider = 'all') {
-  const label = getEventAccessLabel(event, tvProvider);
-  return label === 'Gratis' ? 'free' : label === 'Betaald' ? 'paid' : 'mixed';
-}
-
-function compactChannelCondition(condition) {
-  const value = String(condition || '').trim();
-  const replacements = [
-    ['Gratis voor Ziggo-klanten met geschikt tv-pakket.', 'Ziggo-abonnement met geschikt pakket.'],
-    ['Kanaal vereist aanvullend Ziggo Sport-pakket of inloggen via Ziggo GO.', 'Aanvullend Ziggo Sport-pakket of Ziggo GO.'],
-    ['Kanaal vereist aanvullend Ziggo Sport-pakket of inloggen via Ziggo GO', 'Aanvullend Ziggo Sport-pakket of Ziggo GO.'],
-    ['Streaming via ESPN Watch met geschikt abonnement.', 'ESPN Watch-abonnement.'],
-    ['Alleen met ESPN Compleet of geschikt tv-pakket.', 'ESPN Compleet of geschikt tv-pakket.'],
-    ['Bij Ziggo zijn Eurosport 1 en 2 vaak inbegrepen; bij KPN meestal alleen Eurosport 1.', 'Bij Ziggo vaak inbegrepen; bij KPN meestal alleen Eurosport 1.']
-  ];
-
-  for (const [longText, shortText] of replacements) {
-    if (value === longText) {
-      return shortText;
-    }
-  }
-
-  return value;
 }
 
 const MAJOR_TAG_LABELS = {
@@ -938,6 +845,8 @@ function App() {
   const [dataset, setDataset] = useState(loadCachedDataset);
   const [preferences, setPreferences] = useState(() => loadPreferences(FALLBACK_SPORT_OPTIONS, FALLBACK_PROVIDER_OPTIONS));
   const [providersExpanded, setProvidersExpanded] = useState(false);
+  const [sportsExpanded, setSportsExpanded] = useState(false);
+  const [quickDayFilter, setQuickDayFilter] = useState('all');
   const [tvProviderInfoOpen, setTvProviderInfoOpen] = useState(false);
   const [openFilterSections, setOpenFilterSections] = useState({
     sports: true,
@@ -969,6 +878,22 @@ function App() {
     () => Object.fromEntries(sportOptions.map((sport) => [sport.id, sport])),
     [sportOptions]
   );
+
+  const sportOptionsForView = useMemo(() => {
+    if (sportsExpanded || sportOptions.length <= SPORT_VISIBLE_LIMIT) {
+      return sportOptions;
+    }
+
+    const popularIds = new Set(POPULAR_SPORT_IDS);
+    const popular = POPULAR_SPORT_IDS
+      .map((id) => sportOptions.find((sport) => sport.id === id))
+      .filter(Boolean);
+    const rest = sportOptions.filter((sport) => !popularIds.has(sport.id));
+    return [...popular, ...rest].slice(0, SPORT_VISIBLE_LIMIT);
+  }, [sportOptions, sportsExpanded]);
+
+  const hiddenSportCount = sportOptions.length - sportOptionsForView.length;
+  const quickDayKeys = useMemo(() => quickDayKeysFor(quickDayFilter), [quickDayFilter]);
 
   const events = useMemo(() => {
     return [...sourceEvents]
@@ -1032,34 +957,6 @@ function App() {
 
     let cancelled = false;
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-    const ensureBundledFallbackDataset = async () => {
-      const current = datasetSnapshotRef.current || EMPTY_DATASET;
-      const hasCurrentEvents = Array.isArray(current.events) && current.events.length > 0;
-      if (hasCurrentEvents) {
-        return false;
-      }
-
-      try {
-        const module = await import('./data/events.nl.json');
-        const payload = normalizeRuntimeDataset(module?.default);
-        if (!payload || cancelled) {
-          return false;
-        }
-
-        setDataset((existing) => {
-          const existingCount = Array.isArray(existing?.events) ? existing.events.length : 0;
-          if (existingCount > 0) {
-            return existing;
-          }
-          persistCachedDataset(payload);
-          return payload;
-        });
-        return true;
-      } catch (error) {
-        return false;
-      }
-    };
 
     const fetchRuntimeDataset = async () => {
       try {
@@ -1224,10 +1121,7 @@ function App() {
         if (updatedByRange) {
           return;
         }
-        const updated = await fetchRuntimeDataset();
-        if (!updated) {
-          await ensureBundledFallbackDataset();
-        }
+        await fetchRuntimeDataset();
         return;
       }
 
@@ -1242,10 +1136,7 @@ function App() {
           if (updatedByRange) {
             return;
           }
-          const updated = await fetchRuntimeDataset();
-          if (!updated) {
-            await ensureBundledFallbackDataset();
-          }
+          await fetchRuntimeDataset();
         }
         return;
       }
@@ -1257,10 +1148,7 @@ function App() {
         if (updatedByRange) {
           return;
         }
-        const updated = await fetchRuntimeDataset();
-        if (!updated) {
-          await ensureBundledFallbackDataset();
-        }
+        await fetchRuntimeDataset();
       }
     };
 
@@ -1446,6 +1334,10 @@ function App() {
     };
   }, [dataset.generatedAt, datasetMeta.lastChangedAt]);
 
+  useEffect(() => {
+    setVisibleDaysCount(quickDayFilter === 'weekend' ? 2 : 1);
+  }, [quickDayFilter]);
+
   const filteredEvents = useMemo(() => {
     const now = new Date();
     const matchThreshold = new Date(now.getTime() - 3 * 60 * 60 * 1000);
@@ -1478,6 +1370,10 @@ function App() {
         return false;
       }
 
+      if (quickDayKeys && !quickDayKeys.has(DAY_KEY_FORMATTER.format(event.startDate))) {
+        return false;
+      }
+
       if (rangeMax && event.startDate > rangeMax) {
         return false;
       }
@@ -1505,7 +1401,7 @@ function App() {
         .toLowerCase()
         .includes(text);
     });
-  }, [events, preferences]);
+  }, [events, preferences, quickDayKeys]);
 
   const groupedEvents = useMemo(() => {
     const map = new Map();
@@ -1573,6 +1469,18 @@ function App() {
       return;
     }
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleJumpDay = (dayKey) => {
+    if (!dayKey || typeof window === 'undefined') {
+      return;
+    }
+    const targetIndex = groupedEvents.findIndex((group) => group.key === dayKey);
+    if (targetIndex >= 0) {
+      setVisibleDaysCount((current) => Math.max(current, targetIndex + 1));
+    }
+    setJumpDay(dayKey);
+    window.setTimeout(() => jumpToDay(dayKey), 50);
   };
 
   const counters = useMemo(() => {
@@ -1692,7 +1600,14 @@ function App() {
 
   const setRangeFilter = (rangeId) => {
     trackAnalyticsEvent('filter_range_change', { range: rangeId });
+    setQuickDayFilter('all');
     setPreferences((current) => ({ ...current, rangeFilter: rangeId }));
+  };
+
+  const selectQuickDay = (dayId) => {
+    trackAnalyticsEvent('agenda_quick_day', { day: dayId });
+    setQuickDayFilter(dayId);
+    setJumpDay('');
   };
 
   const setAccessFilter = (accessId) => {
@@ -1820,84 +1735,14 @@ function App() {
 
   const renderEventCard = (event) => {
     const sportMeta = sportMetaFor(event.sport, sportLookup);
-    const reportLink = buildReportIncorrectListingLink(event, sportMeta.label, preferences.tvProvider);
-    const eventAccessLabel = getEventAccessLabel(event, preferences.tvProvider);
-    const eventAccessTone = getEventAccessTone(event, preferences.tvProvider);
-
     return (
-      <div key={event.id} className="event-card">
-        <div className="event-meta">
-          <span
-            className="sport-dot"
-            style={{ background: sportMeta.accent }}
-            aria-hidden="true"
-          />
-          <p>{sportMeta.label}</p>
-          <span className="divider">•</span>
-          <p>{event.competition}</p>
-        </div>
-
-        <h3>{event.title}</h3>
-
-        <p className="event-time">
-          {TIME_FORMATTER.format(event.startDate)} - {TIME_FORMATTER.format(event.endDate)} uur (NL)
-        </p>
-
-        <ul className="channel-list">
-          {event.channels.map((channel) => (
-            <li key={`${event.id}-${channel.name}-${channel.platform}`}>
-              <div className="channel-main">
-                {channel.url ? (
-                  <a
-                    className="channel-link"
-                    href={channel.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => {
-                      trackAnalyticsEvent('outbound_stream_click', {
-                        provider: channel.name,
-                        access: channel.access,
-                        sport: event.sport
-                      });
-                    }}
-                  >
-                    {channel.name} ({channel.platform})
-                  </a>
-                ) : (
-                  <span>{channel.name} ({channel.platform})</span>
-                )}
-                {channel.conditions ? (
-                  <small className="channel-condition" title={channel.conditions}>
-                    {compactChannelCondition(channel.conditions)}
-                  </small>
-                ) : null}
-              </div>
-              <span className={`access ${effectiveChannelAccess(channel, preferences.tvProvider)}`}>
-                {accessLabelText(effectiveChannelAccess(channel, preferences.tvProvider))}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        <footer>
-          <span className={`event-access ${eventAccessTone}`}>
-            {eventAccessLabel}
-          </span>
-          <a
-            className="report-link"
-            href={reportLink}
-            onClick={() => {
-              trackAnalyticsEvent('report_incorrect_listing_click', {
-                sport: event.sport,
-                event_id: event.id,
-                competition: event.competition || 'unknown'
-              });
-            }}
-          >
-            Meld onjuiste vermelding
-          </a>
-        </footer>
-      </div>
+      <EventCard
+        key={event.id}
+        event={event}
+        sportMeta={sportMeta}
+        reportLink={buildReportIncorrectListingLink(event, sportMeta.label, preferences.tvProvider)}
+        tvProvider={preferences.tvProvider}
+      />
     );
   };
 
@@ -1918,7 +1763,7 @@ function App() {
               <a className="primary" href="#agenda">Bekijk het schema</a>
               <button
                 type="button"
-                className="ghost"
+                className="ghost hero-export"
                 onClick={exportVisibleEventsAsIcs}
                 disabled={!filteredEvents.length}
                 title={filteredEvents.length
@@ -1962,42 +1807,7 @@ function App() {
           </aside>
         </section>
 
-        {consentState === 'unknown' ? (
-          <div className="consent-modal" role="presentation">
-            <section className="consent-dialog" aria-labelledby="sportkijken-consent-title" aria-describedby="sportkijken-consent-copy">
-              <p className="kicker">Privacy</p>
-              <h2 id="sportkijken-consent-title">Optionele analytics</h2>
-              <p id="sportkijken-consent-copy">
-                We gebruiken optionele, geanonimiseerde Google Analytics-statistieken om te zien welke sporten en
-                zenders het meest worden bekeken. Analytics start alleen als je toestemming geeft.
-              </p>
-              <div className="consent-actions">
-                <button
-                  type="button"
-                  className="ghost"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    setConsent('denied');
-                  }}
-                >
-                  Niet toestaan
-                </button>
-                <button
-                  type="button"
-                  className="primary"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    setConsent('granted');
-                  }}
-                >
-                  Toestaan
-                </button>
-              </div>
-            </section>
-          </div>
-        ) : null}
+        {consentState === 'unknown' ? <ConsentDialog onConsent={setConsent} /> : null}
 
         <button
           type="button"
@@ -2013,339 +1823,51 @@ function App() {
           <p className="dataset-alert" role="status">{datasetStatus.message}</p>
         ) : null}
 
-        <section id="filters-panel" className={`panel filters-panel ${filtersExpandedOnMobile ? 'is-expanded-mobile' : ''}`}>
-          <div className={`filter-section filter-group ${openFilterSections.sports ? 'is-open' : ''}`}>
-            <div className="filter-section-header">
-              <p className="filter-title" id="filter-sports-title">Sporten</p>
-              <button
-                type="button"
-                className="filter-section-toggle"
-                aria-expanded={openFilterSections.sports}
-                aria-controls="filter-sports-content"
-                onClick={() => toggleFilterSection('sports')}
-              >
-                <span aria-hidden="true">{openFilterSections.sports ? '-' : '+'}</span>
-                <span className="sr-only">Sportfilters {openFilterSections.sports ? 'verbergen' : 'tonen'}</span>
-              </button>
-            </div>
-            <div className="filter-section-content" id="filter-sports-content" aria-labelledby="filter-sports-title">
-              <div className="sport-grid">
-              {sportOptions.map((sport) => {
-                const selected = preferences.selectedSports.includes(sport.id);
-                return (
-                  <button
-                    key={sport.id}
-                    type="button"
-                    className={`chip sport-chip ${selected ? 'is-selected' : ''}`}
-                    onClick={() => toggleSport(sport.id)}
-                    aria-pressed={selected}
-                    style={{ '--chip-accent': sport.accent }}
-                  >
-                    {sport.label}
-                  </button>
-                );
-              })}
-              </div>
-              <div className="chip-actions">
-                <button type="button" className="ghost" onClick={selectAllSports}>Alles</button>
-                <button type="button" className="ghost" onClick={clearSports}>Geen</button>
-              </div>
-            </div>
-          </div>
+        <FiltersPanel
+          isExpanded={filtersExpandedOnMobile}
+          preferences={preferences}
+          setPreferences={setPreferences}
+          openFilterSections={openFilterSections}
+          onToggleSection={toggleFilterSection}
+          totalSportCount={sportOptions.length}
+          sportOptionsForView={sportOptionsForView}
+          sportsExpanded={sportsExpanded}
+          onSportsExpandedChange={setSportsExpanded}
+          hiddenSportCount={hiddenSportCount}
+          onToggleSport={toggleSport}
+          onSelectAllSports={selectAllSports}
+          onClearSports={clearSports}
+          providerOptionsForView={providerOptionsForView}
+          visibleProviders={visibleProviders}
+          hiddenProviderCount={hiddenProviderCount}
+          providerListIsConstrained={providerListIsConstrained}
+          providersExpanded={providersExpanded}
+          onProvidersExpandedChange={setProvidersExpanded}
+          onToggleProvider={toggleProvider}
+          onSelectAllProviders={selectAllProviders}
+          onClearProviders={clearProviders}
+          tvProviderInfoOpen={tvProviderInfoOpen}
+          onTvProviderInfoOpenChange={setTvProviderInfoOpen}
+          onRangeChange={setRangeFilter}
+          onTvProviderChange={setTvProvider}
+          onAccessChange={setAccessFilter}
+          onMajorChange={setMajorFilter}
+        />
 
-          <div className={`filter-section filter-group ${openFilterSections.providers ? 'is-open' : ''}`}>
-            <div className="filter-section-header">
-              <p className="filter-title" id="filter-providers-title">Aanbieders</p>
-              <button
-                type="button"
-                className="filter-section-toggle"
-                aria-expanded={openFilterSections.providers}
-                aria-controls="filter-providers-content"
-                onClick={() => toggleFilterSection('providers')}
-              >
-                <span aria-hidden="true">{openFilterSections.providers ? '-' : '+'}</span>
-                <span className="sr-only">Aanbieders {openFilterSections.providers ? 'verbergen' : 'tonen'}</span>
-              </button>
-            </div>
-            <div className="filter-section-content" id="filter-providers-content" aria-labelledby="filter-providers-title">
-              <div className="provider-tools">
-              <input
-                type="search"
-                value={preferences.providerSearchText}
-                onChange={(event) => {
-                  setProvidersExpanded(false);
-                  setPreferences((current) => ({ ...current, providerSearchText: event.target.value }));
-                }}
-                onBlur={(event) => {
-                  const value = event.target.value.trim();
-                  if (!value) return;
-                  trackAnalyticsEvent('provider_search', { query_length: value.length });
-                }}
-                placeholder="Zoek aanbieder"
-                aria-label="Zoek aanbieder"
-              />
-              <button
-                type="button"
-                className={`ghost compact ${preferences.providerSelectedOnly ? 'is-active' : ''}`}
-                onClick={() => {
-                  const nextSelectedOnly = !preferences.providerSelectedOnly;
-                  trackAnalyticsEvent('provider_view_mode', { mode: nextSelectedOnly ? 'selected_only' : 'all' });
-                  setProvidersExpanded(false);
-                  setPreferences((current) => ({
-                    ...current,
-                    providerSelectedOnly: !current.providerSelectedOnly
-                  }));
-                }}
-                aria-pressed={preferences.providerSelectedOnly}
-              >
-                {preferences.providerSelectedOnly ? 'Toon alles' : 'Alleen geselecteerd'}
-              </button>
-            </div>
-            <p className="provider-hint">
-              {visibleProviders.length} van {providerOptionsForView.length} zichtbaar • {preferences.selectedProviders.length} geselecteerd
-            </p>
-            <div className="provider-grid">
-              {visibleProviders.map((provider) => {
-                const selected = preferences.selectedProviders.includes(provider);
-                return (
-                  <button
-                    key={provider}
-                    type="button"
-                    className={`chip provider-chip ${selected ? 'is-selected' : ''}`}
-                    onClick={() => toggleProvider(provider)}
-                    aria-pressed={selected}
-                  >
-                    {provider}
-                  </button>
-                );
-              })}
-            </div>
-            {!visibleProviders.length ? <p className="provider-empty">Geen aanbieders gevonden.</p> : null}
-            {hiddenProviderCount > 0 ? (
-              <div className="chip-actions">
-                <button
-                  type="button"
-                  className="ghost compact"
-                  onClick={() => {
-                    trackAnalyticsEvent('provider_list_expand', { hidden: hiddenProviderCount });
-                    setProvidersExpanded(true);
-                  }}
-                >
-                  Toon nog {hiddenProviderCount}
-                </button>
-              </div>
-            ) : null}
-            {!providerListIsConstrained && providersExpanded && providerOptionsForView.length > PROVIDER_VISIBLE_LIMIT ? (
-              <div className="chip-actions">
-                <button
-                  type="button"
-                  className="ghost compact"
-                  onClick={() => {
-                    trackAnalyticsEvent('provider_list_collapse', {});
-                    setProvidersExpanded(false);
-                  }}
-                >
-                  Minder tonen
-                </button>
-              </div>
-            ) : null}
-            <div className="chip-actions">
-              <button type="button" className="ghost" onClick={selectAllProviders}>Alles</button>
-              <button type="button" className="ghost" onClick={clearProviders}>Geen</button>
-            </div>
-          </div>
-          </div>
-
-          <div className={`filter-section filter-section-more ${openFilterSections.more ? 'is-open' : ''}`}>
-            <div className="filter-section-header">
-              <p className="filter-title" id="filter-more-title">Meer filters</p>
-              <button
-                type="button"
-                className="filter-section-toggle"
-                aria-expanded={openFilterSections.more}
-                aria-controls="filter-more-content"
-                onClick={() => toggleFilterSection('more')}
-              >
-                <span aria-hidden="true">{openFilterSections.more ? '-' : '+'}</span>
-                <span className="sr-only">Meer filters {openFilterSections.more ? 'verbergen' : 'tonen'}</span>
-              </button>
-            </div>
-            <div className="filter-section-content" id="filter-more-content" aria-labelledby="filter-more-title">
-          <div className="filter-row">
-            <div className="filter-group inline-group">
-              <p className="filter-title">Periode</p>
-              <div className="chips-inline">
-                {RANGE_OPTIONS.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    className={`chip ${preferences.rangeFilter === option.id ? 'is-selected' : ''}`}
-                    onClick={() => setRangeFilter(option.id)}
-                    aria-pressed={preferences.rangeFilter === option.id}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-group inline-group">
-              <div className="filter-title-row">
-                <p className="filter-title">TV-provider</p>
-                <button
-                  type="button"
-                  className="filter-tooltip"
-                  aria-label="Uitleg over TV-provider"
-                  aria-expanded={tvProviderInfoOpen}
-                  onClick={() => setTvProviderInfoOpen((current) => !current)}
-                >
-                  ?
-                </button>
-              </div>
-              {tvProviderInfoOpen ? (
-                <p className="filter-popover">
-                  Past voorwaardelijke zenders aan op jouw provider. Voorbeeld: Eurosport kan via Ziggo anders beschikbaar zijn dan via KPN.
-                </p>
-              ) : null}
-              <div className="chips-inline">
-                {TV_PROVIDER_OPTIONS.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    className={`chip ${preferences.tvProvider === option.id ? 'is-selected' : ''}`}
-                    onClick={() => setTvProvider(option.id)}
-                    aria-pressed={preferences.tvProvider === option.id}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-              <p className="filter-help">
-                Beïnvloedt voorwaardelijke zenders.
-              </p>
-            </div>
-
-            <div className="filter-group inline-group">
-              <p className="filter-title">Toegang</p>
-              <div className="chips-inline">
-                {ACCESS_OPTIONS.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    className={`chip ${preferences.accessFilter === option.id ? 'is-selected' : ''}`}
-                    onClick={() => setAccessFilter(option.id)}
-                    aria-pressed={preferences.accessFilter === option.id}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-group inline-group">
-              <p className="filter-title">Grote events</p>
-              <div className="chips-inline">
-                {MAJOR_FILTER_OPTIONS.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    className={`chip ${preferences.majorFilter === option.id ? 'is-selected' : ''}`}
-                    onClick={() => setMajorFilter(option.id)}
-                    aria-pressed={preferences.majorFilter === option.id}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-group search-group">
-              <label className="filter-title" htmlFor="search">Zoeken</label>
-              <input
-                id="search"
-                type="search"
-                value={preferences.searchText}
-                onChange={(event) => setPreferences((current) => ({ ...current, searchText: event.target.value }))}
-                onBlur={(event) => {
-                  const value = event.target.value.trim();
-                  if (!value) return;
-                  trackAnalyticsEvent('search_used', { query_length: value.length });
-                }}
-                placeholder="team, toernooi, aanbieder of locatie"
-                aria-label="Zoek in sportevents"
-              />
-            </div>
-          </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="agenda" id="agenda">
-          {dayJumpOptions.length ? (
-            <div className="agenda-tools">
-              <label className="agenda-label" htmlFor="jump-day">Spring naar datum</label>
-              <select
-                id="jump-day"
-                value={jumpDay}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  setJumpDay(value);
-                  jumpToDay(value);
-                }}
-              >
-                <option value="">Kies een dag</option>
-                {dayJumpOptions.map((option) => (
-                  <option key={option.id} value={option.id}>{option.label}</option>
-                ))}
-              </select>
-            </div>
-          ) : null}
-          {groupedEvents.length === 0 ? (
-            <article className="panel empty-state">
-              <h2>Geen events met deze filters</h2>
-              <p>Pas je sport-, aanbieder-, periode-, toegang- of grote-events-filter aan om resultaten te zien.</p>
-            </article>
-          ) : (
-            <>
-              {groupedEvents.slice(0, visibleDaysCount).map((group) => (
-                <article key={group.key} id={`day-${group.key}`} className="day-block">
-                <header>
-                  <p className="day-number">{group.dayNumber}</p>
-                  <h2>{group.label}</h2>
-                </header>
-
-                {group.majorGroups.map((majorGroup) => (
-                  <section key={`${group.key}-${majorGroup.label}`} className="major-group">
-                    <h3 className="major-group-title">{majorGroup.label}</h3>
-                    <div className="cards">
-                      {majorGroup.events.map(renderEventCard)}
-                    </div>
-                  </section>
-                ))}
-
-                {group.regularEvents.length ? (
-                  <section className="major-group">
-                    {group.majorGroups.length ? <h3 className="major-group-title secondary">Overige events</h3> : null}
-                    <div className="cards">
-                      {group.regularEvents.map(renderEventCard)}
-                    </div>
-                  </section>
-                ) : null}
-                </article>
-              ))}
-              
-              {groupedEvents.length > visibleDaysCount ? (
-                <button 
-                  onClick={() => setVisibleDaysCount((current) => current + 2)} 
-                  className="ghost" 
-                  style={{ width: '100%', padding: '1.25rem', marginTop: '1rem', fontWeight: '700' }}
-                >
-                  Laad meer dagen ({groupedEvents.length - visibleDaysCount} resterend)
-                </button>
-              ) : null}
-            </>
-          )}
-        </section>
+        <Agenda
+          groups={groupedEvents}
+          visibleDaysCount={visibleDaysCount}
+          onLoadMore={() => setVisibleDaysCount((current) => current + 2)}
+          dayJumpOptions={dayJumpOptions}
+          jumpDay={jumpDay}
+          onJumpDay={handleJumpDay}
+          quickDayFilter={quickDayFilter}
+          onQuickDay={selectQuickDay}
+          filteredCount={filteredEvents.length}
+          onExport={exportVisibleEventsAsIcs}
+          hasSourceEvents={sourceEvents.length > 0}
+          renderEventCard={renderEventCard}
+        />
 
         <section className="panel notice-panel">
           <div className="notice-meta">
@@ -2405,14 +1927,7 @@ function App() {
             <a href="/?q=champions%20league%20kijken">Waar kan ik Champions League kijken?</a>
           </div>
         </section>
-        <footer className="site-footer">
-          <a href="/privacy-policy.html">Privacy</a>
-          <a href={CONTACT_MAILTO_URL}>Contact</a>
-          <a href="https://ko-fi.com/Y8Y41QY1SE" target="_blank" rel="noreferrer">Support op Ko-fi</a>
-          <button type="button" onClick={copyContactEmail}>
-            {emailCopied ? 'E-mailadres gekopieerd' : 'Kopieer e-mailadres'}
-          </button>
-        </footer>
+        <SiteFooter emailCopied={emailCopied} onCopyEmail={copyContactEmail} />
       </main>
     </div>
   );

@@ -18,6 +18,7 @@ Nederlandstalige sportkijkgids voor `sportkijken.paulzuiderduin.com`.
 - React + Vite
 - GitHub Pages deploy
 - Geen login en geen Supabase voor MVP
+- `src/App.jsx` bevat de state en orchestration; presentatie staat in `src/components/`, gedeelde helpers in `src/lib/`
 
 ## Lokaal draaien
 

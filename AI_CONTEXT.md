@@ -34,3 +34,7 @@ The application has recently undergone significant changes to improve **mobile r
 - The dataset fetching logic (`loadCachedDataset`) and SEO routing should remain intact.
 - ESPN's scoreboard API no longer accepts date ranges (`YYYYMMDD-YYYYMMDD`). `scripts/update-events.mjs` queries whole months (`YYYYMM`) instead; keep that behaviour and the per-month 1000-event limit.
 - Past events are pruned before the (now optional) `MAX_EVENTS` cap. Do not reintroduce a cap that can cut off the end of the 180-day schedule.
+- `App.jsx` is the state/orchestration layer. Presentational components live in `src/components/` (`FiltersPanel`, `Agenda`, `EventCard`, `ConsentDialog`, `SiteFooter`), shared access/format/filter/analytics helpers in `src/lib/`.
+- Sport and provider chips are limited with "Toon nog ..." buttons; keep the full lists available through those toggles.
+- The agenda has quick day filters (`Alle dagen`, `Vandaag`, `Morgen`, `Dit weekend`). They filter `filteredEvents`; they are not just scroll shortcuts. The date dropdown only scrolls within the currently rendered day groups.
+- The localStorage dataset cache is intentionally limited to recent/upcoming events; do not persist the full multi-megabyte dataset.

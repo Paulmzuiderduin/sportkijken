@@ -908,6 +908,29 @@ a.primary {
   border-radius: 0.6rem;
 }
 
+.quick-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.quick-days .chip {
+  min-height: 2rem;
+  padding: 0.38rem 0.65rem;
+  font-size: 0.82rem;
+}
+
+.agenda-date-jump {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.agenda-export {
+  display: none;
+}
+
 .agenda-label {
   font-size: 0.8rem;
   font-weight: 700;
@@ -926,6 +949,13 @@ a.primary {
 .day-block {
   display: grid;
   gap: 0.75rem;
+}
+
+.load-more {
+  width: 100%;
+  padding: 1.25rem;
+  margin-top: 1rem;
+  font-weight: 700;
 }
 
 .major-group {
@@ -1241,6 +1271,37 @@ a.primary {
     flex-direction: column;
     align-items: stretch;
     gap: 0.5rem;
+  }
+
+  .quick-days {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .quick-days .chip {
+    padding: 0.38rem 0.25rem;
+    font-size: 0.74rem;
+  }
+
+  .agenda-date-jump {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    margin-left: 0;
+  }
+
+  .agenda-date-jump select {
+    width: 100%;
+  }
+
+  .agenda-export {
+    display: inline-flex;
+    justify-content: center;
+  }
+
+  .hero-export,
+  .hero-actions .export-scope {
+    display: none;
   }
 
   .cards {
